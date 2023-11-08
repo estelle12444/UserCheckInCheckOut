@@ -78,6 +78,15 @@
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
                     <div class="dropdown-header text-center">
                         <img class="img-md rounded-circle" src="images/faces/face8.jpg" alt="Profile image">
+                        <div class="card-body">
+                            @if (session('status'))
+                                <div class="alert alert-success" role="alert">
+                                    {{ session('status') }}
+                                </div>
+                            @endif
+
+                            {{ __('Vous êtes connecté!') }}
+                        </div>
                         <p class="mb-1 mt-3 font-weight-semibold">Allen Moreno</p>
                         <p class="fw-light text-muted mb-0">allenmoreno@gmail.com</p>
                     </div>
@@ -88,7 +97,7 @@
                             class="dropdown-item-icon mdi mdi-calendar-check-outline text-primary me-2"></i>
                         Activity</a>
 
-                    <a class="dropdown-item"><i
+                    <a class="dropdown-item" href="{{route('logout')}}"><i
                             class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Déconnexion</a>
                 </div>
             </li>
