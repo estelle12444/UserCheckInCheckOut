@@ -26,9 +26,38 @@ class HomeController extends Controller
     {
         return view('index');
     }
+    public function table()
+    {
+        return view('pages.table');
+    }
 
     public function logout(Request $request) {
         Auth::logout();
         return view('auth.login');
-      }
+    }
+
+    public function getEmail()
+    {
+        if (!Auth::check()) {
+
+            return view('auth.login');
+        } else {
+            $user = Auth::user();
+            $email = $user->email;
+
+            return $email;
+        }
+    }
+    public function geUsername()
+    {
+        if (!Auth::check()) {
+
+            return view('auth.login');
+        } else {
+            $user = Auth::user();
+            $name = $user->name;
+
+            return $name;
+        }
+    }
 }

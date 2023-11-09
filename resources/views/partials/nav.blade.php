@@ -18,7 +18,7 @@
     <div class="navbar-menu-wrapper d-flex align-items-top">
         <ul class="navbar-nav">
             <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
-                <h1 class="welcome-text">Bonjour, <span class="text-black fw-bold">John Doe</span></h1>
+                <h1 class="welcome-text">Bonjour, <span class="text-black fw-bold">{{ app('App\Http\Controllers\HomeController')->geUsername() }}</span></h1>
                 <h3 class="welcome-sub-text">Performances de cette semaine </h3>
             </li>
         </ul>
@@ -87,8 +87,8 @@
 
                             {{ __('Vous êtes connecté!') }}
                         </div>
-                        <p class="mb-1 mt-3 font-weight-semibold">Allen Moreno</p>
-                        <p class="fw-light text-muted mb-0">allenmoreno@gmail.com</p>
+                        <p class="mb-1 mt-3 font-weight-semibold">{{ app('App\Http\Controllers\HomeController')->geUsername() }}</p>
+                        <p class="fw-light text-muted mb-0"> {{ app('App\Http\Controllers\HomeController')->getEmail() }} </p>
                     </div>
                     <a class="dropdown-item"><i
                             class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> MON

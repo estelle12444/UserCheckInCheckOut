@@ -14,19 +14,28 @@ class EmployeeTableSeeder extends Seeder
      */
     public function run(): void
     {
-        Employee::create([
-            'name' => ' kossonou',
-            'matricule' =>  uniqid(),
-            'designation' => ' Developpeur web',
-            'department_id' => 1
-        ]);
+        $matricules = [
+            '00001',
+            '00002',
+            '00225',
+            '01130',
+            '01131',
+            '01132',
+            '01133',
+            '01134',
+            '01135',
+            '01136',
+            '01137',
+            '01138',
+        ];
 
-
-        Employee::create([
-            'name' => ' Bandama',
-            'matricule' => uniqid(),
-            'designation' => ' gestion de projet',
-            'department_id' => 2
-        ]);
+        foreach ($matricules as $value) {
+            Employee::create([
+                'name' => fake()->name(),
+                'matricule' =>  $value,
+                'designation' => fake()->jobTitle(),
+                'department_id' => rand(1, 10)
+            ]);
+        }
     }
 }

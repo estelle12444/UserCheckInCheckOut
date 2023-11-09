@@ -5,12 +5,12 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">{{ __('Login') }}</div>
+                    <div class="card-header">{{ __('Connexion') }}</div>
 
                     <div class="card-body">
 
                         <h4>Bonjour ! Commençons</h4>
-                        <h6 class="fw-light">Connexion</h6>
+
                         <form class="pt-3" method="POST" action="{{ route('login') }}">
                             @csrf
                             <div class="form-group">
@@ -47,12 +47,12 @@
                                     <label class="form-check-label text-muted">
                                         <input type="checkbox" class="form-check-input" name="remember" id="remember"
                                             {{ old('remember') ? 'checked' : '' }}>
-                                        {{ __('Remember Me') }}
+                                        {{ __('Se souvenir de moi') }}
                                     </label>
                                 </div>
                                 <a class="auth-link text-black"
                                     @if (Route::has('password.request')) href="{{ route('password.request') }}">
-                          {{ __('Forgot Your Password?') }}
+                          {{ __('Mot de passe oublié?') }}
                       </a> @endif
                                     </a>
                             </div>

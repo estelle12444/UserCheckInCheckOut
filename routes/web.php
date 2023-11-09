@@ -23,4 +23,5 @@ Auth::routes([
 ]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/table', [App\Http\Controllers\HomeController::class, 'table'])->name('table');
 Route::get('/logout', [App\Http\Controllers\HomeController::class, 'logout'])->name('logout');

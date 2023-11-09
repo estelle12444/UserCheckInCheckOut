@@ -18,7 +18,7 @@
                 <ul class="nav flex-column sub-menu">
                     @foreach (config('localisation') as $localisation)
                         <li class="nav-item">
-                            <a class="nav-link" href="pages/ui-features/buttons.html">{{$localisation['name']}}</a>
+                            <a class="nav-link" href="{{route('table')}}">{{$localisation['name']}}</a>
                         </li>
                     @endforeach
                 </ul>

@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\HistoryEntry;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
-class HistoryEntry extends Controller
+class HistoryEntryController extends Controller
 {
     public function __construct()
     {
@@ -17,7 +18,7 @@ class HistoryEntry extends Controller
     public function in_out(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'confidence' => 'required|numeric',
+            'confidence' => 'required|numeric|min:0|max:100',
             'localisation_id' => 'required',
             'in_out' =>  'required|in:0,1',
             'matricule' =>   'required'
