@@ -44,19 +44,35 @@ class HistoryEntryController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'message' => "Bad request",
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
+                'success' => false
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        HistoryEntry::create([
-            'confidence' => $request->confidence,
+        $dayHistoryFromLocalisation = HistoryEntry::where([
             'localisation_id' => $request->localisation_id,
             'in_out' => $request->in_out,
-            'employee_id' => $employee->id
-        ]);
+            'created_at' => today()
+        ])->get();
+
+        if($dayHistoryFromLocalisation->count() > 0){
+            return response()->json([
+                'message' => "Bad request",
+                'errors' => ["in_out" => ["Operation already done"]],
+                'success' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }else{
+            HistoryEntry::create([
+                'confidence' => $request->confidence,
+                'localisation_id' => $request->localisation_id,
+                'in_out' => $request->in_out,
+                'employee_id' => $employee->id
+            ]);
+        }
 
         return response()->json([
             'message' => "Created",
+            'success' => true,
             'errors' => []
         ], Response::HTTP_CREATED);
     }
