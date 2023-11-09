@@ -3,7 +3,7 @@
         <li class="nav-item">
             <a class="nav-link" href="{{ route('home') }}">
                 <i class="mdi mdi-grid-large menu-icon"></i>
-                <span class="menu-title">Dashboard</span>
+                <span class="menu-title">Tableau de bord</span>
             </a>
         </li>
         <li class="nav-item nav-category">Localisation</li>
@@ -18,7 +18,7 @@
                 <ul class="nav flex-column sub-menu">
                     @foreach (config('localisation') as $localisation)
                         <li class="nav-item">
-                            <a class="nav-link" href="{{route('table')}}">{{$localisation['name']}}</a>
+                            <a class="nav-link" href="/table-site">{{$localisation['name']}}</a>
                         </li>
                     @endforeach
                 </ul>
@@ -35,16 +35,14 @@
             <div class="collapse" id="auth">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
-                        <a class="nav-link" href="#"> Liste des utilisateurs </a>
+                        <a class="nav-link" href="{{route('user-list')}}"> Liste des utilisateurs </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"> Listes des  employés</a>
-                    </li>
+
                 </ul>
             </div>
         </li>
         <a href="{{route('logout')}}" class="btn btn-danger mt-2 " type="button" >
-            Deconnexion
+            Déconnexion
         </a>
 
     </ul>

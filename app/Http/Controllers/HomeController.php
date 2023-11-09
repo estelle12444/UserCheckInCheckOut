@@ -26,9 +26,14 @@ class HomeController extends Controller
     {
         return view('index');
     }
-    public function table()
+    public function tableSite()
     {
-        return view('pages.table');
+        return view('pages.table-site');
+    }
+
+    public function Userlist()
+    {
+        return view('pages.user-list');
     }
 
     public function logout(Request $request) {

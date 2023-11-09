@@ -34,7 +34,8 @@ class EmployeeTableSeeder extends Seeder
                 'name' => fake()->name(),
                 'matricule' =>  $value,
                 'designation' => fake()->jobTitle(),
-                'department_id' => rand(1, 10)
+                'department_id' => rand(1, 10),
+                'user_id'=> rand(1, 2)
             ]);
         }
     }

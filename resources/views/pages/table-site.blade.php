@@ -13,7 +13,7 @@
                                     Share</a>
                                 <a href="#" class="btn btn-otline-dark"><i class="icon-printer"></i> Print</a>
                                 <a href="#" class="btn btn-primary text-white me-0"><i class="icon-download"></i>
-                                    Export</a>
+                                    Exporter</a>
                             </div>
 
                         </div>
@@ -49,7 +49,7 @@
                                                                 <th>Employée</th>
                                                                 <th>Département</th>
                                                                 <th>Nombre Heures</th>
-                                                                <th>Status</th>
+                                                                <th>Heures Sups</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>

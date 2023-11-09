@@ -23,5 +23,12 @@ Auth::routes([
 ]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/table', [App\Http\Controllers\HomeController::class, 'table'])->name('table');
+Route::get('/table-site', [App\Http\Controllers\HomeController::class, 'tableSite'])->name('table-site');
+
+
 Route::get('/logout', [App\Http\Controllers\HomeController::class, 'logout'])->name('logout');
+
+
+Route::middleware(['admin'])->group(function () {
+    Route::get('/user-list', [UserController::class, 'Userlist'])->name('user-list');
+});
