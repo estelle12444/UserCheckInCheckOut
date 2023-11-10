@@ -19,7 +19,7 @@
                                                         <h4 class="card-title card-title-dash">Listes des utilisateurs du dashboard
                                                         </h4>
                                                         <p class="card-subtitle card-subtitle-dash">Nous
-                                                            avons 2 employées</p>
+                                                            avons 2 utilisateurs</p>
                                                     </div>
 
                                                 </div>
@@ -35,8 +35,7 @@
                                                                             class="input-helper"></i></label>
                                                                 </div>
                                                             </th> --}}
-                                                                <th>Employée</th>
-                                                                <th>Département</th>
+                                                                <th>Utilisateur</th>
                                                                 <th>Role</th>
                                                                 <th>Status</th>
                                                             </tr>
@@ -50,25 +49,21 @@
                                                                         <img src="images/faces/face1.jpg" alt="">
                                                                         <div>
                                                                             <h6>{{ $user->name }}</h6>
-                                                                            <p>Head admin</p>
+                                                                            <p>{{ $user->email }}</p>
                                                                         </div>
                                                                     </div>
                                                                 </td>
-                                                                <td>
-                                                                    <h6>Company name 1</h6>
-                                                                    <p>company type</p>
-                                                                </td>
-                                                                <td>
 
-                                                                            <p>85/162</p>
+                                                                <td>
+                                                                            <p>{{ $user->role->name }}</p>
 
                                                                 </td>
                                                                 <td>
-                                                                    <a href=""type="button" class="btn btn-success text-white"> Actif</a>
+                                                                    <a href="#" type="button" class="btn btn-success text-white"> Activer</a>
 
                                                                 </td>
                                                             </tr>
-                                                            @endsection
+                                                            @endforeach
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -83,4 +78,4 @@
             </div>
         </div>
 
-    @endsection
+@endsection

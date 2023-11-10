@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HistoryEntry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Helper;
 
 class HomeController extends Controller
 {
@@ -26,9 +28,12 @@ class HomeController extends Controller
     {
         return view('index');
     }
-    public function tableSite()
+
+    public function tableSite($id)
     {
-        return view('pages.table-site');
+        $history_entries = HistoryEntry::where('localisation_id', $id)->get();
+        $site= Helper::searchByNameAndId('localisation',$id);
+        return view('pages.table-site',compact('history_entries', 'site'));
     }
 
     public function Userlist()

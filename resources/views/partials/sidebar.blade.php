@@ -18,9 +18,10 @@
                 <ul class="nav flex-column sub-menu">
                     @foreach (config('localisation') as $localisation)
                         <li class="nav-item">
-                            <a class="nav-link" href="/table-site">{{$localisation['name']}}</a>
+                            <a class="nav-link" href="/table-site/{{ $localisation['id'] }}">{{$localisation['name']}}</a>
                         </li>
                     @endforeach
+
                 </ul>
             </div>
         </li>

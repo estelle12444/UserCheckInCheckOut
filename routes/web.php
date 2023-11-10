@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -23,12 +24,12 @@ Auth::routes([
 ]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/table-site', [App\Http\Controllers\HomeController::class, 'tableSite'])->name('table-site');
+Route::get('/table-site/{id}', [App\Http\Controllers\HomeController::class, 'tableSite'])->name('table-site');
 
 
 Route::get('/logout', [App\Http\Controllers\HomeController::class, 'logout'])->name('logout');
 
 
 Route::middleware(['admin'])->group(function () {
-    Route::get('/user-list', [UserController::class, 'Userlist'])->name('user-list');
+    Route::get('user-list', [UserController::class, 'Userlist'])->name('user-list');
 });

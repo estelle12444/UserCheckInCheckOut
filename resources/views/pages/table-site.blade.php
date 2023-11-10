@@ -27,7 +27,7 @@
                                             <div class="card-body">
                                                 <div class="d-sm-flex justify-content-between align-items-start">
                                                     <div>
-                                                        <h4 class="card-title card-title-dash">Listes des employés du site
+                                                        <h4 class="card-title card-title-dash">Listes des employés du site : {{$site->name ?? " "}}
                                                         </h4>
                                                         <p class="card-subtitle card-subtitle-dash">Nous
                                                             avons 50+ employées</p>
@@ -38,14 +38,7 @@
                                                     <table class="table select-table">
                                                         <thead>
                                                             <tr>
-                                                                {{-- <th>
-                                                                <div class="form-check form-check-flat mt-0">
-                                                                    <label class="form-check-label">
-                                                                        <input type="checkbox" class="form-check-input"
-                                                                            aria-checked="false"><i
-                                                                            class="input-helper"></i></label>
-                                                                </div>
-                                                            </th> --}}
+
                                                                 <th>Employée</th>
                                                                 <th>Département</th>
                                                                 <th>Nombre Heures</th>
@@ -54,41 +47,37 @@
                                                         </thead>
                                                         <tbody>
                                                             <tr>
+                                                                @foreach ($history_entries as $history_entry)
 
                                                                 <td>
                                                                     <div class="d-flex ">
                                                                         <img src="images/faces/face1.jpg" alt="">
                                                                         <div>
-                                                                            <h6>Brandon Washington</h6>
-                                                                            <p>Head admin</p>
+                                                                            <h6>{{ $history_entry->employee->name }}</h6>
+                                                                            <p>{{ $history_entry->employee->designation }}</p>
                                                                         </div>
                                                                     </div>
                                                                 </td>
                                                                 <td>
                                                                     <h6>Company name 1</h6>
-                                                                    <p>company type</p>
+                                                                    <p>{{ App\Helper::searchByNameAndId('department', $history_entry->employee->department_id)->name ?? ""  }}
+
+                                                                    </p>
                                                                 </td>
                                                                 <td>
                                                                     <div>
                                                                         <div
                                                                             class="d-flex justify-content-between align-items-center mb-1 max-width-progress-wrap">
-                                                                            <p class="text-success">79%
-                                                                            </p>
-                                                                            <p>85/162</p>
+
+                                                                            <p >{{ $history_entry->in_out }}</p>
                                                                         </div>
-                                                                        <div class="progress progress-md">
-                                                                            <div class="progress-bar bg-success"
-                                                                                role="progressbar" style="width: 85%"
-                                                                                aria-valuenow="25" aria-valuemin="0"
-                                                                                aria-valuemax="100">
-                                                                            </div>
-                                                                        </div>
+
                                                                     </div>
                                                                 </td>
                                                                 <td>
-                                                                    <div class="badge badge-opacity-warning">
-                                                                        In progress</div>
+                                                                    <p>4 H</p>
                                                                 </td>
+                                                                @endforeach
                                                             </tr>
 
                                                         </tbody>
