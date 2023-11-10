@@ -52,8 +52,9 @@ class HistoryEntryController extends Controller
         $dayHistoryFromLocalisation = HistoryEntry::where([
             'localisation_id' => $request->localisation_id,
             'in_out' => $request->in_out,
-            'created_at' => today()
-        ])->get();
+            'employee_id' => $employee->id,
+        ])->where('created_at', 'like', date("Y-m-d")."%")->get();
+
 
         if($dayHistoryFromLocalisation->count() > 0){
             return response()->json([
@@ -72,8 +73,14 @@ class HistoryEntryController extends Controller
 
         return response()->json([
             'message' => "Created",
-            'success' => true,
-            'errors' => []
+            'data' => [
+                'name' => $employee->name,
+                'localisation' => config('localisation')[$request->localisation_id - 1]["name"],
+                'operation' => $request->in_out ? 'Entrer' : 'Sortir',
+                'time' => now()
+            ],
+            'errors' => [],
+            'success' => true
         ], Response::HTTP_CREATED);
     }
 }
