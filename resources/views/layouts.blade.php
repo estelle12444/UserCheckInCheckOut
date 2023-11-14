@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>FaceRecognition</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <!-- plugins:css -->
     <link rel="stylesheet" href="{{ asset('vendors/feather/feather.css') }}">
     <link rel="stylesheet" href="{{ asset('vendors/mdi/css/materialdesignicons.min.css') }}">
@@ -24,13 +25,15 @@
     <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}" />
     <link rel="apple-touch-icon" href="{{ asset('images/favicon.png') }}" />
 
-
+    <script src="{{ asset('node_modules/jspdf/dist/jspdf.min.js') }}"></script>
     <!-- Add Bootstrap CSS (if not already included) -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
     <!-- Add Daterangepicker CSS and JS -->
     <link rel="stylesheet" type="text/css"
         href="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.css" />
+
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.min.js"></script>
 
@@ -91,8 +94,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.0.1/mammoth.browser.min.js"></script>
 
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+        integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script>
         // Utilisation de jQuery pour détecter le changement de  sélection
@@ -102,42 +109,52 @@
                 // Mettre à jour l'URL avec le nouvel identifiant de site
                 window.location.href = '/table-site/' + selectedSite;
             });
-            document.getElementById('exportButton').addEventListener('click', function() {
-             console.log("entrerr");
-                var pdf = new jsPDF();
-
-                // Obtenez le contenu du tableau HTML
-                var table = document.getElementById('historyTable');
-                var tableContent = table.outerHTML;
-
-                // Ajoutez le contenu au PDF
-                pdf.fromHTML(tableContent, 15, 15);
-
-                // Téléchargez le PDF
-                pdf.save('table-export.pdf');
+            flatpickr("#datePicker", {
+                mode: "range",
+                dateFormat: "Y-m-d",
             });
 
 
         });
+        document.getElementById('exportButton').addEventListener('click', function() {
+            try {
+                var element = document.getElementById('exportButton');
+                var historyTable = document.getElementById('historyTable');
+                var opt = {
+                    margin: 1,
+                    filename: 'myfile.pdf',
+                    image: {
+                        type: 'jpeg',
+                        quality: 0.98
+                    },
+                    html2canvas: {
+                        scale: 2
+                    },
+                    jsPDF: {
+                        unit: 'in',
+                        format: 'letter',
+                        orientation: 'portrait'
+                    }
+                };
 
 
-        var now_date = new Date();
+                // New Promise-based usage:
+                html2pdf().set(opt).from(historyTable).save();
 
-        function convertDate(date) {
-            var yyyy = date.getFullYear().toString();
-            var mm = (date.getMonth() + 1).toString();
-            var dd = date.getDate().toString();
+                // Old monolithic-style usage:
+                html2pdf(historyTable, opt);
 
-            var mmChars = mm.split('');
-            var ddChars = dd.split('');
-
-            return yyyy + '-' + (mmChars[1] ? mm : "0" + mmChars[0]) + '-' + (ddChars[1] ? dd : "0" + ddChars[0]);
-        }
-
-        now_date = convertDate(now_date);
-
-        $("#departure_date").attr("value", now_date);
-        $("#arrival_date").attr("value", now_date);
+            } catch (error) {
+                console.error('An error occurred:', error);
+            }
+        });
+        $(function() {
+            $('input[name="daterange"]').daterangepicker({
+                opens: 'left'
+            }, function(start, end, label) {
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+            });
+        });
     </script>
 
 

@@ -12,28 +12,24 @@
                                 <div class="col-sm-12">
                                     <div class="statistics-details d-flex align-items-center justify-content-between">
                                         <div>
-                                            <p class="statistics-title">Entrée</p>
+                                            <p class="statistics-title">Entrées</p>
                                             <h3 class="rate-percentage">32.53%</h3>
-                                            <p class="text-danger d-flex"><i
-                                                    class="mdi mdi-menu-down"></i><span>-0.5%</span></p>
+
                                         </div>
                                         <div>
                                             <p class="statistics-title">Sorties</p>
                                             <h3 class="rate-percentage">7,682</h3>
-                                            <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i><span>+0.1%</span>
-                                            </p>
+
                                         </div>
                                         <div>
                                             <p class="statistics-title">Absents</p>
                                             <h3 class="rate-percentage">68.8</h3>
-                                            <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i><span>68.8</span>
-                                            </p>
+
                                         </div>
                                         <div class="d-none d-md-block">
                                             <p class="statistics-title">Total</p>
                                             <h3 class="rate-percentage">2m:35s</h3>
-                                            <p class="text-success d-flex"><i
-                                                    class="mdi mdi-menu-down"></i><span>+0.8%</span></p>
+
                                         </div>
 
                                     </div>
@@ -102,7 +98,8 @@
                                                 <div class="card-body">
                                                     <div class="d-sm-flex justify-content-between align-items-start">
                                                         <div>
-                                                            <h4 class="card-title card-title-dash">Entrées et Sorties des employées
+                                                            <h4 class="card-title card-title-dash">Entrées et Sorties des
+                                                                employées
                                                             </h4>
 
                                                         </div>
@@ -111,6 +108,7 @@
                                                     <div class="table-responsive mt-1">
                                                         <table class="table select-table">
                                                             <thead>
+
                                                                 <tr>
                                                                     <th>Employée</th>
                                                                     <th>Site</th>
@@ -119,28 +117,31 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-
+                                                                @foreach ($history_entries as $history_entry)
                                                                     <tr>
                                                                         <td>
                                                                             <div class="d-flex">
-                                                                                <img src="images/faces/face1.jpg" alt="">
+                                                                                <img src="{{ asset('images/faces/face1.jpg') }}"
+                                                                                    alt="">
                                                                                 <div>
-                                                                                    <h6></h6>
-                                                                                    <p></p>
+                                                                                    <h6>{{ $history_entry->employee->name }}
+                                                                                    </h6>
+                                                                                    <p>{{ $history_entry->employee->designation }}
+                                                                                    </p>
                                                                                 </div>
                                                                             </div>
                                                                         </td>
                                                                         <td>
-                                                                            <h6></h6>
+                                                                            <h6>{{ $history_entry->localisation_id }}</h6>
                                                                         </td>
                                                                         <td>
-                                                                            <p></p>
+                                                                            <h5>{{ $history_entry->time_at_in }} </h5>
                                                                         </td>
                                                                         <td>
-                                                                            <p></p>
+                                                                            <h5>{{ $history_entry->time_at_out }} </h5>
                                                                         </td>
                                                                     </tr>
-
+                                                                @endforeach
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -159,5 +160,4 @@
             </div>
         </div>
     </div>
-    <!-- content-wrapper ends -->
 @endsection

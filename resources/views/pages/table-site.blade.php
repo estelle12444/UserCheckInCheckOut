@@ -24,19 +24,19 @@
                             <div class="row flex-grow">
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card card-rounded">
-                                        <div class="card-body">
+                                        <div class="card-body" id="historyTable" >
                                             <div class="d-sm-flex justify-content-between align-items-start">
                                                 <div>
                                                     <h4 class="card-title card-title-dash">Listes des employés du site :
                                                         {{ $site->name ?? ' ' }}
                                                     </h4>
                                                     <p class="card-subtitle card-subtitle-dash">Nous
-                                                        avons 50+ employées</p>
+                                                        avons {{ $employees->count() }} employées</p>
                                                 </div>
 
                                             </div>
                                             <div class="table-responsive  mt-1">
-                                                <table id="historyTable" class="table select-table">
+                                                <table  class="table select-table">
                                                     <thead>
                                                         <tr>
 
@@ -53,7 +53,8 @@
 
                                                                 <td>
                                                                     <div class="d-flex ">
-                                                                        <img src="images/faces/face1.jpg" alt="">
+                                                                        <img src="{{ asset('images/faces/face1.jpg') }}"
+                                                                            alt="">
                                                                         <div>
                                                                             <h6>{{ $history_entry->employee->name }}</h6>
                                                                             <p>{{ $history_entry->employee->designation }}
@@ -70,11 +71,13 @@
                                                                 </td>
                                                                 <td>
 
-                                                                        <h5>{{ App\Helper::calculateTimeDifference(  $history_entry->time_at_in, $history_entry->time_at_out) }}</h5>
+                                                                    <h5>{{ App\Helper::calculateTimeDifference($history_entry->time_at_in, $history_entry->time_at_out) }}
+                                                                    </h5>
 
                                                                 </td>
                                                                 <td>
-                                                                    <h5>{{ App\Helper::calculateTimeSupp(  $history_entry->time_at_in, $history_entry->time_at_out) }}</h5>
+                                                                    <h5>{{ App\Helper::calculateTimeSupp($history_entry->time_at_in, $history_entry->time_at_out) }}
+                                                                    </h5>
 
                                                                 </td>
 
@@ -95,5 +98,4 @@
         </div>
     </div>
 
-    
 @endsection
