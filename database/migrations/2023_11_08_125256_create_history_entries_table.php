@@ -15,15 +15,13 @@ return new class extends Migration
         Schema::create('history_entries', function (Blueprint $table) {
             $table->id();
             $table->double('in_confidence');
-            $table->double('out_confidence');
-            $table->integer('localisation_id');
-
-            $table->foreignIdFor(Employee::class);
-
             $table->time('time_at_in');
-            $table->time('time_at_out');
             $table->date('day_at_in');
-            $table->date('day_at_out');
+            $table->double('out_confidence')->nullable();
+            $table->time('time_at_out')->nullable();
+            $table->date('day_at_out')->nullable();
+            $table->integer('localisation_id');
+            $table->foreignIdFor(Employee::class);
         });
     }
 
