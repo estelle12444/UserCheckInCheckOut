@@ -23,8 +23,9 @@
             </li>
         </ul>
         <ul class="navbar-nav ms-auto">
+            @if(request()->is('home') || request()->is('table-site/*'))
             <li class="nav-item dropdown d-none d-lg-block">
-                <a class="nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split" id="messageDropdown"
+                {{-- <a class="nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split" id="messageDropdown"
                     href="#" data-bs-toggle="dropdown" aria-expanded="false"> Selectionner le Site </a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0"
                     aria-labelledby="messageDropdown">
@@ -58,23 +59,57 @@
 
                         </div>
                     </a>
-                </div>
+                </div> --}}
+                @php
+                $currentSite = request()->segment(2); // Récupère la deuxième partie de l'URL (table-site/{site})
+                $localisations = config('localisation');
+            @endphp
+
+            <select id="siteSelect" class="form-select nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split" aria-label="Large select example">
+                <option selected>Selectionner le Site</option>
+                @foreach($localisations as $localisation)
+                    @php
+                        $siteId = $localisation['id'];
+                        $siteName = $localisation['name'];
+                    @endphp
+                    <option value="{{ $siteId }}" {{ $currentSite == $siteId ? 'selected' : '' }}>Site de {{ $siteName }}</option>
+                @endforeach
+            </select>
+
+
+
+
             </li>
+{{--
             <li class="nav-item d-none d-lg-block">
-                <div id="datepicker-popup" class="input-group date datepicker navbar-date-picker">
+                <div id="datepicker-popup0" class="input-group date datepicker navbar-date-picker">
                     <span class="input-group-addon input-group-prepend border-right">
                         <span class="icon-calendar input-group-text calendar-icon"></span>
                     </span>
-                    <input type="text" class="form-control">
+                    <input id="departure_date" type="date" class="form-control" name="departure_date" />
                 </div>
             </li>
+             <li class="nav-item d-none d-lg-block">
+                <div id="datepicker-popup1" class="input-group date datepicker navbar-date-picker">
+                    <span class="input-group-addon input-group-prepend border-right">
+                        <span class="icon-calendar input-group-text calendar-icon"></span>
+                    </span>
+                    <input id="arrival_date" type="date" class="form-control" name="arrival_date" />
+                </div>
+            </li> --}}
+            <li><div class="input-group input-daterange">
+                <input type="text" class="form-control" value="2012-04-05">
+                <div class="input-group-addon">to</div>
+                <input type="text" class="form-control" value="2012-04-19">
+            </div></li>
+        @endif
 
 
 
             <li class="nav-item dropdown d-none d-lg-block user-dropdown">
                 <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown"
                     aria-expanded="false">
-                    <img class="img-xs rounded-circle" src="images/faces/face8.jpg" alt="Profile image"> </a>
+                    <img class="img-xs rounded-circle" src="{{asset('images/faces/face8.jpg')}}" alt="Profile image"> </a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
                     <div class="dropdown-header text-center">
                         <img class="img-md rounded-circle" src="images/faces/face8.jpg" alt="Profile image">
@@ -108,3 +143,4 @@
         </button>
     </div>
 </nav>
+

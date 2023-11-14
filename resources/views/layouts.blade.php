@@ -7,22 +7,32 @@
 
     <title>FaceRecognition</title>
     <!-- plugins:css -->
-    <link rel="stylesheet" href="{{asset('vendors/feather/feather.css')}}">
-    <link rel="stylesheet" href="{{asset('vendors/mdi/css/materialdesignicons.min.css')}}">
-    <link rel="stylesheet" href="{{asset('vendors/ti-icons/css/themify-icons.css')}}">
-    <link rel="stylesheet" href="{{asset('vendors/typicons/typicons.css')}}">
-    <link rel="stylesheet" href="{{asset('vendors/simple-line-icons/css/simple-line-icons.css')}}">
-    <link rel="stylesheet" href="{{asset('vendors/css/vendor.bundle.base.css')}}">
+    <link rel="stylesheet" href="{{ asset('vendors/feather/feather.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendors/mdi/css/materialdesignicons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendors/ti-icons/css/themify-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendors/typicons/typicons.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendors/simple-line-icons/css/simple-line-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendors/css/vendor.bundle.base.css') }}">
     <!-- endinject -->
     <!-- Plugin css for this page -->
-    <link rel="stylesheet" href="{{asset('vendors/datatables.net-bs4/dataTables.bootstrap4.css')}}">
-    <link rel="stylesheet" href="{{asset('js/select.dataTables.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('vendors/datatables.net-bs4/dataTables.bootstrap4.css') }}">
+    <link rel="stylesheet" href="{{ asset('js/select.dataTables.min.css') }}">
     <!-- End plugin css for this page -->
     <!-- inject:css -->
-    <link rel="stylesheet" href="{{asset('css/vertical-layout-light/style.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/vertical-layout-light/style.css') }}">
     <!-- endinject -->
-    <link rel="shortcut icon"  href="{{asset('images/favicon.png')}}" />
-    <link rel="apple-touch-icon"  href="{{asset('images/favicon.png')}}" />
+    <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}" />
+    <link rel="apple-touch-icon" href="{{ asset('images/favicon.png') }}" />
+
+
+    <!-- Add Bootstrap CSS (if not already included) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Add Daterangepicker CSS and JS -->
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.min.js"></script>
 
 </head>
 
@@ -34,19 +44,19 @@
 
         <div class="container-fluid page-body-wrapper">
 
-        <!-- partial:partials/_settings-panel.html -->
+            <!-- partial:partials/_settings-panel.html -->
             @include('partials.settingsPanel')
-        <!-- partial -->
+            <!-- partial -->
 
-          <!-- partial:partials/_sidebar.html -->
+            <!-- partial:partials/_sidebar.html -->
             @include('partials.sidebar')
-        <!-- partial -->
-        <div class="main-panel">
-            @yield('content')
+            <!-- partial -->
+            <div class="main-panel">
+                @yield('content')
 
-            @include('partials.footer')
+                @include('partials.footer')
                 <!-- partial -->
-        </div>
+            </div>
             <!-- main-panel ends -->
         </div>
         <!-- page-body-wrapper ends -->
@@ -56,25 +66,87 @@
 
 
     <!-- plugins:js -->
-    <script src="{{asset('vendors/js/vendor.bundle.base.js')}}"></script>
+    <script src="{{ asset('vendors/js/vendor.bundle.base.js') }}"></script>
     <!-- endinject -->
     <!-- Plugin js for this page -->
-    <script src="{{asset('vendors/chart.js/Chart.min.js')}}"></script>
-    <script src="{{asset('vendors/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
-    <script src="{{asset('vendors/progressbar.js/progressbar.min.js')}}"></script>
+    <script src="{{ asset('vendors/chart.js/Chart.min.js') }}"></script>
+    <script src="{{ asset('vendors/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ asset('vendors/progressbar.js/progressbar.min.js') }}"></script>
 
     <!-- End plugin js for this page -->
     <!-- inject:js -->
-    <script src="{{asset('js/off-canvas.js')}}"></script>
-    <script src="{{asset('js/hoverable-collapse.js')}}"></script>
-    <script src="{{asset('js/template.js')}}"></script>
-    <script src="{{asset('js/settings.js')}}"></script>
-    <script src="{{asset('js/todolist.js')}}"></script>
+    <script src="{{ asset('js/off-canvas.js') }}"></script>
+    <script src="{{ asset('js/hoverable-collapse.js') }}"></script>
+    <script src="{{ asset('js/template.js') }}"></script>
+    <script src="{{ asset('js/settings.js') }}"></script>
+    <script src="{{ asset('js/todolist.js') }}"></script>
     <!-- endinject -->
     <!-- Custom js for this page-->
-    <script src="{{asset('js/dashboard.js')}}"></script>
-    <script src="{{asset('js/Chart.roundedBarCharts.js')}}"></script>
+    <script src="{{ asset('js/dashboard.js') }}"></script>
+    <script src="{{ asset('js/Chart.roundedBarCharts.js') }}"></script>
     <!-- End custom js for this page-->
+
+    <!-- Add Bootstrap JS (if not already included) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.0.1/mammoth.browser.min.js"></script>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script>
+        // Utilisation de jQuery pour détecter le changement de  sélection
+        $(document).ready(function() {
+            $('#siteSelect').on('change', function() {
+                var selectedSite = $(this).val();
+                // Mettre à jour l'URL avec le nouvel identifiant de site
+                window.location.href = '/table-site/' + selectedSite;
+            });
+            document.getElementById('exportButton').addEventListener('click', function() {
+             console.log("entrerr");
+                var pdf = new jsPDF();
+
+                // Obtenez le contenu du tableau HTML
+                var table = document.getElementById('historyTable');
+                var tableContent = table.outerHTML;
+
+                // Ajoutez le contenu au PDF
+                pdf.fromHTML(tableContent, 15, 15);
+
+                // Téléchargez le PDF
+                pdf.save('table-export.pdf');
+            });
+
+
+        });
+
+
+        var now_date = new Date();
+
+        function convertDate(date) {
+            var yyyy = date.getFullYear().toString();
+            var mm = (date.getMonth() + 1).toString();
+            var dd = date.getDate().toString();
+
+            var mmChars = mm.split('');
+            var ddChars = dd.split('');
+
+            return yyyy + '-' + (mmChars[1] ? mm : "0" + mmChars[0]) + '-' + (ddChars[1] ? dd : "0" + ddChars[0]);
+        }
+
+        now_date = convertDate(now_date);
+
+        $("#departure_date").attr("value", now_date);
+        $("#arrival_date").attr("value", now_date);
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Initialize the date range picker -->
+
+
 
 </body>
 

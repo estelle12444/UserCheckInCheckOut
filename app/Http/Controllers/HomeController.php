@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Entry;
 use App\Models\HistoryEntry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Helper;
+use App\Models\Employee;
+use Barryvdh\DomPDF\PDF;
+use Carbon\Carbon;
+use Exception;
 
 class HomeController extends Controller
 {
@@ -26,22 +31,33 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('index');
+
+    return view('index');
     }
+
+
 
     public function tableSite($id)
     {
         $history_entries = HistoryEntry::where('localisation_id', $id)->get();
-        $site= Helper::searchByNameAndId('localisation',$id);
-        return view('pages.table-site',compact('history_entries', 'site'));
+
+        $site = Helper::searchByNameAndId('localisation', $id);
+        $employees = Employee::whereIn('id', $history_entries->pluck('employee_id')->unique())->get();
+
+       
+
+        return view('pages.table-site', compact('history_entries', 'site','employees'));
     }
+
+
 
     public function Userlist()
     {
         return view('pages.user-list');
     }
 
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         Auth::logout();
         return view('auth.login');
     }
