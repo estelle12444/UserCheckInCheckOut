@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Entry;
 use App\Models\Employee;
 use App\Models\HistoryEntry;
 use Illuminate\Http\Request;
@@ -20,7 +21,6 @@ class HistoryEntryController extends Controller
         $validator = Validator::make($request->all(), [
             'confidence' => 'required|numeric|min:0|max:100',
             'localisation_id' => 'required',
-            'in_out' =>  'required|in:0,1',
             'matricule' =>   'required'
         ]);
 
@@ -49,26 +49,23 @@ class HistoryEntryController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $dayHistoryFromLocalisation = HistoryEntry::where([
-            'localisation_id' => $request->localisation_id,
-            'in_out' => $request->in_out,
+        $employeeHistories = HistoryEntry::where([
             'employee_id' => $employee->id,
-        ])->where('created_at', 'like', date("Y-m-d")."%")->get();
+            'day_at_out' => null
+        ])->first();
 
+        $entry = Entry::IN;
 
-        if($dayHistoryFromLocalisation->count() > 0){
-            return response()->json([
-                'message' => "Bad request",
-                'errors' => ["in_out" => ["Operation already done"]],
-                'success' => false
-            ], Response::HTTP_BAD_REQUEST);
+        if(!is_null($employeeHistories)){
+            if($employeeHistories->localisation_id == $request->localisation_id){
+                $this->updateHistory($employeeHistories, $request);
+                $entry = Entry::OUT;
+            }else{
+                $this->updateHistory($employeeHistories, $request);
+                $this->createHistory($request);
+            }
         }else{
-            HistoryEntry::create([
-                'confidence' => $request->confidence,
-                'localisation_id' => $request->localisation_id,
-                'in_out' => $request->in_out,
-                'employee_id' => $employee->id
-            ]);
+            $this->createHistory($request);
         }
 
         return response()->json([
@@ -76,11 +73,27 @@ class HistoryEntryController extends Controller
             'data' => [
                 'name' => $employee->name,
                 'localisation' => config('localisation')[$request->localisation_id - 1]["name"],
-                'operation' => $request->in_out ? 'Entrer' : 'Sortir',
+                'operation' => $entry ? 'Entrer' : 'Sortir',
                 'time' => now()
             ],
             'errors' => [],
             'success' => true
         ], Response::HTTP_CREATED);
+    }
+
+    private function updateHistory(HistoryEntry $history , Request $request){
+        $history->out_confidence = $request->confidence;
+        $history->day_at_out = now()->format('Y-m-d');
+        $history->time_at_out = now()->format('H:i:s');
+        $history->save();
+    }
+
+    private function createHistory(Request $request){
+        HistoryEntry::create([
+            'in_confidence' => $request->confidence,
+            'localisation_id' => $request->localisation_id,
+            'day_at_in' => now()->format('Y-m-d'),
+            'time_at_in' => now()->format('H:i:s'),
+        ]);
     }
 }
