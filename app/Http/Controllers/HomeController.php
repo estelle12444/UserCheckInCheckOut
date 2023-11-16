@@ -33,14 +33,14 @@ class HomeController extends Controller
     {
         $history_entries = HistoryEntry::all();
         $employees = Employee::whereIn('id', $history_entries->pluck('employee_id')->unique())->get();
-        
 
-    return view('index',compact('history_entries','employees'));
+
+        return view('index', compact('history_entries', 'employees'));
     }
 
 
 
-    public function tableSite($id)
+    public function siteEmployees($id)
     {
         $history_entries = HistoryEntry::where('localisation_id', $id)->get();
 
@@ -49,7 +49,18 @@ class HomeController extends Controller
 
         $employeeCount = $employees->count();
 
-        return view('pages.table-site', compact('history_entries', 'site','employees','employeeCount'));
+        return view('pages.siteEmployees', compact('history_entries', 'site', 'employees', 'employeeCount'));
+    }
+
+    public function employeeDetail(Request $request, $id)
+    {
+        $employee = Employee::findOrFail($id);
+
+        if (!$employee) {
+            abort(404);
+        }
+
+        return view('pages.employeeDetail', compact('employee'));
     }
 
 

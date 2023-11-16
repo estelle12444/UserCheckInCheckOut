@@ -13,7 +13,7 @@ class Employee extends Model
     {
         return $this->belongsTo(User::class,'user_id');
     }
-    public function history_entries()
+    public function historyEntries()
     {
         return $this->belongsToMany(HistoryEntry::class);
     }

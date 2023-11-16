@@ -62,10 +62,10 @@ class HistoryEntryController extends Controller
                 $entry = Entry::OUT;
             }else{
                 $this->updateHistory($employeeHistories, $request);
-                $this->createHistory($request);
+                $this->createHistory($request, $employee);
             }
         }else{
-            $this->createHistory($request);
+            $this->createHistory($request, $employee);
         }
 
         return response()->json([
@@ -88,10 +88,11 @@ class HistoryEntryController extends Controller
         $history->save();
     }
 
-    private function createHistory(Request $request){
+    private function createHistory(Request $request, Employee $employee){
         HistoryEntry::create([
             'in_confidence' => $request->confidence,
             'localisation_id' => $request->localisation_id,
+            'employee_id' => $employee->id,
             'day_at_in' => now()->format('Y-m-d'),
             'time_at_in' => now()->format('H:i:s'),
         ]);

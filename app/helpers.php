@@ -21,8 +21,10 @@ class Helper
         if ($timeIn !== null && $timeOut !== null) {
             $timeIn = Carbon::parse($timeIn);
             $timeOut = Carbon::parse($timeOut);
-            $difference = Carbon::parse($timeOut->diff($timeIn)->format('%H:%I:%S'))->subHour(1);
-            return $difference->format('H:m:i');
+            $difference = Carbon::create($timeIn->diff($timeOut)->format('%H:%i:%s'));
+
+
+            return $difference->format('H:i:s');
         }
 
         return null;
@@ -33,7 +35,7 @@ class Helper
         if ($timeIn !== null && $timeOut !== null) {
             $timeIn = Carbon::parse($timeIn);
             $timeOut = Carbon::parse($timeOut);
-            $supp = Carbon::parse($timeOut->diff($timeIn)->format('%H:%I:%S'))->subHour(9);
+            $supp = Carbon::parse($timeOut->diff($timeIn)->format('%H:%i:%s'))->subHour(9);
             return $supp->format('H:m:i');
         }
         return null;

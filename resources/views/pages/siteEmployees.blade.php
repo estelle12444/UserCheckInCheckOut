@@ -42,8 +42,11 @@
 
                                                             <th>Employée</th>
                                                             <th>Département</th>
-                                                            <th>Nombre Heures</th>
-                                                            <th>Heures Sups</th>
+
+                                                            <th>Heure d'entrée</th>
+                                                            <th>Heure de Sortie</th>
+                                                            <th>Total Heures</th>
+
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -53,8 +56,10 @@
 
                                                                 <td>
                                                                     <div class="d-flex ">
+                                                                        <a href="{{route('employeeDetail', ['id' => $history_entry->employee->id])}}">
                                                                         <img src="{{ asset('images/faces/face1.jpg') }}"
                                                                             alt="">
+                                                                        </a>
                                                                         <div>
                                                                             <h6>{{ $history_entry->employee->name }}</h6>
                                                                             <p>{{ $history_entry->employee->designation }}
@@ -70,16 +75,18 @@
                                                                     </p>
                                                                 </td>
                                                                 <td>
+                                                                    <h5>{{$history_entry->time_at_in}}</h5>
+                                                                </td>
+                                                                <td>
+                                                                    <h5>{{$history_entry->time_at_out}}</h5>
+                                                                </td>
+                                                                <td>
 
                                                                     <h5>{{ App\Helper::calculateTimeDifference($history_entry->time_at_in, $history_entry->time_at_out) }}
                                                                     </h5>
 
                                                                 </td>
-                                                                <td>
-                                                                    <h5>{{ App\Helper::calculateTimeSupp($history_entry->time_at_in, $history_entry->time_at_out) }}
-                                                                    </h5>
 
-                                                                </td>
 
                                                             </tr>
                                                         @endforeach
