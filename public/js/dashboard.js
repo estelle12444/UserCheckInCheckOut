@@ -11,10 +11,10 @@
       saleGradientBg2.addColorStop(0, 'rgba(0, 208, 255, 0.19)');
       saleGradientBg2.addColorStop(1, 'rgba(0, 208, 255, 0.03)');
       var salesTopData = {
-          labels: ["SUN","sun", "MON", "mon", "TUE","tue", "WED", "wed", "THU", "thu", "FRI", "fri", "SAT"],
+          labels: [ "LUN", "lun", "MAR","mar", "MER", "mer", "JEU", "jeu", "VEN", "ven", "SAM","dim","DIM"],
           datasets: [{
               label: 'This week',
-              data: [50, 110, 60, 290, 200, 115, 130, 170, 90, 210, 240, 280, 200],
+              data: [0, 11, 6, 29, 20, 11, 13, 17, 9, 21, 24, 28, 20],
               backgroundColor: saleGradientBg,
               borderColor: [
                   '#1F3BB3',
@@ -26,23 +26,25 @@
               pointHoverRadius: [2, 2, 2, 2, 2,2, 2, 2, 2, 2,2, 2, 2],
               pointBackgroundColor: ['#1F3BB3)', '#1F3BB3', '#1F3BB3', '#1F3BB3','#1F3BB3)', '#1F3BB3', '#1F3BB3', '#1F3BB3','#1F3BB3)', '#1F3BB3', '#1F3BB3', '#1F3BB3','#1F3BB3)'],
               pointBorderColor: ['#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff',],
-          },{
-            label: 'Last week',
-            data: [30, 150, 190, 250, 120, 150, 130, 20, 30, 15, 40, 95, 180],
-            backgroundColor: saleGradientBg2,
-            borderColor: [
-                '#52CDFF',
-            ],
-            borderWidth: 1.5,
-            fill: true, // 3: no fill
-            pointBorderWidth: 1,
-            pointRadius: [0, 0, 0, 4, 0],
-            pointHoverRadius: [0, 0, 0, 2, 0],
-            pointBackgroundColor: ['#52CDFF)', '#52CDFF', '#52CDFF', '#52CDFF','#52CDFF)', '#52CDFF', '#52CDFF', '#52CDFF','#52CDFF)', '#52CDFF', '#52CDFF', '#52CDFF','#52CDFF)'],
-              pointBorderColor: ['#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff',],
-        }]
+         },
+         //{
+        //     label: 'Last week',
+        //     data: [30, 150, 190, 250, 120, 150, 130, 20, 30, 15, 40, 95, 180],
+        //     backgroundColor: saleGradientBg2,
+        //     borderColor: [
+        //         '#52CDFF',
+        //     ],
+        //     borderWidth: 1.5,
+        //     fill: true, // 3: no fill
+        //     pointBorderWidth: 1,
+        //     pointRadius: [0, 0, 0, 4, 0],
+        //     pointHoverRadius: [0, 0, 0, 2, 0],
+        //     pointBackgroundColor: ['#52CDFF)', '#52CDFF', '#52CDFF', '#52CDFF','#52CDFF)', '#52CDFF', '#52CDFF', '#52CDFF','#52CDFF)', '#52CDFF', '#52CDFF', '#52CDFF','#52CDFF)'],
+        //       pointBorderColor: ['#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff',],
+        // }
+    ]
       };
-  
+
       var salesTopOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -57,8 +59,8 @@
                   ticks: {
                     beginAtZero: false,
                     autoSkip: true,
-                    maxTicksLimit: 4,
-                    fontSize: 10,
+                    maxTicksLimit: 7,
+                    fontSize: 12,
                     color:"#6B778C"
                   }
               }],
@@ -79,18 +81,18 @@
           legend:false,
           legendCallback: function (chart) {
             var text = [];
-            text.push('<div class="chartjs-legend"><ul>');
-            for (var i = 0; i < chart.data.datasets.length; i++) {
-              console.log(chart.data.datasets[i]); // see what's inside the obj.
-              text.push('<li>');
-              text.push('<span style="background-color:' + chart.data.datasets[i].borderColor + '">' + '</span>');
-              text.push(chart.data.datasets[i].label);
-              text.push('</li>');
-            }
-            text.push('</ul></div>');
+            // text.push('<div class="chartjs-legend"><ul>');
+            // for (var i = 0; i < chart.data.datasets.length; i++) {
+            //   console.log(chart.data.datasets[i]); // see what's inside the obj.
+            //   text.push('<li>');
+            //   text.push('<span style="background-color:' + chart.data.datasets[i].borderColor + '">' + '</span>');
+            //   text.push(chart.data.datasets[i].label);
+            //   text.push('</li>');
+            // }
+            // text.push('</ul></div>');
             return text.join("");
           },
-          
+
           elements: {
               line: {
                   tension: 0.4,
@@ -117,7 +119,7 @@
       saleGradientBg2.addColorStop(0, 'rgba(0, 208, 255, 0.19)');
       saleGradientBg2.addColorStop(1, 'rgba(34, 36, 55, 0.2)');
       var salesTopDataDark = {
-          labels: ["SUN","sun", "MON", "mon", "TUE","tue", "WED", "wed", "THU", "thu", "FRI", "fri", "SAT"],
+          labels: ["DIM","dim", "LUN", "lun", "MAR","mar", "MER", "mer", "JEU", "jeu", "VEN", "ven", "SAM"],
           datasets: [{
               label: '# of Votes',
               data: [50, 110, 60, 290, 200, 115, 130, 170, 90, 210, 240, 280, 200],
@@ -148,7 +150,7 @@
               pointBorderColor: ['#222437','#222437','#222437','#222437','#222437','#222437','#222437','#222437','#222437','#222437','#222437','#222437','#222437',],
         }]
       };
-  
+
       var salesTopOptionsDark = {
         responsive: true,
         maintainAspectRatio: false,
@@ -196,7 +198,7 @@
             text.push('</ul></div>');
             return text.join("");
           },
-          
+
           elements: {
               line: {
                   tension: 0.4,
@@ -223,7 +225,7 @@
     if ($("#status-summary").length) {
       var statusSummaryChartCanvas = document.getElementById("status-summary").getContext('2d');;
       var statusData = {
-          labels: ["SUN", "MON", "TUE", "WED", "THU", "FRI"],
+          labels: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven"],
           datasets: [{
               label: '# of Votes',
               data: [50, 68, 70, 10, 12, 80],
@@ -238,7 +240,7 @@
               pointHoverRadius: [0, 0, 0, 0, 0, 0],
           }]
       };
-  
+
       var statusOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -274,7 +276,7 @@
             }],
           },
           legend:false,
-          
+
           elements: {
               line: {
                   tension: 0.4,
@@ -296,7 +298,7 @@
         // This has to be the same size as the maximum width to
         // prevent clipping
         strokeWidth: 15,
-        trailWidth: 15, 
+        trailWidth: 15,
         easing: 'easeInOut',
         duration: 1400,
         text: {
@@ -314,17 +316,17 @@
         step: function(state, circle) {
           circle.path.setAttribute('stroke', state.color);
           circle.path.setAttribute('stroke-width', state.width);
-  
+
           var value = Math.round(circle.value() * 100);
           if (value === 0) {
             circle.setText('');
           } else {
             circle.setText(value);
           }
-  
+
         }
       });
-  
+
       bar.text.style.fontSize = '0rem';
       bar.animate(.64); // Number from 0.0 to 1.0
     }
@@ -352,17 +354,17 @@
         step: function(state, circle) {
           circle.path.setAttribute('stroke', state.color);
           circle.path.setAttribute('stroke-width', state.width);
-  
+
           var value = Math.round(circle.value() * 100);
           if (value === 0) {
             circle.setText('');
           } else {
             circle.setText(value);
           }
-  
+
         }
       });
-  
+
       bar.text.style.fontSize = '0rem';
       bar.animate(.34); // Number from 0.0 to 1.0
     }
@@ -379,7 +381,7 @@
               ],
               borderWidth: 0,
               fill: true, // 3: no fill
-              
+
           },{
             label: 'This week',
             data: [215, 290, 210, 250, 290, 230, 290, 210, 280, 220, 190, 300],
@@ -391,7 +393,7 @@
             fill: true, // 3: no fill
         }]
       };
-  
+
       var marketingOverviewOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -441,7 +443,7 @@
             text.push('</ul></div>');
             return text.join("");
           },
-          
+
           elements: {
               line: {
                   tension: 0.4,
@@ -471,7 +473,7 @@
               ],
               borderWidth: 0,
               fill: true, // 3: no fill
-              
+
           },{
             label: 'This week',
             data: [215, 290, 210, 250, 290, 230, 290, 210, 280, 220, 190, 300],
@@ -483,7 +485,7 @@
             fill: true, // 3: no fill
         }]
       };
-  
+
       var marketingOverviewOptionsDark = {
         responsive: true,
         maintainAspectRatio: false,
@@ -533,7 +535,7 @@
             text.push('</ul></div>');
             return text.join("");
           },
-          
+
           elements: {
               line: {
                   tension: 0.4,
@@ -568,7 +570,7 @@
             "#81DADA"
           ],
         }],
-  
+
         // These labels appear in the legend and in the tooltips when hovering different arcs
         labels: [
           'Total',
@@ -600,7 +602,7 @@
           text.push('</div></ul>');
           return text.join("");
         },
-        
+
         layout: {
           padding: {
             left: 0,
@@ -618,7 +620,7 @@
               return data['datasets'][0]['data'][tooltipItem['index']];
             }
           },
-            
+
           backgroundColor: '#fff',
           titleFontSize: 14,
           titleFontColor: '#0B0F32',
@@ -647,10 +649,10 @@
               ],
               borderWidth: 0,
               fill: true, // 3: no fill
-              
+
           }]
       };
-  
+
       var leaveReportOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -686,7 +688,7 @@
             }],
           },
           legend:false,
-          
+
           elements: {
               line: {
                   tension: 0.4,
@@ -715,10 +717,10 @@
               ],
               borderWidth: 0,
               fill: true, // 3: no fill
-              
+
           }]
       };
-  
+
       var leaveReportOptionsDark = {
         responsive: true,
         maintainAspectRatio: false,
@@ -754,7 +756,7 @@
             }],
           },
           legend:false,
-          
+
           elements: {
               line: {
                   tension: 0.4,
@@ -770,6 +772,6 @@
           options: leaveReportOptionsDark
       });
     }
-  
+
   });
 })(jQuery);

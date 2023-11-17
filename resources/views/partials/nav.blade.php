@@ -22,7 +22,7 @@
             </li>
         </ul>
         <ul class="navbar-nav ms-auto">
-            @if(request()->is('home') || request()->is('/site/*/employees'))
+            @if(request()->is('home') || request()->is('site/*/employees'))
             <li class="nav-item dropdown d-none d-lg-block">
 
                 @php

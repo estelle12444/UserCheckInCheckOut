@@ -15,6 +15,6 @@ class Employee extends Model
     }
     public function historyEntries()
     {
-        return $this->belongsToMany(HistoryEntry::class);
+        return $this->hasMany(HistoryEntry::class);
     }
 }

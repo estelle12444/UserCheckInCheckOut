@@ -31,11 +31,15 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $history_entries = HistoryEntry::all();
-        $employees = Employee::whereIn('id', $history_entries->pluck('employee_id')->unique())->get();
+        $date= now();
+        $pointages = HistoryEntry::where('day_at_in', $date)->get();
+        $employees = Employee::whereIn('id', $pointages->pluck('employee_id')->unique())->get();
 
+        $nombres = $pointages->groupBy('localisation_id')->map(function ($entries) {
+            return $entries->groupBy('day_at_in')->map(fn($el) => $el->unique('employee_id')->count());
+        });
 
-        return view('index', compact('history_entries', 'employees'));
+        return view('index', compact('pointages', 'employees','nombres'));
     }
 
 
@@ -59,8 +63,17 @@ class HomeController extends Controller
         if (!$employee) {
             abort(404);
         }
+        $result = [];
+        $jours= $employee->historyEntries->pluck('day_at_in')->unique()->toArray();
+        $weekdays = [];
+        foreach ($jours as $jour){
+            $temp = Helper::getHeuresEmployesParJour($employee->id, $jour);
+            $date = Carbon::parse($jour);
+            array_push($weekdays, ucfirst($date->dayName));
+            $result[$date->isoWeekday()] = $temp;
+        }
 
-        return view('pages.employeeDetail', compact('employee'));
+        return view('pages.employeeDetail', compact('employee','jour', 'result', 'weekdays'));
     }
 
 
