@@ -2,17 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Config;
-use App\Enums\Entry;
 use App\Models\HistoryEntry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Helper;
 use App\Models\Employee;
-use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
-use Exception;
-use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
