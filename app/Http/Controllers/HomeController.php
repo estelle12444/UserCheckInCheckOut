@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Config;
 use App\Enums\Entry;
 use App\Models\HistoryEntry;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use App\Models\Employee;
 use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -31,15 +33,22 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $date= now();
-        $pointages = HistoryEntry::where('day_at_in', $date)->get();
-        $employees = Employee::whereIn('id', $pointages->pluck('employee_id')->unique())->get();
+        $today = now()->today();
+        $startOfWeek = Carbon::now()->startOfWeek();
+        $endOfWeek = Carbon::now()->endOfWeek();
 
-        $nombres = $pointages->groupBy('localisation_id')->map(function ($entries) {
-            return $entries->groupBy('day_at_in')->map(fn($el) => $el->unique('employee_id')->count());
-        });
+        $weeklyData = Helper::getWeeklyData($startOfWeek, $endOfWeek);
+        $nombres = Helper::getNombres($weeklyData);
+        $weeklyEntries = Helper::getWeeklyEntries($weeklyData);
 
-        return view('index', compact('pointages', 'employees','nombres'));
+        $countEntries = Helper::getCountEntries($startOfWeek, $endOfWeek);
+        $nombreSites = Helper::getNombreSites('localisation');
+        $totalHeures = Helper::getTotalHeures($startOfWeek, $endOfWeek);
+        $moyenneHeuresEntree = Helper::getMoyenneHeuresEntree($startOfWeek, $endOfWeek);
+
+
+
+        return view('index', compact('nombres', 'weeklyEntries', 'nombreSites', 'countEntries', 'totalHeures', 'moyenneHeuresEntree'));
     }
 
 
@@ -64,16 +73,16 @@ class HomeController extends Controller
             abort(404);
         }
         $result = [];
-        $jours= $employee->historyEntries->pluck('day_at_in')->unique()->toArray();
+        $jours = $employee->historyEntries->pluck('day_at_in')->unique()->toArray();
         $weekdays = [];
-        foreach ($jours as $jour){
+        foreach ($jours as $jour) {
             $temp = Helper::getHeuresEmployesParJour($employee->id, $jour);
             $date = Carbon::parse($jour);
             array_push($weekdays, ucfirst($date->dayName));
             $result[$date->isoWeekday()] = $temp;
         }
 
-        return view('pages.employeeDetail', compact('employee','jour', 'result', 'weekdays'));
+        return view('pages.employeeDetail', compact('employee', 'result', 'weekdays'));
     }
 
 
@@ -112,5 +121,21 @@ class HomeController extends Controller
 
             return $name;
         }
+    }
+    public function getPhoto()
+    {
+        $user = Auth::user();
+
+        if ($user->employee_id) {
+            $employee = $user->employee;
+            $photoPath = $employee->image_path;
+
+            if ($photoPath) {
+                return asset($photoPath);
+            }
+        }
+
+        // Si l'ID de l'employé est vide ou s'il n'y a pas de chemin d'accès à l'image, renvoyer le chemin de l'image par défaut
+        return asset('images/default.jpg');
     }
 }

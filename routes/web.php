@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,12 @@ Route::get('/logout', [App\Http\Controllers\HomeController::class, 'logout'])->n
 
 Route::middleware(['admin'])->group(function () {
     Route::get('user-list', [UserController::class, 'Userlist'])->name('user-list');
+    Route::patch('/users/{user}/deactivate', [UserController::class,'deactivateUser'])->name('deactivate.user');
+    Route::patch('/users/{user}/activate', [UserController::class, 'activateUser'])->name('activate.user');
+    Route::get('/employees/list', [EmployeeController::class, 'index'])->name('employees.index');
+    Route::get('/employee/{id}', [EmployeeController::class, 'show'])->name('employees.show');
+    Route::post('/employees/{employee}/activate', [EmployeeController::class, 'activateEmployee'])->name('activate.employee');
+    Route::delete('/employees/{employee}/deactivate', [EmployeeController::class, 'deactivateEmployee'] )->name('deactivate.employee');
 
 });
 Route::get('/user/register', [RegisterController::class, 'showRegistrationForm'])->name('userRegister');

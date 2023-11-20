@@ -45,7 +45,7 @@
 
                                                             <th>Heure d'entrée</th>
                                                             <th>Heure de Sortie</th>
-                                                            <th>Total Heures</th>
+
 
                                                         </tr>
                                                     </thead>
@@ -80,12 +80,12 @@
                                                                 <td>
                                                                     <h5>{{$history_entry->time_at_out}}</h5>
                                                                 </td>
-                                                                <td>
+                                                                {{-- <td>
 
                                                                     <h5>{{ App\Helper::calculateTimeDifference($history_entry->time_at_in, $history_entry->time_at_out) }}
                                                                     </h5>
 
-                                                                </td>
+                                                                </td> --}}
 
 
                                                             </tr>

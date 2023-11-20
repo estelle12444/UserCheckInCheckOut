@@ -24,15 +24,8 @@ class UsersTableSeeder extends Seeder
             'password' => Hash::make('password'),
         ]);
 
-        // Création de plusieurs utilisateurs fictifs
-        for ($i = 0; $i < 5; $i++) {
-            User::create([
-                'name' => $faker->name,
-                'email' => $faker->unique()->safeEmail,
-                'role_id' => 2,
-                'password' => Hash::make('password'),
-            ]);
-        }
+
+       
 
     }
 }

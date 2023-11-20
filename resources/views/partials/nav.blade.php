@@ -59,10 +59,10 @@
 
             <li class="nav-item dropdown d-none d-lg-block user-dropdown">
                 <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img class="img-xs rounded-circle" src="{{asset('images/faces/face8.jpg')}}" alt="Profile image"> </a>
+                    <img class="img-xs rounded-circle" src="{{app('App\Http\Controllers\HomeController')->getPhoto() }}" alt="Profile image"> </a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
                     <div class="dropdown-header text-center">
-                        <img class="img-md rounded-circle" src="{{asset('images/faces/face8.jpg')}}" alt="Profile image">
+                        <img class="img-md rounded-circle" style="width: 50px; height:50px" src="{{app('App\Http\Controllers\HomeController')->getPhoto() }}" alt="Profile image">
 
                         <p class="card-body">
                             @if (session('status'))

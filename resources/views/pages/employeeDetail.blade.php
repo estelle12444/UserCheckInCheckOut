@@ -29,7 +29,13 @@
                                                 <div class="card-header">Fiche de l'employé: {{ $employee->name }}</div>
 
                                                 <div class="card-body">
-
+                                                    <div class="flex" style="display: flex; justify-content: center; align-items: center;">
+                                                        @if ($employee->image_path)
+                                                            <img class="" style="width: 100px; height: 100px;border: 2px solid #3498db; " src="{{ asset($employee->image_path) }}" alt="{{ $employee->name }}">
+                                                        @else
+                                                            Aucune image
+                                                        @endif
+                                                    </div>
                                                     <h6>Nom: {{ $employee->name }}</h6>
                                                     <br>
                                                     <h6>Designation: {{ $employee->designation }}</h6>
@@ -158,9 +164,7 @@
         </div>
     </div>
 
-
     </div>
-
 
 
 @endsection

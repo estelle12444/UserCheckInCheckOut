@@ -25,7 +25,7 @@
     <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}" />
     <link rel="apple-touch-icon" href="{{ asset('images/favicon.png') }}" />
 
-    <script src="{{ asset('node_modules/jspdf/dist/jspdf.min.js') }}"></script>
+    {{-- <script src="{{ asset('node_modules/jspdf/dist/jspdf.min.js') }}"></script> --}}
     <!-- Add Bootstrap CSS (if not already included) -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
@@ -160,6 +160,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @stack("scripts")
     <!-- Initialize the date range picker -->
 

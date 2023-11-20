@@ -6,6 +6,8 @@ use App\Enums\Entry;
 use App\Models\HistoryEntry;
 use Carbon\Carbon;
 use DateInterval;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class Helper
 {
@@ -50,26 +52,93 @@ class Helper
 
         foreach ($pointages as $key => $pointage) {
 
-            $heures += Carbon::parse($pointage->day_at_in." ". $pointage->time_at_in)->diffInHours(Carbon::parse($pointage->day_at_out." ".$pointage->time_at_out));
+            $heures += Carbon::parse($pointage->day_at_in . " " . $pointage->time_at_in)->diffInHours(Carbon::parse($pointage->day_at_out . " " . $pointage->time_at_out));
         }
         return $heures;
     }
 
-    public static function getNbreEmployesEntrantsParSite(string $site, string $date): int
-    {
-        $nombre = 0;
 
-        $pointages = HistoryEntry::where('localisation_id', $site)
-            ->whereDate('day_at_in', $date)
-            ->whereNotNull('time_at_in')
+
+
+    public static function getWeeklyData($startOfWeek, $endOfWeek)
+    {
+        $weeklyData = HistoryEntry::where('day_at_in', '>=', $startOfWeek)
+            ->where('day_at_in', '<=', $endOfWeek)
             ->get();
 
-        foreach ($pointages as $pointage) {
-            $nombre++;
-        }
-
-        return $nombre;
+        return $weeklyData;
     }
 
+    public static function getNombres($weeklyData)
+    {
+        $nombres = $weeklyData->groupBy('localisation_id')->map(function ($entries) {
+            return $entries->groupBy('day_at_in')->map(fn ($el) => $el->unique('employee_id')->count());
+        });
 
+        return $nombres;
+    }
+
+    public static function getWeeklyEntries($weeklyData)
+    {
+        $weeklyEntries =  $weeklyData->groupBy(function ($entry) {
+            $timestamp = Carbon::parse($entry->day_at_in);
+            return $timestamp->startOfWeek()->format('W');
+        });
+
+        return $weeklyEntries;
+    }
+
+    public static function getCountEntries($startOfWeek, $endOfWeek)
+    {
+        $countEntries = HistoryEntry::whereBetween('day_at_in', [$startOfWeek, $endOfWeek])
+            ->whereNotNull('time_at_in')
+            ->count();
+
+        return $countEntries;
+    }
+
+    public static function getNombreSites(string $name)
+    {
+        $nombreSites = count(Config::get($name));
+
+        return $nombreSites;
+    }
+
+    public static function getTotalHeures($startOfWeek, $endOfWeek)
+    {
+        $totalHeures = DB::table('history_entries')
+            ->select('employee_id', DB::raw('SUM(TIMESTAMPDIFF(SECOND, CONCAT(day_at_in, " ", time_at_in), CONCAT(day_at_out, " ", time_at_out))) AS total_seconds'))
+            ->whereBetween('day_at_in', [$startOfWeek, $endOfWeek])
+            ->whereNotNull('time_at_in')
+            ->whereNotNull('time_at_out')
+            ->groupBy('employee_id')
+            ->get();
+
+        $totalHeures = $totalHeures->avg('total_seconds') / 3600;
+
+        $hours = gmdate('H', $totalHeures);
+        $minutes = gmdate('i', $totalHeures);
+        $seconds = gmdate('s', $totalHeures);
+
+        return $hours . 'h:' . $minutes . 'm:' . $seconds;
+    }
+
+    public static function getMoyenneHeuresEntree($startOfWeek, $endOfWeek)
+    {
+        $result = DB::table('history_entries')
+            ->selectRaw('AVG(TIME_TO_SEC(time_at_in) / 3600) AS moyenne_heure_entree')
+            ->whereBetween('day_at_in', [$startOfWeek, $endOfWeek])
+            ->whereNotNull('time_at_in')
+            ->first();
+
+        $moyenneHeuresEntree = $result->moyenne_heure_entree;
+
+        $hours = gmdate('H', $moyenneHeuresEntree);
+        $minutes = gmdate('i', $moyenneHeuresEntree);
+        $seconds = gmdate('s', $moyenneHeuresEntree);
+
+        return $hours . 'h:' . $minutes . 'm:' . $seconds;
+    }
+
+   
 }

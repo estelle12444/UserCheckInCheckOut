@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
 {
-    protected $fillable = ['matricule', 'name', 'designation', 'department_id', 'user_id'];
+    protected $fillable = ['matricule', 'name', 'designation', 'department_id', 'user_id','image_path'];
 
     public function user()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'employee_id', 'id');
     }
     public function historyEntries()
     {

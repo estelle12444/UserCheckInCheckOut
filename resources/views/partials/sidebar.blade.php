@@ -38,10 +38,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{route('user-list')}}"> Liste des utilisateurs </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('employees.index')}}"> Liste des employées </a>
+                    </li>
 
                 </ul>
             </div>
         </li>
+       
         <a href="{{route('logout')}}" class="btn btn-danger mt-2 " type="button" >
             Déconnexion
         </a>

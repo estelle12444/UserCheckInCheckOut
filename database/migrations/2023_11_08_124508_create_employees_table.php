@@ -17,7 +17,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('designation');
             $table->unsignedInteger('department_id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->boolean('activated')->default(false);
+            $table->string('image_path')->nullable();
             $table->timestamps();
         });
     }

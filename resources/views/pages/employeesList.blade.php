@@ -14,11 +14,11 @@
                                         <div class="card-body">
                                             <div class="d-sm-flex justify-content-between align-items-start">
                                                 <div>
-                                                    <h4 class="card-title card-title-dash">Listes des utilisateurs du
+                                                    <h4 class="card-title card-title-dash">Listes des employées du
                                                         dashboard
                                                     </h4>
                                                     <p class="card-subtitle card-subtitle-dash">Nous
-                                                        avons {{ $userCount }} utilisateurs</p>
+                                                        avons {{ $employeeCount }} employées</p>
                                                 </div>
 
                                             </div>
@@ -26,64 +26,55 @@
                                                 <table class="table select-table">
                                                     <thead>
                                                         <tr>
-                                                            {{-- <th>
-                                                                <div class="form-check form-check-flat mt-0">
-                                                                    <label class="form-check-label">
-                                                                        <input type="checkbox" class="form-check-input"
-                                                                            aria-checked="false"><i
-                                                                            class="input-helper"></i></label>
-                                                                </div>
-                                                            </th> --}}
-                                                            <th>Nom et EMail</th>
-                                                            <th>Role</th>
-
-                                                            <th>Status</th>
-                                                            <th>Actions</th>
+                                                            <th>Nom</th>
+                                                            <th>Designation</th>
+                                                            <th>Matricule</th>
+                                                            <th>Action</th>
+                                                            <th> Detail</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach ($users as $user)
+                                                        @foreach ($employees as $employee)
                                                             <tr>
 
                                                                 <td>
-
                                                                     <div class="d-flex ">
-                                                                        @if ($user->employee && $user->employee->image_path)
-                                                                        <img src="{{ asset($user->employee->image_path) }}" alt="{{ $user->name }}">
-                                                                    @else
-                                                                        Aucune image
-                                                                    @endif
+                                                                        @if ($employee->image_path)
+                                                                            <img src="{{ asset($employee->image_path) }}"
+                                                                                alt="{{ $employee->name }}">
+                                                                        @else
+                                                                            Aucune image
+                                                                        @endif
                                                                         <div>
-                                                                            <h6>{{ $user->name  }}</h6>
+                                                                            <h6>{{ $employee->name }}</h6>
 
                                                                         </div>
                                                                     </div>
                                                                 </td>
-
+                                                                <td>{{ $employee->designation }}</td>
+                                                                <td>{{ $employee->matricule }}</td>
                                                                 <td>
-                                                                    <p>{{ $user->role->name }}</p>
-
-                                                                </td>
-                                                                <td>{{ $user->activated ? 'Activé' : 'Inactif' }}</td>
-                                                                <td>
-                                                                    @if ($user->activated)
+                                                                    @if ($employee->activated)
                                                                         <form
-                                                                            action="{{ route('deactivate.user', $user->id) }}"
+                                                                            action="{{ route('deactivate.employee', $employee->id) }}"
                                                                             method="post">
                                                                             @csrf
-                                                                            @method('PATCH')
+                                                                            @method('DELETE')
                                                                             <button type="submit">Désactiver</button>
                                                                         </form>
                                                                     @else
                                                                         <form
-                                                                            action="{{ route('activate.user', $user->id) }}"
+                                                                            action="{{ route('activate.employee', $employee->id) }}"
                                                                             method="post">
                                                                             @csrf
-                                                                            @method('PATCH')
                                                                             <button type="submit">Activer</button>
                                                                         </form>
                                                                     @endif
-
+                                                                </td>
+                                                                <td>
+                                                                    <a
+                                                                        href="{{ route('employeeDetail', ['id' => $employee->id]) }}">
+                                                                        Voir Plus </a>
                                                                 </td>
                                                             </tr>
                                                         @endforeach
