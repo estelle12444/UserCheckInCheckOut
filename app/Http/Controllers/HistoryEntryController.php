@@ -68,8 +68,11 @@ class HistoryEntryController extends Controller
             $this->createHistory($request, $employee);
         }
 
+        $operation = $entry ? 'rentrer' : 'sortir';
+        $site = config('localisation')[$request->localisation_id - 1]["name"];
+
         return response()->json([
-            'message' => "Created",
+            'message' => $employee->name." vous venez de ".$operation." sur le site ". $site." à ".now(),
             'data' => [
                 'name' => $employee->name,
                 'localisation' => config('localisation')[$request->localisation_id - 1]["name"],
