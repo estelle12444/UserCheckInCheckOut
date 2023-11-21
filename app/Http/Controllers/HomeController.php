@@ -135,7 +135,7 @@ class HomeController extends Controller
             }
         }
 
-        // Si l'ID de l'employé est vide ou s'il n'y a pas de chemin d'accès à l'image, renvoyer le chemin de l'image par défaut
+       
         return asset('images/default.jpg');
     }
 }

@@ -19,17 +19,18 @@
                                             @if (isset($countEntries))
                                                 <h3 class="rate-percentage">{{ $countEntries }}</h3>
                                             @else
-                                                <h3 class="statistics-title">0 </h3>
+                                                <h3 class="rate-percentage">0 </h3>
                                             @endif
 
 
                                         </div>
-                                        <div>
+
+                                        <div class="d-none d-md-block">
                                             <p class="statistics-title">Heure moyen d'entrée des employés</p>
                                             @if (isset($moyenneHeuresEntree))
-                                                <h3 class="rate-percentage">{{ $moyenneHeuresEntree }}</h3>
+                                                <h3 class="rate-percentage">{{$moyenneHeuresEntree }} </h3>
                                             @else
-                                                <h3 class="statistics-title">0 H</h3>
+                                                <h3 class="rate-percentage">0 H</h3>
                                             @endif
 
                                         </div>
@@ -139,48 +140,73 @@
 
 @push('scripts')
 <script>
-    let data = [0, 0, 0, 0, 0, 0, 0];
-    let weekdays = @json(array_keys($nombres->toArray())); // Supposant que tous les jours aient le même ensemble de clés
-    let sitesData = @json($nombres->toArray());
-
-    // Récupérer le nombre d'employés entrants par site pour chaque jour
-    for (let i = 0; i < weekdays.length; i++) {
-        let totalEmployees = 0;
-
-        // Ajouter le nombre d'employés entrants pour chaque site
-        for (const site in sitesData[weekdays[i]]) {
-            totalEmployees += sitesData[weekdays[i]][site];
+    const chartConfig = [
+        {
+            name: "Danga",
+            gradientBackground: [46, 134, 193],
+            gradientLine: [5, 0, 5, 100],
+            borderColor: "#1F3BB3",
+        },
+        {
+            name: "Laurier",
+            gradientBackground: [130, 224, 170],
+            gradientLine: [5, 0, 5, 100],
+            borderColor: "#229954",
+        },
+        {
+            name: "Campus",
+            gradientBackground: [245, 176, 65],
+            gradientLine: [5, 0, 5, 100],
+            borderColor: "#E67E22",
         }
+    ];
 
-        data[i] = totalEmployees;
-    }
+    function datasetOptionGenerator(opts, dataValue){
+        const point = 7;
+        const rgbColor = opts.gradientBackground.join(", ")
+        const repeat = (value) => Array(point).fill([value]).flat();
+        let graphGradient = document.getElementById("performaneLinee").getContext('2d');
+        let saleGradientBg = graphGradient.createLinearGradient(...opts.gradientLine);
 
-    var graphGradient = document.getElementById("performaneLinee").getContext('2d');
-    var saleGradientBg = graphGradient.createLinearGradient(5, 0, 5, 100);
-    saleGradientBg.addColorStop(0, 'rgba(26, 115, 232, 0.18)');
-    saleGradientBg.addColorStop(1, 'rgba(26, 115, 232, 0.02)');
-
-    var salesTopData = {
-        labels: ["LUN", "MAR", "MER", "JEU", "VEN", "SAM", "DIM"],
-        datasets: [{
-            label: '',
-            data: data,
+        saleGradientBg.addColorStop(0, `rgba(${rgbColor}, 0.8)`);
+        saleGradientBg.addColorStop(1, `rgba(${rgbColor}, 0.02)`);
+        return {
+            label: opts.name,
+            data: dataValue,
             backgroundColor: saleGradientBg,
             borderColor: [
-                '#1F3BB3',
+                opts.borderColor,
             ],
             borderWidth: 1.5,
             fill: true, // 3: no fill
             pointBorderWidth: 1,
-            pointRadius: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-            pointHoverRadius: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-            pointBackgroundColor: ['#1F3BB3)', '#1F3BB3', '#1F3BB3', '#1F3BB3', '#1F3BB3)', '#1F3BB3',
-                '#1F3BB3', '#1F3BB3', '#1F3BB3)', '#1F3BB3', '#1F3BB3', '#1F3BB3', '#1F3BB3)'
-            ],
-            pointBorderColor: ['#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff',
-                '#fff', '#fff', '#fff', '#fff',
-            ],
-        }]
+            pointRadius: repeat(4),
+            pointHoverRadius: repeat(2),
+            pointBackgroundColor: repeat(opts.borderColor),
+            pointBorderColor: repeat('#fff'),
+        }
+    }
+
+    let sites = @json(array_keys($nombres->toArray()));
+    let datasetValues = [];
+    let siteData = @json(array_values($nombres->toArray()));
+
+    for (let index = 0; index < sites.length; index++) {
+        let jours = Array(7).fill([0]).flat();
+        for (const iterator in siteData[index]) {
+            if(siteData[index][iterator] != 0){
+                weekday = (new Date(iterator)).getDay();
+                jours[weekday-1] = siteData[index][iterator];
+            }
+        }
+        datasetValues.push(datasetOptionGenerator(chartConfig[sites[index]-1], jours));
+    }
+
+    var graphGradient = document.getElementById("performaneLinee").getContext('2d');
+
+    var salesTopData = {
+        labels: ["LUN", "MAR", "MER", "JEU", "VEN", "SAM", "DIM"],
+        datasets: datasetValues
     };
 
     var salesTopOptions = {

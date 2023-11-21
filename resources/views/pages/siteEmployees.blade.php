@@ -57,8 +57,9 @@
                                                                 <td>
                                                                     <div class="d-flex ">
                                                                         <a href="{{route('employeeDetail', ['id' => $history_entry->employee->id])}}">
-                                                                        <img src="{{ asset('images/faces/face1.jpg') }}"
-                                                                            alt="">
+                                                                        
+                                                                            <img src="{{ asset($history_entry->employee->image_path) }}"
+                                                                                alt="{{ $history_entry->employee->name }}">
                                                                         </a>
                                                                         <div>
                                                                             <a href="{{route('employeeDetail', ['id' => $history_entry->employee->id])}}"><h6>{{ $history_entry->employee->name }}</h6>  </a>

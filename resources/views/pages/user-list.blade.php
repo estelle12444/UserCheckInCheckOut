@@ -64,7 +64,7 @@
                                                                     <p>{{ $user->role->name }}</p>
 
                                                                 </td>
-                                                                <td>{{ $user->activated ? 'Activé' : 'Inactif' }}</td>
+                                                                <td><h6>{{ $user->activated ? 'Activé' : 'Inactif' }}</h6></td>
                                                                 <td>
                                                                     @if ($user->activated)
                                                                         <form
@@ -72,7 +72,7 @@
                                                                             method="post">
                                                                             @csrf
                                                                             @method('PATCH')
-                                                                            <button type="submit">Désactiver</button>
+                                                                            <button class=" text-white btn btn-danger" type="submit">Désactiver</button>
                                                                         </form>
                                                                     @else
                                                                         <form
@@ -80,7 +80,7 @@
                                                                             method="post">
                                                                             @csrf
                                                                             @method('PATCH')
-                                                                            <button type="submit">Activer</button>
+                                                                            <button class=" text-white btn btn-success" type="submit">Activer</button>
                                                                         </form>
                                                                     @endif
 

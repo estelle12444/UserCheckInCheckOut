@@ -131,14 +131,18 @@ class Helper
             ->whereNotNull('time_at_in')
             ->first();
 
-        $moyenneHeuresEntree = $result->moyenne_heure_entree;
+        if (!is_null($result->moyenne_heure_entree)) {
+            $moyenneHeuresEntree = $result->moyenne_heure_entree;
 
-        $hours = gmdate('H', $moyenneHeuresEntree);
-        $minutes = gmdate('i', $moyenneHeuresEntree);
-        $seconds = gmdate('s', $moyenneHeuresEntree);
 
-        return $hours . 'h:' . $minutes . 'm:' . $seconds;
+            $hours = gmdate('H', $moyenneHeuresEntree);
+            $minutes = gmdate('i', $moyenneHeuresEntree);
+            $seconds = gmdate('s', $moyenneHeuresEntree);
+
+            return $hours . 'h:' . $minutes . 'm:' . $seconds;
+        }else{
+            return null;
+        }
+
     }
-
-   
 }

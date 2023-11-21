@@ -23,7 +23,7 @@ class EmployeeController extends Controller
 
     public function show($id)
     {
-        // Logique pour afficher un employé spécifique
+
         $employee = Employee::findOrFail($id);
         return view('pages.employeeShow', compact('employee'));
     }
@@ -41,17 +41,16 @@ class EmployeeController extends Controller
                 'role_id' => 1,
                 'password' => bcrypt('password'),
             ]);
-         
 
-            // Associez l'utilisateur à l'employé
+
             $employee->user_id = $user->id;
             $employee->activated = true;
             $employee->save();
 
-            // La redirection doit être en dehors de la condition
+
             return redirect()->back()->with('success', 'Employé activé avec succès.');
         } else {
-            // L'utilisateur existe déjà, gestion appropriée (par exemple, ne rien faire ou envoyer une notification)
+
             return redirect()->back()->with('error', 'L\'employé est juste inactif.');
         }
 
@@ -59,15 +58,28 @@ class EmployeeController extends Controller
 
     public function deactivateEmployee(Employee $employee)
     {
-        // Désactiver l'employé en supprimant l'utilisateur associé
+
         if ($employee->user) {
-            $employee->user->delete();
+            // Supprimer l'utilisateur associé
+            if ($employee->user->delete()) {
+                // La suppression a réussi
+                $employee->user_id = null;
+                $employee->activated = false;
+                $employee->save();
+
+                return redirect()->back()->with('success', 'Employé désactivé avec succès.');
+            } else {
+                // La suppression a échoué
+                return redirect()->back()->with('error', 'Échec de la désactivation de l\'employé.');
+            }
+        } else {
+            // Aucun utilisateur associé
+            $employee->user_id = null;
+            $employee->activated = false;
+            $employee->save();
+
+            return redirect()->back()->with('success', 'Employé désactivé avec succès.');
         }
 
-        $employee->user_id = null;
-        $employee->activated = false;
-        $employee->save();
-
-        return redirect()->back()->with('success', 'Employé désactivé avec succès.');
     }
 }

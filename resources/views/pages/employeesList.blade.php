@@ -60,19 +60,19 @@
                                                                             method="post">
                                                                             @csrf
                                                                             @method('DELETE')
-                                                                            <button type="submit">Désactiver</button>
+                                                                            <button class=" text-white btn btn-danger" type="submit">Pas accès</button>
                                                                         </form>
                                                                     @else
                                                                         <form
                                                                             action="{{ route('activate.employee', $employee->id) }}"
                                                                             method="post">
                                                                             @csrf
-                                                                            <button type="submit">Activer</button>
+                                                                            <button  class=" text-white btn btn-success" type="submit">Accès</button>
                                                                         </form>
                                                                     @endif
                                                                 </td>
                                                                 <td>
-                                                                    <a
+                                                                    <a class=" text-white btn btn-secondary"
                                                                         href="{{ route('employeeDetail', ['id' => $employee->id]) }}">
                                                                         Voir Plus </a>
                                                                 </td>
