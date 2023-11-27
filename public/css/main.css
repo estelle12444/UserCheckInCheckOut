@@ -7,7 +7,12 @@
     background-color: rgb(16, 57, 117);
 }
 
-
+.cbleu{
+    color: rgb(0, 140, 255) !important;
+}
+.cRouge{
+    color: red!important;
+}
 .marron
 {
     color: rgb(147, 92, 9) !important;

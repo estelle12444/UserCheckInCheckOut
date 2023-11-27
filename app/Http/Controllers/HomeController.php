@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Helper;
 use App\Models\Employee;
 use Carbon\Carbon;
+use InvalidArgumentException;
+use RuntimeException;
 
 class HomeController extends Controller
 {
@@ -21,7 +23,7 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-    
+
     /**
      * Show the application dashboard.
      *
@@ -31,14 +33,30 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         if (!empty($request->selectedDates)) {
-
             $date_array = explode("to", $request->selectedDates);
-            $startOfWeek = Carbon::parse(trim($date_array[0]));
-            $endOfWeek = Carbon::parse(trim($date_array[1]));
+
+            if (count($date_array) !== 2) {
+                //throw new InvalidArgumentException("Invalid date format in selectedDates");
+                return redirect()->back()->with('Invalid date format in selectedDates');
+            }
+
+            try {
+                $startOfWeek = Carbon::parse(trim($date_array[0]));
+                $endOfWeek = Carbon::parse(trim($date_array[1]));
+            } catch (\Exception $e) {
+
+                throw new InvalidArgumentException("Error parsing dates: " . $e->getMessage());
+            }
         } else {
-            $startOfWeek =  Carbon::now()->startOfWeek();
-            $endOfWeek = Carbon::now()->endOfWeek();
+            try {
+                $startOfWeek = Carbon::now()->startOfWeek();
+                $endOfWeek = Carbon::now()->endOfWeek();
+            } catch (\Exception $e) {
+
+                throw new RuntimeException("Error generating default dates: " . $e->getMessage());
+            }
         }
+
         $weeklyData = Helper::getWeeklyData($startOfWeek, $endOfWeek);
         $nombres = Helper::getNombres($weeklyData);
         $weeklyEntries = Helper::getWeeklyEntries($weeklyData);
@@ -54,7 +72,7 @@ class HomeController extends Controller
             ->get();
 
 
-        $day_nombres = HistoryEntry::whereBetween('day_at_in', [$startOfWeek, $endOfWeek])
+        $day_nombres = HistoryEntry::whereDate('day_at_in', Carbon::now())
             ->get(['localisation_id', 'day_at_in', 'employee_id'])
             ->unique(['localisation_id', "day_at_in", "employee_id"])
             ->groupBy('localisation_id');
@@ -70,16 +88,27 @@ class HomeController extends Controller
     {
         if (!empty($request->selectedDates)) {
             $date_array = explode("to", $request->selectedDates);
-            $startOfWeek = Carbon::parse(trim($date_array[0]));
-            $endOfWeek = Carbon::parse(trim($date_array[1]));
 
-            if (isset($endOfWeek) || isset($endOfWeek)) {
-                $startOfWeek =  Carbon::now()->startOfWeek();
-                $endOfWeek = Carbon::now()->endOfWeek();
+            if (count($date_array) !== 2) {
+                //throw new InvalidArgumentException("Invalid date format in selectedDates");
+                return redirect()->back()->with('Invalid date format in selectedDates');
+            }
+
+            try {
+                $startOfWeek = Carbon::parse(trim($date_array[0]));
+                $endOfWeek = Carbon::parse(trim($date_array[1]));
+            } catch (\Exception $e) {
+
+                throw new InvalidArgumentException("Error parsing dates: " . $e->getMessage());
             }
         } else {
-            $startOfWeek =  Carbon::now()->startOfWeek();
-            $endOfWeek = Carbon::now()->endOfWeek();
+            try {
+                $startOfWeek = Carbon::now()->startOfWeek();
+                $endOfWeek = Carbon::now()->endOfWeek();
+            } catch (\Exception $e) {
+
+                throw new RuntimeException("Error generating default dates: " . $e->getMessage());
+            }
         }
 
         $history_entries = HistoryEntry::where('localisation_id', $id)->whereBetween('day_at_in', [$startOfWeek,  $endOfWeek])->orderBy('time_at_in', 'desc')->get();

@@ -31,6 +31,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/site/{id}/employees/{query?}', [App\Http\Controllers\HomeController::class, 'siteEmployees'])->name('siteEmployees');
 Route::get('/employees/{id}/detail', [App\Http\Controllers\HomeController::class, 'employeeDetail'])->name('employeeDetail');
 Route::get('/flexibilite/employees', [EmployeeController::class, 'flexibilityIndex'])->name('flexibilityIndex');
+Route::get('/absence', [EmployeeController::class, 'absenceIndex'])->name('absenceIndex');
+
 
 
 Route::get('/logout', [App\Http\Controllers\HomeController::class, 'logout'])->name('logout');

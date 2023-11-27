@@ -96,7 +96,7 @@
                                                                         <tbody>
                                                                             @foreach ($day_nombres as $day)
                                                                                 <tr>
-                                                                                    <td>{{ config('localisation')[$day[0]->localisation_id]['name'] }}
+                                                                                    <td>{{ config('localisation')[$day[0]->localisation_id -1]['name'] }}
                                                                                     </td>
                                                                                     <td>{{ date('Y-m-d') }}</td>
                                                                                     <td>{{ count($day) }}</td>
@@ -172,13 +172,13 @@
 
                                                                 </td>
                                                                 <td>
-                                                                    <h5>{{ $history_entry->day_at_in }}</h5>
+                                                                    <h6  >{{ $history_entry->day_at_in }}</h6>
                                                                 </td>
                                                                 <td>
-                                                                    <h5>{{ $history_entry->time_at_in }}</h5>
+                                                                    <h6 class="cbleu" ><em>{{ $history_entry->time_at_in}} </em></h6>
                                                                 </td>
                                                                 <td>
-                                                                    <h5>{{ $history_entry->time_at_out }}</h5>
+                                                                    <h6 class="cRouge" ><em>{{ $history_entry->time_at_out }}</em></h6>
                                                                 </td>
                                                             </tr>
                                                         @endforeach
