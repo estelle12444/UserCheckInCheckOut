@@ -41,13 +41,9 @@ class EmployeeController extends Controller
                 'role_id' => 1,
                 'password' => bcrypt('password'),
             ]);
-
-
             $employee->user_id = $user->id;
             $employee->activated = true;
             $employee->save();
-
-
             return redirect()->back()->with('success', 'Employé activé avec succès.');
         } else {
 
@@ -60,7 +56,8 @@ class EmployeeController extends Controller
     {
 
         if ($employee->user) {
-            // Supprimer l'utilisateur associé
+            dd('Before user deletion', $employee->user);
+
             if ($employee->user->delete()) {
                 // La suppression a réussi
                 $employee->user_id = null;
@@ -81,5 +78,17 @@ class EmployeeController extends Controller
             return redirect()->back()->with('success', 'Employé désactivé avec succès.');
         }
 
+    }
+
+    public function flexibilityIndex()
+    {
+        if (Auth::user()->role_id == 1) {
+            $employees = Employee::all();
+            $employeeCount = $employees->count();
+
+            return view('pages.flexibilityIndex', compact('employees','employeeCount'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 }

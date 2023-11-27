@@ -28,8 +28,10 @@ Auth::routes([
 
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/site/{id}/employees', [App\Http\Controllers\HomeController::class, 'siteEmployees'])->name('siteEmployees');
+Route::get('/site/{id}/employees/{query?}', [App\Http\Controllers\HomeController::class, 'siteEmployees'])->name('siteEmployees');
 Route::get('/employees/{id}/detail', [App\Http\Controllers\HomeController::class, 'employeeDetail'])->name('employeeDetail');
+Route::get('/flexibilite/employees', [EmployeeController::class, 'flexibilityIndex'])->name('flexibilityIndex');
+
 
 Route::get('/logout', [App\Http\Controllers\HomeController::class, 'logout'])->name('logout');
 
@@ -44,5 +46,5 @@ Route::middleware(['admin'])->group(function () {
     Route::delete('/employees/{employee}/deactivate', [EmployeeController::class, 'deactivateEmployee'] )->name('deactivate.employee');
 
 });
-Route::get('/user/register', [RegisterController::class, 'showRegistrationForm'])->name('userRegister');
+Route::get('/user/register', [RegisterController::class, 'showRegistrationEmployeeForm'])->name('userRegister');
 Route::get('/employee/register', [RegisterController::class, 'showRegistrationEmployeeForm'])->name('employeeRegister');

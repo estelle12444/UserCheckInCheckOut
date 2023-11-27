@@ -14,8 +14,7 @@
                                         <div class="card-body">
                                             <div class="d-sm-flex justify-content-between align-items-start">
                                                 <div>
-                                                    <h4 class="card-title card-title-dash">Listes des utilisateurs du
-                                                        dashboard
+                                                    <h4 class="card-title card-title-dash">Administrateurs du Tableau de bord
                                                     </h4>
                                                     <p class="card-subtitle card-subtitle-dash">Nous
                                                         avons {{ $userCount }} utilisateurs</p>
@@ -23,8 +22,8 @@
 
                                             </div>
                                             <div class="table-responsive  mt-1">
-                                                <table class="table select-table">
-                                                    <thead>
+                                                <table class="table select-table table-hover">
+                                                    <thead class="orange">
                                                         <tr>
                                                             {{-- <th>
                                                                 <div class="form-check form-check-flat mt-0">
@@ -34,11 +33,11 @@
                                                                             class="input-helper"></i></label>
                                                                 </div>
                                                             </th> --}}
-                                                            <th>Nom et EMail</th>
-                                                            <th>Role</th>
+                                                            <th class="text-white pl-2">Nom et EMail</th>
+                                                            <th class="text-white">Role</th>
 
-                                                            <th>Status</th>
-                                                            <th>Actions</th>
+                                                            <th  class="text-white">Status</th>
+                                                            <th  class="text-white">Actions</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -64,7 +63,7 @@
                                                                     <p>{{ $user->role->name }}</p>
 
                                                                 </td>
-                                                                <td><h6>{{ $user->activated ? 'Activé' : 'Inactif' }}</h6></td>
+                                                                <td><h6>{{ $user->activated ? 'Actif' : 'Inactif' }}</h6></td>
                                                                 <td>
                                                                     @if ($user->activated)
                                                                         <form

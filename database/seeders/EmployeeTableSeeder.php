@@ -33,7 +33,7 @@ class EmployeeTableSeeder extends Seeder
             ' Bill Gates',
             'Elon Musk ',
             'Alhassan Ouattera ',
-            ' Sali Ouattera',
+            ' Sali Ouattara',
             'Yaya Sylla',
             'Imtiaz Naseem',
             'Nadeem Khan',

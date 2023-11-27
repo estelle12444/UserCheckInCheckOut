@@ -2,17 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Config;
-use App\Enums\Entry;
 use App\Models\HistoryEntry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Helper;
 use App\Models\Employee;
-use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
-use Exception;
-use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -26,17 +21,24 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
+    
     /**
      * Show the application dashboard.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
-    {
-        $today = now()->today();
-        $startOfWeek = Carbon::now()->startOfWeek();
-        $endOfWeek = Carbon::now()->endOfWeek();
 
+    public function index(Request $request)
+    {
+        if (!empty($request->selectedDates)) {
+
+            $date_array = explode("to", $request->selectedDates);
+            $startOfWeek = Carbon::parse(trim($date_array[0]));
+            $endOfWeek = Carbon::parse(trim($date_array[1]));
+        } else {
+            $startOfWeek =  Carbon::now()->startOfWeek();
+            $endOfWeek = Carbon::now()->endOfWeek();
+        }
         $weeklyData = Helper::getWeeklyData($startOfWeek, $endOfWeek);
         $nombres = Helper::getNombres($weeklyData);
         $weeklyEntries = Helper::getWeeklyEntries($weeklyData);
@@ -44,25 +46,51 @@ class HomeController extends Controller
         $countEntries = Helper::getCountEntries($startOfWeek, $endOfWeek);
         $nombreSites = Helper::getNombreSites('localisation');
         $totalHeures = Helper::getTotalHeures($startOfWeek, $endOfWeek);
-        $moyenneHeuresEntree = Helper::getMoyenneHeuresEntree($startOfWeek, $endOfWeek);
+
+        $entriesAndExits = HistoryEntry::with('employee')
+            ->orderBy('day_at_in', 'desc')
+            ->orderBy('time_at_in', 'desc')
+            ->take(10)
+            ->get();
+
+
+        $day_nombres = HistoryEntry::whereBetween('day_at_in', [$startOfWeek, $endOfWeek])
+            ->get(['localisation_id', 'day_at_in', 'employee_id'])
+            ->unique(['localisation_id', "day_at_in", "employee_id"])
+            ->groupBy('localisation_id');
 
 
 
-        return view('index', compact('nombres', 'weeklyEntries', 'nombreSites', 'countEntries', 'totalHeures', 'moyenneHeuresEntree'));
+        return view('index', compact('day_nombres', 'entriesAndExits', 'nombres', 'weeklyEntries', 'nombreSites', 'countEntries', 'totalHeures'));
     }
 
 
 
-    public function siteEmployees($id)
+    public function siteEmployees($id, Request $request)
     {
-        $history_entries = HistoryEntry::where('localisation_id', $id)->get();
+        if (!empty($request->selectedDates)) {
+            $date_array = explode("to", $request->selectedDates);
+            $startOfWeek = Carbon::parse(trim($date_array[0]));
+            $endOfWeek = Carbon::parse(trim($date_array[1]));
+
+            if (isset($endOfWeek) || isset($endOfWeek)) {
+                $startOfWeek =  Carbon::now()->startOfWeek();
+                $endOfWeek = Carbon::now()->endOfWeek();
+            }
+        } else {
+            $startOfWeek =  Carbon::now()->startOfWeek();
+            $endOfWeek = Carbon::now()->endOfWeek();
+        }
+
+        $history_entries = HistoryEntry::where('localisation_id', $id)->whereBetween('day_at_in', [$startOfWeek,  $endOfWeek])->orderBy('time_at_in', 'desc')->get();
 
         $site = Helper::searchByNameAndId('localisation', $id);
-        $employees = Employee::whereIn('id', $history_entries->pluck('employee_id')->unique())->get();
 
-        $employeeCount = $employees->count();
+        $filtreEmployees = Employee::whereHas('historyEntries', function ($query) use ($id, $startOfWeek,  $endOfWeek) {
+            $query->where('localisation_id', $id)->whereBetween('day_at_in', [$startOfWeek,  $endOfWeek]);
+        })->count();
 
-        return view('pages.siteEmployees', compact('history_entries', 'site', 'employees', 'employeeCount'));
+        return view('pages.siteEmployees', compact('history_entries', 'filtreEmployees', 'site'));
     }
 
     public function employeeDetail(Request $request, $id)
@@ -135,7 +163,7 @@ class HomeController extends Controller
             }
         }
 
-       
-        return asset('images/default.jpg');
+
+        return asset('images/default.png');
     }
 }

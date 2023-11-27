@@ -13,8 +13,9 @@
                             <a href="#" id="exportButton" class="btn btn-primary text-white me-0"><i
                                     class="icon-download"></i>
                                 Exporter en pdf</a>
-
-
+                            <a href="#" id="exportButtonExcell" class="btn btn-success text-white me-0"><i
+                                    class="icon-download"></i>
+                                Exporter en excel</a>
                         </div>
 
                     </div>
@@ -26,61 +27,71 @@
                                         <div class="card-body" id="historyTable">
 
                                             @if ($employee)
-                                                <div class="card-header">Fiche de l'employé: {{ $employee->name }}</div>
+                                                <div class="card-header orange text-white">Fiche de l'employé:
+                                                    {{ $employee->name }}</div>
 
                                                 <div class="card-body">
-                                                    <div class="flex" style="display: flex; justify-content: center; align-items: center;">
-                                                        @if ($employee->image_path)
-                                                            <img class="" style="width: 200px; height: 200px;border: 2px solid #3498db; " src="{{ asset($employee->image_path) }}" alt="{{ $employee->name }}">
-                                                        @else
-                                                            Aucune image
-                                                        @endif
-                                                    </div>
-                                                    <h6>Nom: {{ $employee->name }}</h6>
-                                                    <br>
-                                                    <h6>Designation: {{ $employee->designation }}</h6>
-                                                    <br>
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            @if ($employee->image_path)
+                                                                <img class="img-fluid rounded"
+                                                                    style="border: 2px solid #EF8032;"
+                                                                    src="{{ asset($employee->image_path) }}"
+                                                                    alt="{{ $employee->name }}">
+                                                            @else
+                                                                <p class="text-muted">Aucune image</p>
+                                                            @endif
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <div class="row"></div>
+                                                            <h6 class="font-weight-bold">Nom et Prénom(s):</h6>
+                                                            <p>{{ $employee->name }}</p>
+                                                            <h6 class="font-weight-bold">Poste:</h6>
+                                                            <p>{{ $employee->designation }}</p>
+                                                            <hr class="my-2">
+                                                            <h6 class="font-weight-bold">Département :</h6>
+                                                            <p>{{ App\Helper::searchByNameAndId('department', $employee->department_id)->name ?? '' }}
+                                                            </p>
+                                                            <h6 class="font-weight-bold">Quicklock ID:</h6>
+                                                            <p>{{ $employee->matricule }}</p>
 
+                                                        </div>
 
-                                                    <h3>Heures d'Entrées et de sorties</h3>
-                                                    <table class="table table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Site </th>
-                                                                <th>Date d'Entrée</th>
-                                                                <th>Heure d'entrée</th>
-                                                                <th>Date de sortie</th>
-                                                                <th>Heure de sortie</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach ($employee->historyEntries as $entry)
+                                                        <h3 class="my-4 text-info">Historiques des Entrées et de sorties</h3>
+                                                        <table id="employeeTablee" class="table table-striped">
+                                                            <thead class="bg-info">
                                                                 <tr>
-                                                                    <td>{{ App\Helper::searchByNameAndId('localisation', $entry->localisation_id)->name ?? '' }}
-                                                                    </td>
-                                                                    <td>{{ $entry->day_at_in }}</td>
-                                                                    <td>{{ $entry->time_at_in }}</td>
-                                                                    <td>
-                                                                        @if ($entry->day_at_out)
-                                                                            {{ $entry->day_at_out }}
-                                                                        @else
-                                                                            Pas encore sorti
-                                                                        @endif
-                                                                    </td>
+                                                                    <th>Site </th>
+                                                                    <th>Date et heure d'Entrée</th>
+                                                                    <th>Date et Heure de sortie</th>
 
-                                                                    <td>
-                                                                        @if ($entry->time_at_out)
-                                                                            {{ $entry->time_at_out }}
-                                                                        @else
-                                                                            Pas encore sorti
-                                                                        @endif
-                                                                    </td>
                                                                 </tr>
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>
-                                                @else
-                                                    <p>Employee not found.</p>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach ($employee->historyEntries as $entry)
+                                                                    <tr>
+                                                                        <td>{{ App\Helper::searchByNameAndId('localisation', $entry->localisation_id)->name ?? '' }}
+                                                                        </td>
+                                                                        <td>{{ $entry->day_at_in }} _ {{ $entry->time_at_in }}</td>
+
+                                                                        <td>
+                                                                            @if ($entry->day_at_out && $entry->time_at_out )
+                                                                                {{ $entry->day_at_out }} _ {{ $entry->time_at_out }}
+                                                                            @else
+                                                                                Pas encore sorti
+                                                                            @endif
+                                                                        </td>
+
+
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+
+
+
+                                                    @else
+                                                        <p>Employee not found.</p>
                                             @endif
                                         </div>
                                     </div>
@@ -123,14 +134,14 @@
                                                 <div class="row">
                                                     <div class="col-lg-12">
                                                         <div class="d-flex justify-content-between align-items-center mb-3">
-                                                            <h4 class="card-title card-title-dash"> Heures Cumulées</h4>
+                                                            <h4 class="card-title card-title-dash"> Heures Cumulées pour la
+                                                                semaine</h4>
                                                         </div>
                                                         <table class="table table-striped">
                                                             <thead>
                                                                 <tr>
                                                                     <th colspan="2">Jour</th>
                                                                     <th>Total d'heures</th>
-
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -139,7 +150,7 @@
                                                                 @endphp
                                                                 @foreach ($result as $key => $hour)
                                                                     <tr>
-                                                                        <td>{{ $key }}</td>
+                                                                        <td>N°{{ $key }}</td>
                                                                         <td>{{ $weekdays[$i] }}</td>
                                                                         <td>{{ $hour }} H</td>
                                                                     </tr>
@@ -170,6 +181,29 @@
 @endsection
 @push('scripts')
     <script>
+        document.getElementById('exportButtonExcell').addEventListener('click', function() {
+            var table = document.getElementById('employeeTablee');
+            console.log(" table selectionné OK");
+
+            var ws = XLSX.utils.table_to_sheet(table);
+            console.log(" objet ws OK", ws);
+
+            XLSX.utils.sheet_add_aoa(ws, [], {
+                origin: 'A1'
+            });
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Feuille1');
+
+            var employeeName =@json($employee->name);
+            var employeeMartricule =@json($employee->matricule);
+
+            var fileName = employeeName + '_' + employeeMartricule + '.xlsx';
+            console.log("Nom du fichier", fileName);
+
+            XLSX.writeFile(wb, fileName);
+            console.log("ficher telechargé créé avec succès");
+        });
+
         let data = [0, 0, 0, 0, 0, 0, 0];
         let weekdays = @json(array_keys($result));
         let hours = @json(array_values($result));

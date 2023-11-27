@@ -10,13 +10,14 @@
     <!-- plugins:css -->
     <link rel="stylesheet" href="{{ asset('vendors/feather/feather.css') }}">
     <link rel="stylesheet" href="{{ asset('vendors/mdi/css/materialdesignicons.min.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="{{ asset('vendors/ti-icons/css/themify-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('vendors/typicons/typicons.css') }}">
     <link rel="stylesheet" href="{{ asset('vendors/simple-line-icons/css/simple-line-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('vendors/css/vendor.bundle.base.css') }}">
     <!-- endinject -->
     <!-- Plugin css for this page -->
-    <link rel="stylesheet" href="{{ asset('vendors/datatables.net-bs4/dataTables.bootstrap4.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('vendors/datatables.net-bs4/dataTables.bootstrap4.css') }}"> --}}
     <link rel="stylesheet" href="{{ asset('js/select.dataTables.min.css') }}">
     <!-- End plugin css for this page -->
     <!-- inject:css -->
@@ -30,8 +31,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
     <!-- Add Daterangepicker CSS and JS -->
-    <link rel="stylesheet" type="text/css"
-        href="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.css" />
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/moment.min.js"></script>
@@ -48,7 +48,7 @@
         <div class="container-fluid page-body-wrapper">
 
             <!-- partial:partials/_settings-panel.html -->
-            @include('partials.settingsPanel')
+            {{-- @include('partials.settingsPanel') --}}
             <!-- partial -->
 
             <!-- partial:partials/_sidebar.html -->
@@ -65,15 +65,11 @@
         <!-- page-body-wrapper ends -->
     </div>
 
-
-
-
     <!-- plugins:js -->
     <script src="{{ asset('vendors/js/vendor.bundle.base.js') }}"></script>
     <!-- endinject -->
     <!-- Plugin js for this page -->
     <script src="{{ asset('vendors/chart.js/Chart.min.js') }}"></script>
-    <script src="{{ asset('vendors/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset('vendors/progressbar.js/progressbar.min.js') }}"></script>
 
     <!-- End plugin js for this page -->
@@ -100,6 +96,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
+
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script>
         // Utilisation de jQuery pour détecter le changement de  sélection
@@ -107,13 +105,20 @@
             $('#siteSelect').on('change', function() {
                 var selectedSite = $(this).val();
                 // Mettre à jour l'URL avec le nouvel identifiant de site
-                window.location.href = '/table-site/' + selectedSite;
+                window.location.href = '/site/' + selectedSite + '/employees';
             });
             flatpickr("#datePicker", {
                 mode: "range",
+                maxDate: new Date(),
+                //defaultDate:  ?,
                 dateFormat: "Y-m-d",
-            });
+                onChange: function(selectedDates, dateStr, instance) {
 
+                    $('form#date-filter').submit();
+
+                    console.log('Dates sélectionnées:', selectedDates);
+                }
+            });
 
         });
         document.getElementById('exportButton').addEventListener('click', function() {
@@ -148,23 +153,12 @@
                 console.error('An error occurred:', error);
             }
         });
-        $(function() {
-            $('input[name="daterange"]').daterangepicker({
-                opens: 'left'
-            }, function(start, end, label) {
-                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-            });
-        });
     </script>
-
-
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    @stack("scripts")
+    @stack('scripts')
     <!-- Initialize the date range picker -->
-
-
 
 </body>
 

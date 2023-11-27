@@ -18,30 +18,68 @@ class Helper
         return (object) $data[$key];
     }
 
-    public static function calculateTimeDifference($timeIn, $timeOut)
+    public static function calculateTimeDifference($startOfWeek, $endOfWeek, $id)
     {
-        if ($timeIn !== null && $timeOut !== null) {
-            $timeIn = Carbon::parse($timeIn);
-            $timeOut = Carbon::parse($timeOut);
-            $difference = Carbon::create($timeIn->diff($timeOut)->format('%H:%i:%s'));
+        $result = DB::table('history_entries')
+            ->select('employee_id', 'day_at_in')
+            ->selectRaw('SUM(TIME_TO_SEC(TIMEDIFF( CONCAT(day_at_out, " ", time_at_out),CONCAT(day_at_in, " ", time_at_in)))) AS total_seconds')
+            ->whereBetween('day_at_in', [$startOfWeek, $endOfWeek])
+            ->where('employee_id', $id)
+            ->whereNotNull(['time_at_in', 'time_at_out'])
+            ->groupBy('employee_id', 'day_at_in')
+            ->get();
 
+        $results = $result->map(fn ($history) => $history->total_seconds - 3600);
 
-            return $difference->format('H:i:s');
+        $totalSeconds = 0;
+
+        foreach ($results as $entry) {
+            $totalSeconds += $entry;
         }
 
-        return null;
+        $hours = floor($totalSeconds / 3600);
+        $minutes = floor(($totalSeconds % 3600) / 60);
+        $seconds = $totalSeconds % 60;
+
+        dd($hours,  $minutes, $seconds);
+
+        return $hours . 'h:' . $minutes . 'm:' . $seconds . 's';
     }
 
-    public static function calculateTimeSupp($timeIn, $timeOut)
+    public static function calculateTimeSupp($startOfWeek, $endOfWeek, $id)
     {
-        if ($timeIn !== null && $timeOut !== null) {
-            $timeIn = Carbon::parse($timeIn);
-            $timeOut = Carbon::parse($timeOut);
-            $supp = Carbon::parse($timeOut->diff($timeIn)->format('%H:%i:%s'))->subHour(9);
-            return $supp->format('H:m:i');
+        $result = DB::table('history_entries')
+            ->select('employee_id', 'day_at_in')
+            ->selectRaw('SUM(TIME_TO_SEC(TIMEDIFF( CONCAT(day_at_out, " ", time_at_out),CONCAT(day_at_in, " ", time_at_in)))) AS total_seconds')
+            ->whereBetween('day_at_in', [$startOfWeek, $endOfWeek])
+            ->where('employee_id', $id)
+            ->whereNotNull(['time_at_in', 'time_at_out'])
+            ->groupBy('employee_id', 'day_at_in')
+            ->get();
+
+
+        $totalSeconds = 0;
+        $overtime = 0;
+        $regularHours = 9;
+        $results = $result->map(fn ($history) => $history->total_seconds - 3600);
+
+        foreach ($results as $entry) {
+            $totalSeconds += $entry;
+            $hours = floor($totalSeconds / 3600);
+            $overtime = max($hours - $regularHours, 0);
         }
-        return null;
+        $hours = $overtime;
+        $minutes = floor(($overtime  % 3600) / 60);
+        $seconds = $overtime  % 60;
+
+        return $hours . 'h:' . $minutes . 'm:' . $seconds . 's';
     }
+
+
+
+
+
+
 
     public static function getHeuresEmployesParJour(int $employeId, string $jour): float
     {
@@ -69,6 +107,8 @@ class Helper
         return $weeklyData;
     }
 
+
+
     public static function getNombres($weeklyData)
     {
         $nombres = $weeklyData->groupBy('localisation_id')->map(function ($entries) {
@@ -77,6 +117,7 @@ class Helper
 
         return $nombres;
     }
+
 
     public static function getWeeklyEntries($weeklyData)
     {
@@ -114,35 +155,16 @@ class Helper
             ->groupBy('employee_id')
             ->get();
 
-        $totalHeures = $totalHeures->avg('total_seconds') / 3600;
 
-        $hours = gmdate('H', $totalHeures);
-        $minutes = gmdate('i', $totalHeures);
-        $seconds = gmdate('s', $totalHeures);
+        $totalSeconds = $totalHeures->avg('total_seconds');
+
+
+        $hours = floor($totalSeconds / 3600);
+
+        $minutes = floor(($totalSeconds % 3600) / 60);
+
+        $seconds = $totalSeconds % 60;
 
         return $hours . 'h:' . $minutes . 'm:' . $seconds;
-    }
-
-    public static function getMoyenneHeuresEntree($startOfWeek, $endOfWeek)
-    {
-        $result = DB::table('history_entries')
-            ->selectRaw('AVG(TIME_TO_SEC(time_at_in) / 3600) AS moyenne_heure_entree')
-            ->whereBetween('day_at_in', [$startOfWeek, $endOfWeek])
-            ->whereNotNull('time_at_in')
-            ->first();
-
-        if (!is_null($result->moyenne_heure_entree)) {
-            $moyenneHeuresEntree = $result->moyenne_heure_entree;
-
-
-            $hours = gmdate('H', $moyenneHeuresEntree);
-            $minutes = gmdate('i', $moyenneHeuresEntree);
-            $seconds = gmdate('s', $moyenneHeuresEntree);
-
-            return $hours . 'h:' . $minutes . 'm:' . $seconds;
-        }else{
-            return null;
-        }
-
     }
 }
