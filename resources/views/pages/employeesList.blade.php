@@ -5,7 +5,6 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="home-tab">
-
                     <div class="tab-content tab-content-basic">
                         <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
                             <div class="row flex-grow">
@@ -23,20 +22,19 @@
 
                                             </div>
                                             <div class="table-responsive  mt-1">
-                                                <table class="table select-table">
-                                                    <thead>
+                                                <table class="table select-table table-hover ">
+                                                    <thead class="orange ">
                                                         <tr>
-                                                            <th>Nom</th>
-                                                            <th>Designation</th>
-                                                            <th>Matricule</th>
-                                                            <th>Action</th>
-                                                            <th> Detail</th>
+                                                            <th class="text-white pl-2">Nom</th>
+                                                            <th class="text-white">Designation</th>
+                                                            <th class="text-white">Matricule</th>
+                                                            <th class="text-white">Administration</th>
+                                                            <th class="text-white"> Detail</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         @foreach ($employees as $employee)
                                                             <tr>
-
                                                                 <td>
                                                                     <div class="d-flex ">
                                                                         @if ($employee->image_path)
@@ -47,7 +45,6 @@
                                                                         @endif
                                                                         <div>
                                                                             <h6>{{ $employee->name }}</h6>
-
                                                                         </div>
                                                                     </div>
                                                                 </td>
@@ -60,19 +57,21 @@
                                                                             method="post">
                                                                             @csrf
                                                                             @method('DELETE')
-                                                                            <button type="submit">Désactiver</button>
+                                                                            <button class=" text-white btn btn-success"
+                                                                                type="submit">Accès</button>
                                                                         </form>
                                                                     @else
                                                                         <form
                                                                             action="{{ route('activate.employee', $employee->id) }}"
                                                                             method="post">
                                                                             @csrf
-                                                                            <button type="submit">Activer</button>
+                                                                            <button class=" text-white btn btn-danger"
+                                                                                type="submit">Pas Accès</button>
                                                                         </form>
                                                                     @endif
                                                                 </td>
                                                                 <td>
-                                                                    <a
+                                                                    <a class=" text-white btn btn-info"
                                                                         href="{{ route('employeeDetail', ['id' => $employee->id]) }}">
                                                                         Voir Plus </a>
                                                                 </td>

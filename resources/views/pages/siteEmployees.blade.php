@@ -13,6 +13,9 @@
                             <a href="#" id="exportButton" class="btn btn-primary text-white me-0"><i
                                     class="icon-download"></i>
                                 Exporter en pdf</a>
+                            <a href="#" id="ButtonExcel" class="btn btn-success text-white me-0"><i
+                                    class="icon-download"></i>
+                                Exporter en excel</a>
 
 
                         </div>
@@ -24,44 +27,44 @@
                             <div class="row flex-grow">
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card card-rounded">
-                                        <div class="card-body" id="historyTable" >
+                                        <div class="card-body" id="historyTable">
                                             <div class="d-sm-flex justify-content-between align-items-start">
                                                 <div>
-                                                    <h4 class="card-title card-title-dash">Listes des employés du site :
-                                                        {{ $site->name ?? ' ' }}
-                                                    </h4>
+                                                    <h3 class="card-title card-title-dash">Listes des employés du site :
+                                                        <strong class="orange">{{ $site->name ?? ' ' }}</strong>
+                                                    </h3>
                                                     <p class="card-subtitle card-subtitle-dash">Nous
-                                                        avons {{ $employees->count() }} employées</p>
+                                                        avons {{ $filtreEmployees }} employées</p>
                                                 </div>
 
                                             </div>
                                             <div class="table-responsive  mt-1">
-                                                <table  class="table select-table">
-                                                    <thead>
+                                                <table id="employeeTable" class="table select-table table-hover">
+                                                    <thead class="orange">
                                                         <tr>
 
-                                                            <th>Employée</th>
-                                                            <th>Département</th>
-
-                                                            <th>Heure d'entrée</th>
-                                                            <th>Heure de Sortie</th>
-
-
+                                                            <th class="text-white pl-2">Employée</th>
+                                                            <th class="text-white">Département</th>
+                                                            <th class="text-white">Jour et Heure d'entrée</th>
+                                                            <th class="text-white">Jour et Heure de Sortie</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         @foreach ($history_entries as $history_entry)
                                                             <tr>
-
-
                                                                 <td>
                                                                     <div class="d-flex ">
-                                                                        <a href="{{route('employeeDetail', ['id' => $history_entry->employee->id])}}">
-                                                                        <img src="{{ asset('images/faces/face1.jpg') }}"
-                                                                            alt="">
+                                                                        <a
+                                                                            href="{{ route('employeeDetail', ['id' => $history_entry->employee->id]) }}">
+                                                                            <img src="{{ asset($history_entry->employee->image_path) }}"
+                                                                                alt="{{ $history_entry->employee->name }}">
                                                                         </a>
                                                                         <div>
-                                                                            <a href="{{route('employeeDetail', ['id' => $history_entry->employee->id])}}"><h6>{{ $history_entry->employee->name }}</h6>  </a>
+                                                                            <a
+                                                                                href="{{ route('employeeDetail', ['id' => $history_entry->employee->id]) }}">
+                                                                                <h6>{{ $history_entry->employee->name }}
+                                                                                </h6>
+                                                                            </a>
                                                                             <p>{{ $history_entry->employee->designation }}
                                                                             </p>
                                                                         </div>
@@ -70,23 +73,22 @@
                                                                 <td>
                                                                     <h6>{{ App\Helper::searchByNameAndId('department', $history_entry->employee->department_id)->name ?? '' }}
                                                                     </h6>
-
-
                                                                     </p>
                                                                 </td>
                                                                 <td>
-                                                                    <h5>{{$history_entry->time_at_in}}</h5>
+                                                                    <h6 class="marron">{{ $history_entry->day_at_in }}_{{ $history_entry->time_at_in }}
+                                                                    </h6>
                                                                 </td>
+
                                                                 <td>
-                                                                    <h5>{{$history_entry->time_at_out}}</h5>
+                                                                    @if ($history_entry->day_at_out && $history_entry->time_at_out)
+                                                                    <h6 class="marron">{{ $history_entry->day_at_out }} _
+                                                                            {{ $history_entry->time_at_out }}</h6>
+                                                                    @else
+                                                                        Pas encore sorti
+                                                                    @endif
+
                                                                 </td>
-                                                                {{-- <td>
-
-                                                                    <h5>{{ App\Helper::calculateTimeDifference($history_entry->time_at_in, $history_entry->time_at_out) }}
-                                                                    </h5>
-
-                                                                </td> --}}
-
 
                                                             </tr>
                                                         @endforeach
@@ -104,5 +106,30 @@
             </div>
         </div>
     </div>
-
 @endsection
+
+@push('scripts')
+    <script>
+        document.getElementById('ButtonExcel').addEventListener('click', function() {
+            var table = document.getElementById('employeeTable');
+            console.log(" table selectionné OK");
+
+            var ws = XLSX.utils.table_to_sheet(table);
+            console.log(" objet ws OK", ws);
+
+            XLSX.utils.sheet_add_aoa(ws, [], {
+                origin: 'A1'
+            });
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Feuille1');
+
+            var siteName =@json($site->name);
+
+            var fileName = siteName + '_' + 'employees' + '.xlsx';
+            console.log("Nom du fichier", fileName);
+
+            XLSX.writeFile(wb, fileName);
+            console.log("ficher telechargé créé avec succès");
+        });
+    </script>
+@endpush

@@ -25,6 +25,29 @@
                 </ul>
             </div>
         </li>
+        <li class="nav-item nav-category">Notifications</li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#uii-basic" aria-expanded="false"
+                aria-controls="uii-basic">
+                <i class="menu-icon mdi mdi-floor-plan"></i>
+                <span class="menu-title"> Tableau</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="uii-basic">
+                <ul class="nav flex-column sub-menu">
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route('flexibilityIndex')}}">Flexibité des employés</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Absences</a>
+                        </li>
+
+                </ul>
+            </div>
+        </li>
+
 
         <li class="nav-item nav-category">Administration</li>
         <li class="nav-item">
@@ -36,19 +59,20 @@
             <div class="collapse" id="auth">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('user-list')}}"> Liste des utilisateurs </a>
+                        <a class="nav-link" href="{{route('user-list')}}"> Administrateurs</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('employees.index')}}"> Liste des employées </a>
+                        <a class="nav-link" href="{{route('employees.index')}}"> Employés </a>
                     </li>
-
+                    <li class="nav-item">
+                        <a class="nav-link" href="">Gestion des incidents</a>
+                    </li>
                 </ul>
             </div>
         </li>
-       
-        <a href="{{route('logout')}}" class="btn btn-danger mt-2 " type="button" >
-            Déconnexion
-        </a>
 
+        <a href="{{route('logout')}}" class="btn btn-danger  " type="button" >
+            <i class="mdi mdi-power text-whitemt-2"> Déconnexion</i>
+        </a>
     </ul>
 </nav>
