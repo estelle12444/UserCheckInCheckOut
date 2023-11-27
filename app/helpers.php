@@ -41,8 +41,6 @@ class Helper
         $minutes = floor(($totalSeconds % 3600) / 60);
         $seconds = $totalSeconds % 60;
 
-        dd($hours,  $minutes, $seconds);
-
         return $hours . 'h:' . $minutes . 'm:' . $seconds . 's';
     }
 
@@ -57,18 +55,16 @@ class Helper
             ->groupBy('employee_id', 'day_at_in')
             ->get();
 
-
         $totalSeconds = 0;
         $overtime = 0;
-        $regularHours = 9;
+        $regularSecond =32400 ;
         $results = $result->map(fn ($history) => $history->total_seconds - 3600);
 
         foreach ($results as $entry) {
             $totalSeconds += $entry;
-            $hours = floor($totalSeconds / 3600);
-            $overtime = max($hours - $regularHours, 0);
+            $overtime = max($totalSeconds - $regularSecond, 0);
         }
-        $hours = $overtime;
+        $hours =floor( $overtime / 3600);
         $minutes = floor(($overtime  % 3600) / 60);
         $seconds = $overtime  % 60;
 

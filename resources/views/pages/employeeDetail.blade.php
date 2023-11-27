@@ -57,7 +57,8 @@
 
                                                         </div>
 
-                                                        <h3 class="my-4 text-info">Historiques des Entrées et de sorties</h3>
+                                                        <h3 class="my-4 text-info">Historiques des Entrées et de sorties
+                                                        </h3>
                                                         <table id="employeeTablee" class="table table-striped">
                                                             <thead class="bg-info">
                                                                 <tr>
@@ -72,11 +73,13 @@
                                                                     <tr>
                                                                         <td>{{ App\Helper::searchByNameAndId('localisation', $entry->localisation_id)->name ?? '' }}
                                                                         </td>
-                                                                        <td>{{ $entry->day_at_in }} _ {{ $entry->time_at_in }}</td>
+                                                                        <td>{{ $entry->day_at_in }} _
+                                                                            {{ $entry->time_at_in }}</td>
 
                                                                         <td>
-                                                                            @if ($entry->day_at_out && $entry->time_at_out )
-                                                                                {{ $entry->day_at_out }} _ {{ $entry->time_at_out }}
+                                                                            @if ($entry->day_at_out && $entry->time_at_out)
+                                                                                {{ $entry->day_at_out }} _
+                                                                                {{ $entry->time_at_out }}
                                                                             @else
                                                                                 Pas encore sorti
                                                                             @endif
@@ -87,9 +90,6 @@
                                                                 @endforeach
                                                             </tbody>
                                                         </table>
-
-
-
                                                     @else
                                                         <p>Employee not found.</p>
                                             @endif
@@ -175,7 +175,7 @@
         </div>
     </div>
 
-    </div>
+
 
 
 @endsection
@@ -194,8 +194,8 @@
             var wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Feuille1');
 
-            var employeeName =@json($employee->name);
-            var employeeMartricule =@json($employee->matricule);
+            var employeeName = @json($employee->name);
+            var employeeMartricule = @json($employee->matricule);
 
             var fileName = employeeName + '_' + employeeMartricule + '.xlsx';
             console.log("Nom du fichier", fileName);

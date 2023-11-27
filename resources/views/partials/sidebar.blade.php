@@ -41,7 +41,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="">Absences</a>
+                            <a class="nav-link" href="{{route('absenceIndex')}}">Absences</a>
                         </li>
 
                 </ul>

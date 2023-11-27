@@ -24,12 +24,34 @@
             </li>
         </ul>
         <ul class="navbar-nav ms-auto">
-            @if (request()->is('site/*/employees'))
+            @if (request()->is('/user-list'))
                 <li class="nav-item dropdown d-none d-lg-block">
 
                     @php
-                        $currentSite = request()->segment(2); // Récupère la deuxième partie de l'URL (table-site/{site})
-$localisations = config('localisation');
+                        $currentSite = request()->segment(2);
+                        $localisations = config('localisation');
+                    @endphp
+
+                    <select id="siteSelect"
+                        class="form-select nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split"
+                        aria-label="Large select example">
+                        <option selected>Selectionner le Site</option>
+                        @foreach ($localisations as $localisation)
+                            @php
+                                $siteId = $localisation['id'];
+                                $siteName = $localisation['name'];
+                            @endphp
+                            <option value="{{ $siteId }}" {{ $currentSite == $siteId ? 'selected' : '' }}>Site de
+                                {{ $siteName }}</option>
+                        @endforeach
+                    </select>
+
+                </li>
+            @else
+                <li class="nav-item dropdown d-none d-lg-block">
+                    @php
+                        $currentSite = request()->segment(2);
+                        $localisations = config('localisation');
                     @endphp
 
                     <select id="siteSelect"
@@ -61,45 +83,8 @@ $localisations = config('localisation');
                     </form>
 
                 </li>
-            @elseif (request()->is('home'))
-                <li class="nav-item dropdown d-none d-lg-block">
-                    @php
-                        $currentSite = request()->segment(2); // Récupère la deuxième partie de l'URL (table-site/{site})
-                    $localisations = config('localisation');
-                    @endphp
 
-                    <select id="siteSelect"
-                        class="form-select nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split"
-                        aria-label="Large select example">
-                        <option selected>Selectionner le Site</option>
-                        @foreach ($localisations as $localisation)
-                            @php
-                                $siteId = $localisation['id'];
-                                $siteName = $localisation['name'];
-                            @endphp
-                            <option value="{{ $siteId }}" {{ $currentSite == $siteId ? 'selected' : '' }}>Site de
-                                {{ $siteName }}</option>
-                        @endforeach
-                    </select>
-
-                </li>
-
-            @elseif (request()->is('employees/*/detail'))
-                <li class="nav-item d-none d-lg-block">
-                    <form action="" id="date-filter">
-                        <div class="input-group date datepicker navbar-date-picker">
-                            <span class="input-group-addon input-group-prepend border-right">
-                                <input type="text" id="datePicker" name="selectedDates"
-                                    value="{{ now()->format('Y-m-d') }}" multiple>
-                                <span class="icon-calendar input-group-text calendar-icon"></span>
-                            </span>
-
-                        </div>
-                    </form>
-
-                </li>
             @endif
-
             <li class="nav-item dropdown d-none d-lg-block user-dropdown">
                 <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                     <img class="img-xs rounded-circle"
@@ -135,6 +120,8 @@ $localisations = config('localisation');
                             class="dropdown-item-icon mdi mdi-power text-danger me-2"></i>Déconnexion</a>
                 </div>
             </li>
+
+
         </ul>
 
     </div>
