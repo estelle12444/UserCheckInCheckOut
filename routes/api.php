@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/report', [App\Http\Controllers\HistoryEntryController::class, 'in_out'])->name('report');
+Route::post('/histories', [App\Http\Controllers\HistoryEntryController::class, 'histories'])->name('histories');
 Route::group([
 
     'middleware' => 'api',
