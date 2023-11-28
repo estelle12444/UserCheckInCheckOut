@@ -120,21 +120,45 @@ class EmployeeController extends Controller
     }
 
 
-    public function absenceIndex(Request $request)
+    public function absenceIndex(Request $request,)
     {
+        if (!empty($request->selectedDates)) {
+            $date_array = explode("to", $request->selectedDates);
 
-        $date= '2023/11/27';
+            if (count($date_array) !== 2) {
+                //throw new InvalidArgumentException("Invalid date format in selectedDates");
+                return redirect()->back()->with('Invalid date format in selectedDates');
+            }
+
+            try {
+                $startOfWeek = Carbon::parse(trim($date_array[0]));
+                $endOfWeek = Carbon::parse(trim($date_array[1]));
+            } catch (\Exception $e) {
+
+                throw new InvalidArgumentException("Error parsing dates: " . $e->getMessage());
+            }
+        } else {
+            try {
+                $startOfWeek = Carbon::now()->startOfWeek();
+                $endOfWeek = Carbon::now()->endOfWeek();
+            } catch (\Exception $e) {
+
+                throw new RuntimeException("Error generating default dates: " . $e->getMessage());
+            }
+        }
+
+
         $absence = DB::table('employees')
-            ->whereNotExists(function ($query) use ($date) {
+            ->whereNotExists(function ($query) use ($startOfWeek,  $endOfWeek) {
                 $query->select(DB::raw(1))
                     ->from('history_entries')
                     ->whereRaw('history_entries.employee_id = employees.id')
-                    ->where('history_entries.day_at_in', '=', $date);
+                    ->whereBetween('history_entries.day_at_in', [$startOfWeek,  $endOfWeek]);
             })
             ->get();
 
-        $nbre=$absence->count();
+        $nbre = $absence->count();
 
-        return view('pages.absenceIndex', compact('absence','date','nbre'));
+        return view('pages.absenceIndex', compact('absence', 'startOfWeek', 'endOfWeek', 'nbre'));
     }
 }

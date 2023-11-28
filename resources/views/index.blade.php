@@ -23,19 +23,10 @@
                                             @endif
                                         </div>
 
-                                        {{-- <div class="d-none d-md-block">
-                                            <p class="statistics-title">Heure moyen d'entrée des employés</p>
-                                            @if (isset($moyenneHeuresEntree))
-                                                <h3 class="rate-percentage">{{$moyenneHeuresEntree }} </h3>
-                                            @else
-                                                <h3 class="rate-percentage">0 H</h3>
-                                            @endif
-
-                                        </div> --}}
                                         <div class="d-none d-md-block">
                                             <p class="statistics-title">Durée moyenne des heures de travail</p>
-                                            @if (isset($totalHeures))
-                                                <h3 class="rate-percentage">{{ $totalHeures }} </h3>
+                                            @if (isset($averageHoursDuration))
+                                                <h3 class="rate-percentage">{{ $averageHoursDuration }} </h3>
                                             @else
                                                 <h3 class="statistics-title">0 H</h3>
                                             @endif
@@ -57,10 +48,10 @@
                                                         <div id="performance-line-legend"></div>
                                                     </div>
                                                     @foreach ($weeklyEntries as $weekNumber => $entries)
-                                                            <h5 class="card-subtitle card-subtitle-dash"
-                                                                style="color:rgb(249, 139, 99)">Semaine {{ $weekNumber }}
-                                                            </h5>
-                                                        @endforeach
+                                                        <h5 class="card-subtitle card-subtitle-dash"
+                                                            style="color:rgb(249, 139, 99)">Semaine {{ $weekNumber }}
+                                                        </h5>
+                                                    @endforeach
                                                     <div class="chartjs-wrapper mt-5">
                                                         <canvas id="performaneLinee"></canvas>
                                                     </div>
@@ -82,8 +73,9 @@
                                                                         <td>Nombre d'employés entrants par site </td>
                                                                     </h4>
                                                                     <h5 class="card-subtitle card-subtitle-dash"
-                                                                    style="color:rgb(249, 139, 99)">Jour: {{ Carbon\Carbon::now()->dayName}}
-                                                                </h5>
+                                                                        style="color:rgb(249, 139, 99)">Jour:
+                                                                        {{ Carbon\Carbon::now()->dayName }}
+                                                                    </h5>
 
                                                                     <table class="table table-striped">
                                                                         <thead>
@@ -94,9 +86,9 @@
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
-                                                                            @foreach ($day_nombres as $day)
+                                                                            @foreach ($employeeCountBySite as $day)
                                                                                 <tr>
-                                                                                    <td>{{ config('localisation')[$day[0]->localisation_id -1]['name'] }}
+                                                                                    <td>{{ config('localisation')[$day[0]->localisation_id - 1]['name'] }}
                                                                                     </td>
                                                                                     <td>{{ date('Y-m-d') }}</td>
                                                                                     <td>{{ count($day) }}</td>
@@ -141,7 +133,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach ($entriesAndExits as $history_entry)
+                                                        @foreach ($lastentriesAndExits as $history_entry)
                                                             <tr>
                                                                 <td class="pl-2">
                                                                     <h6 style="color:#EF8032">
@@ -172,13 +164,15 @@
 
                                                                 </td>
                                                                 <td>
-                                                                    <h6  >{{ $history_entry->day_at_in }}</h6>
+                                                                    <h6>{{ $history_entry->day_at_in }}</h6>
                                                                 </td>
                                                                 <td>
-                                                                    <h6 class="cbleu" ><em>{{ $history_entry->time_at_in}} </em></h6>
+                                                                    <h6 class="cbleu"><em>{{ $history_entry->time_at_in }}
+                                                                        </em></h6>
                                                                 </td>
                                                                 <td>
-                                                                    <h6 class="cRouge" ><em>{{ $history_entry->time_at_out }}</em></h6>
+                                                                    <h6 class="cRouge">
+                                                                        <em>{{ $history_entry->time_at_out }}</em></h6>
                                                                 </td>
                                                             </tr>
                                                         @endforeach

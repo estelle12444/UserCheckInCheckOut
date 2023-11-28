@@ -43,17 +43,38 @@
                                                             @endif
                                                         </div>
                                                         <div class="col-md-8">
-                                                            <div class="row"></div>
-                                                            <h6 class="font-weight-bold">Nom et Prénom(s):</h6>
-                                                            <p>{{ $employee->name }}</p>
+                                                            <div class="row">
+                                                                <div class="col-md-7">
+                                                                    <h6 class="font-weight-bold">Nom et Prénom(s):</h6>
+                                                                    <p>{{ $employee->name }}</p>
+                                                                </div>
+                                                                <div class="col-md-5">
+                                                                    <h6 class="font-weight-bold">Panier de flexibilité Total
+                                                                        : </h6>
+                                                                    <p>{{ App\Helper::totalHeureFlex($employee->id) }} H
+                                                                    </p>
+                                                                </div>
+                                                            </div>
                                                             <h6 class="font-weight-bold">Poste:</h6>
                                                             <p>{{ $employee->designation }}</p>
                                                             <hr class="my-2">
-                                                            <h6 class="font-weight-bold">Département :</h6>
-                                                            <p>{{ App\Helper::searchByNameAndId('department', $employee->department_id)->name ?? '' }}
-                                                            </p>
+                                                            <div class="row">
+                                                                <div class="col-md-7">
+                                                                    <h6 class="font-weight-bold">Département :</h6>
+                                                                    <p>{{ App\Helper::searchByNameAndId('department', $employee->department_id)->name ?? '' }}
+                                                                    </p>
+                                                                </div>
+                                                                <div class="col-md-5">
+                                                                    <h6 class="font-weight-bold"> Total d'heures
+                                                                        : </h6>
+                                                                    <p> H
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+
                                                             <h6 class="font-weight-bold">Quicklock ID:</h6>
                                                             <p>{{ $employee->matricule }}</p>
+
 
                                                         </div>
 
@@ -63,8 +84,11 @@
                                                             <thead class="bg-info">
                                                                 <tr>
                                                                     <th>Site </th>
-                                                                    <th>Date et heure d'Entrée</th>
-                                                                    <th>Date et Heure de sortie</th>
+                                                                    <th>Date</th>
+                                                                    <th>Heure d'Entrée</th>
+                                                                    <th>Heure de sortie</th>
+                                                                    <th>Total heure</th>
+                                                                    <th>Panier de flexibilité</th>
 
                                                                 </tr>
                                                             </thead>
@@ -73,16 +97,21 @@
                                                                     <tr>
                                                                         <td>{{ App\Helper::searchByNameAndId('localisation', $entry->localisation_id)->name ?? '' }}
                                                                         </td>
-                                                                        <td>{{ $entry->day_at_in }} _
-                                                                            {{ $entry->time_at_in }}</td>
+                                                                        <td>{{ $entry->day_at_in }}</td>
 
                                                                         <td>
-                                                                            @if ($entry->day_at_out && $entry->time_at_out)
-                                                                                {{ $entry->day_at_out }} _
-                                                                                {{ $entry->time_at_out }}
+                                                                            {{ App\Helper::getHeuresEmployesParJour($entry->employee->id, $entry->day_at_in) }}
+                                                                            h
+                                                                        </td>
+                                                                        <td>
+                                                                            {{ App\Helper::getTimeFlexParJour($entry->employee->id, $entry->day_at_in) }}h
+                                                                            {{-- @if ({{ App\Helper::getTimeFlexParJour($entry->employee->id, $entry->day_at_in) }})
+                                                                                 <i class="mdi mdi-arrow-up-drop-circle text-success"></i>
                                                                             @else
-                                                                                Pas encore sorti
-                                                                            @endif
+                                                                                <i class="mdi mdi-arrow-top-right text-danger"></i>
+                                                                            @endif --}}
+
+
                                                                         </td>
 
 
@@ -175,7 +204,7 @@
         </div>
     </div>
 
-
+    </div>
 
 
 @endsection

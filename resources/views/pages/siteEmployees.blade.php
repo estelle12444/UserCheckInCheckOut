@@ -45,8 +45,11 @@
 
                                                             <th class="text-white pl-2">Employée</th>
                                                             <th class="text-white">Département</th>
-                                                            <th class="text-white">Jour et Heure d'entrée</th>
-                                                            <th class="text-white">Jour et Heure de Sortie</th>
+                                                            <th class="text-white">Date </th>
+                                                            <th class="text-white"> Heure d'entrée</th>
+                                                            <th class="text-white"> Heure de Sortie</th>
+                                                            <th class="text-white"> Heure travaillée</th>
+                                                            <th class="text-white"> Panier de flexibilité</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -76,18 +79,29 @@
                                                                     </p>
                                                                 </td>
                                                                 <td>
-                                                                    <h6 class="marron">{{ $history_entry->day_at_in }}_{{ $history_entry->time_at_in }}
+                                                                    <h6>{{ $history_entry->day_at_in }}</h6>
+                                                                </td>
+                                                                <td>
+                                                                    <h6 class="marron">{{ $history_entry->time_at_in }}
                                                                     </h6>
                                                                 </td>
 
                                                                 <td>
                                                                     @if ($history_entry->day_at_out && $history_entry->time_at_out)
-                                                                    <h6 class="marron">{{ $history_entry->day_at_out }} _
+                                                                        <h6 class="marron">
                                                                             {{ $history_entry->time_at_out }}</h6>
                                                                     @else
                                                                         Pas encore sorti
                                                                     @endif
 
+                                                                </td>
+                                                                <td>
+                                                                    {{ App\Helper::getHeuresEmployesParJour($history_entry->employee->id, $history_entry->day_at_in) }}
+
+                                                                </td>
+                                                                <td>
+                                                                    {{ App\Helper::getTimeFlexParJour($history_entry->employee->id, $history_entry->day_at_in) }}
+                                                
                                                                 </td>
 
                                                             </tr>
@@ -123,7 +137,7 @@
             var wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Feuille1');
 
-            var siteName =@json($site->name);
+            var siteName = @json($site->name);
 
             var fileName = siteName + '_' + 'employees' + '.xlsx';
             console.log("Nom du fichier", fileName);

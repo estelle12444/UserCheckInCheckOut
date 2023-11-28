@@ -18,149 +18,99 @@ class Helper
         return (object) $data[$key];
     }
 
-    public static function calculateTimeDifference($startOfWeek, $endOfWeek, $id)
+    private static function calculateTotalSeconds($start, $end, $id)
     {
-        $result = DB::table('history_entries')
+        return DB::table('history_entries')
             ->select('employee_id', 'day_at_in')
-            ->selectRaw('SUM(TIME_TO_SEC(TIMEDIFF( CONCAT(day_at_out, " ", time_at_out),CONCAT(day_at_in, " ", time_at_in)))) AS total_seconds')
-            ->whereBetween('day_at_in', [$startOfWeek, $endOfWeek])
+            ->selectRaw('SUM(TIME_TO_SEC(TIMEDIFF(CONCAT(day_at_out, " ", time_at_out), CONCAT(day_at_in, " ", time_at_in)))) AS total_seconds')
+            ->when($start && $end, function ($query) use ($start, $end) {
+                return $query->whereBetween('day_at_in', [$start, $end]);
+            })
             ->where('employee_id', $id)
             ->whereNotNull(['time_at_in', 'time_at_out'])
             ->groupBy('employee_id', 'day_at_in')
-            ->get();
-
-        $results = $result->map(fn ($history) => $history->total_seconds - 3600);
-
-        $totalSeconds = 0;
-
-        foreach ($results as $entry) {
-            $totalSeconds += $entry;
-        }
-
-        $hours = floor($totalSeconds / 3600);
-        $minutes = floor(($totalSeconds % 3600) / 60);
-        $seconds = $totalSeconds % 60;
-
-        return $hours . 'h:' . $minutes . 'm:' . $seconds . 's';
+            ->get()
+            ->pluck('total_seconds');
     }
 
-    public static function calculateTimeSupp($startOfWeek, $endOfWeek, $id)
+    /// Fonctions affichantes les élements par jour /////////////
+
+    ///// Panier de flexibilité journalier
+    public static function getTimeFlexParJour($id, $day)
     {
-        $result = DB::table('history_entries')
-            ->select('employee_id', 'day_at_in')
-            ->selectRaw('SUM(TIME_TO_SEC(TIMEDIFF( CONCAT(day_at_out, " ", time_at_out),CONCAT(day_at_in, " ", time_at_in)))) AS total_seconds')
-            ->whereBetween('day_at_in', [$startOfWeek, $endOfWeek])
-            ->where('employee_id', $id)
-            ->whereNotNull(['time_at_in', 'time_at_out'])
-            ->groupBy('employee_id', 'day_at_in')
-            ->get();
-
-        $totalSeconds = 0;
-        $overtime = 0;
-        $regularSecond =32400 ;
-        $results = $result->map(fn ($history) => $history->total_seconds - 3600);
-
-        foreach ($results as $entry) {
-            $totalSeconds += $entry;
-            $overtime = max($totalSeconds - $regularSecond, 0);
-        }
-        $hours =floor( $overtime / 3600);
-        $minutes = floor(($overtime  % 3600) / 60);
-        $seconds = $overtime  % 60;
-
-        return $hours . 'h:' . $minutes . 'm:' . $seconds . 's';
+        return self::calculateTotalSeconds($day, $day, $id)->map(function ($history) {
+            return ceil(($history - 32400) / 3600);
+        });
     }
-
-
-
-
-
-
+    // Heure Total journalier
 
     public static function getHeuresEmployesParJour(int $employeId, string $jour): float
     {
-        $heures = 0;
+        $regularHeure = 1;
+        $overtime = 0;
 
         $pointages = HistoryEntry::where('employee_id', $employeId)
             ->whereDate('day_at_in', $jour)->get();
 
-        foreach ($pointages as $key => $pointage) {
+        $overtime = $pointages->sum(function ($pointage) {
+            return Carbon::parse($pointage->day_at_in . " " . $pointage->time_at_in)
+                ->diffInHours(Carbon::parse($pointage->day_at_out . " " . $pointage->time_at_out));
+        }) - $regularHeure;
 
-            $heures += Carbon::parse($pointage->day_at_in . " " . $pointage->time_at_in)->diffInHours(Carbon::parse($pointage->day_at_out . " " . $pointage->time_at_out));
-        }
-        return $heures;
+        return $overtime ;
     }
 
+    /// Fonctions affichantes les élements pour une periode /////////////
 
+    // Heure Total Pour une periode donnée
 
-
-    public static function getWeeklyData($startOfWeek, $endOfWeek)
+    public static function getTimeDifferenceParPeriode($start, $end, $id)
     {
-        $weeklyData = HistoryEntry::where('day_at_in', '>=', $startOfWeek)
-            ->where('day_at_in', '<=', $endOfWeek)
-            ->get();
+        $results = self::calculateTotalSeconds($start, $end, $id)->map(function ($history) {
+            return ceil(($history - 3600) / 3600);
+        });
 
-        return $weeklyData;
+        return $results->sum();
     }
 
-
-
-    public static function getNombres($weeklyData)
+    ///// Panier de flexibilité journalier
+    public static function getTimeFlexParPeriode($start, $end, $id)
     {
-        $nombres = $weeklyData->groupBy('localisation_id')->map(function ($entries) {
+        return self::calculateTotalSeconds($start, $end, $id)->map(function ($history) {
+            return ceil(($history - 32400) / 3600);
+        });
+    }
+
+    ///// Cumul du Panier de flexibilite
+    public static function totalHeureFlex($id)
+    {
+        $results = self::calculateTotalSeconds(null, null, $id)->map(function ($history) {
+            return ceil(($history - 32400) / 3600);
+        });
+
+        return $results->sum();
+    }
+
+    ///// Nombre d'employée sur chaque site pour une periode
+    public static function getNombres($periodeDate)
+    {
+        return $periodeDate->groupBy('localisation_id')->map(function ($entries) {
             return $entries->groupBy('day_at_in')->map(fn ($el) => $el->unique('employee_id')->count());
         });
-
-        return $nombres;
     }
 
+    /// Duree moyenne des heures des employée pour une periode
 
-    public static function getWeeklyEntries($weeklyData)
+    public static function getAverageHoursDuration($start, $end)
     {
-        $weeklyEntries =  $weeklyData->groupBy(function ($entry) {
-            $timestamp = Carbon::parse($entry->day_at_in);
-            return $timestamp->startOfWeek()->format('W');
-        });
-
-        return $weeklyEntries;
-    }
-
-    public static function getCountEntries($startOfWeek, $endOfWeek)
-    {
-        $countEntries = HistoryEntry::whereBetween('day_at_in', [$startOfWeek, $endOfWeek])
-            ->whereNotNull('time_at_in')
-            ->count();
-
-        return $countEntries;
-    }
-
-    public static function getNombreSites(string $name)
-    {
-        $nombreSites = count(Config::get($name));
-
-        return $nombreSites;
-    }
-
-    public static function getTotalHeures($startOfWeek, $endOfWeek)
-    {
-        $totalHeures = DB::table('history_entries')
+        $totalSeconds = DB::table('history_entries')
             ->select('employee_id', DB::raw('SUM(TIMESTAMPDIFF(SECOND, CONCAT(day_at_in, " ", time_at_in), CONCAT(day_at_out, " ", time_at_out))) AS total_seconds'))
-            ->whereBetween('day_at_in', [$startOfWeek, $endOfWeek])
-            ->whereNotNull('time_at_in')
-            ->whereNotNull('time_at_out')
+            ->whereBetween('day_at_in', [$start, $end])
+            ->whereNotNull(['time_at_in', 'time_at_out'])
             ->groupBy('employee_id')
-            ->get();
+            ->get()
+            ->avg('total_seconds');
 
-
-        $totalSeconds = $totalHeures->avg('total_seconds');
-
-
-        $hours = floor($totalSeconds / 3600);
-
-        $minutes = floor(($totalSeconds % 3600) / 60);
-
-        $seconds = $totalSeconds % 60;
-
-        return $hours . 'h:' . $minutes . 'm:' . $seconds;
+        return ceil($totalSeconds / 3600);
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Helper;
 use App\Models\Employee;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Config;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -36,50 +37,52 @@ class HomeController extends Controller
             $date_array = explode("to", $request->selectedDates);
 
             if (count($date_array) !== 2) {
-                //throw new InvalidArgumentException("Invalid date format in selectedDates");
                 return redirect()->back()->with('Invalid date format in selectedDates');
             }
 
             try {
-                $startOfWeek = Carbon::parse(trim($date_array[0]));
-                $endOfWeek = Carbon::parse(trim($date_array[1]));
+                $start = Carbon::parse(trim($date_array[0]));
+                $end = Carbon::parse(trim($date_array[1]));
             } catch (\Exception $e) {
 
                 throw new InvalidArgumentException("Error parsing dates: " . $e->getMessage());
             }
         } else {
             try {
-                $startOfWeek = Carbon::now()->startOfWeek();
-                $endOfWeek = Carbon::now()->endOfWeek();
+                $start = Carbon::now()->startOfWeek();
+                $end = Carbon::now()->endOfWeek();
             } catch (\Exception $e) {
 
                 throw new RuntimeException("Error generating default dates: " . $e->getMessage());
             }
         }
 
-        $weeklyData = Helper::getWeeklyData($startOfWeek, $endOfWeek);
-        $nombres = Helper::getNombres($weeklyData);
-        $weeklyEntries = Helper::getWeeklyEntries($weeklyData);
+        $periodeDate = HistoryEntry::whereBetween('day_at_in', [$start, $end])->get();
+        $countEntries = $periodeDate->count();
 
-        $countEntries = Helper::getCountEntries($startOfWeek, $endOfWeek);
-        $nombreSites = Helper::getNombreSites('localisation');
-        $totalHeures = Helper::getTotalHeures($startOfWeek, $endOfWeek);
+        $weeklyEntries = $periodeDate->groupBy(fn ($entry) => Carbon::parse($entry->day_at_in)->startOfWeek()->format('W'));
 
-        $entriesAndExits = HistoryEntry::with('employee')
-            ->orderBy('day_at_in', 'desc')
-            ->orderBy('time_at_in', 'desc')
+        $nombres = Helper::getNombres($periodeDate);
+
+        $nombreSites = count(Config::get('localisation'));
+
+
+        $averageHoursDuration = Helper::getAverageHoursDuration($start, $end);
+
+
+        $lastentriesAndExits = HistoryEntry::with('employee')
+            ->whereBetween('day_at_in', [$start, $end])
+            ->latest('day_at_in')
             ->take(10)
             ->get();
 
+        // Nombre d'employée sur chaque site pour le jour actuel
 
-        $day_nombres = HistoryEntry::whereDate('day_at_in', Carbon::now())
+        $employeeCountBySite = HistoryEntry::whereDate('day_at_in', Carbon::now())
             ->get(['localisation_id', 'day_at_in', 'employee_id'])
-            ->unique(['localisation_id', "day_at_in", "employee_id"])
             ->groupBy('localisation_id');
 
-
-
-        return view('index', compact('day_nombres', 'entriesAndExits', 'nombres', 'weeklyEntries', 'nombreSites', 'countEntries', 'totalHeures'));
+        return view('index', compact('employeeCountBySite', 'lastentriesAndExits', 'nombres', 'weeklyEntries', 'nombreSites', 'countEntries', 'averageHoursDuration'));
     }
 
 
@@ -90,41 +93,69 @@ class HomeController extends Controller
             $date_array = explode("to", $request->selectedDates);
 
             if (count($date_array) !== 2) {
-                //throw new InvalidArgumentException("Invalid date format in selectedDates");
                 return redirect()->back()->with('Invalid date format in selectedDates');
             }
 
             try {
-                $startOfWeek = Carbon::parse(trim($date_array[0]));
-                $endOfWeek = Carbon::parse(trim($date_array[1]));
+                $start = Carbon::parse(trim($date_array[0]));
+                $end = Carbon::parse(trim($date_array[1]));
             } catch (\Exception $e) {
 
                 throw new InvalidArgumentException("Error parsing dates: " . $e->getMessage());
             }
         } else {
             try {
-                $startOfWeek = Carbon::now()->startOfWeek();
-                $endOfWeek = Carbon::now()->endOfWeek();
+                $start = Carbon::now()->startOfWeek();
+                $end = Carbon::now()->endOfWeek();
             } catch (\Exception $e) {
 
                 throw new RuntimeException("Error generating default dates: " . $e->getMessage());
             }
         }
 
-        $history_entries = HistoryEntry::where('localisation_id', $id)->whereBetween('day_at_in', [$startOfWeek,  $endOfWeek])->orderBy('time_at_in', 'desc')->get();
+        $history_entries = HistoryEntry::where('localisation_id', $id)
+            ->whereBetween('day_at_in', [$start,  $end])
+            ->orderBy('time_at_in', 'desc')
+            ->get();
 
         $site = Helper::searchByNameAndId('localisation', $id);
 
-        $filtreEmployees = Employee::whereHas('historyEntries', function ($query) use ($id, $startOfWeek,  $endOfWeek) {
-            $query->where('localisation_id', $id)->whereBetween('day_at_in', [$startOfWeek,  $endOfWeek]);
+        $filtreEmployees = Employee::whereHas('historyEntries', function ($query) use ($id, $start,  $end) {
+            $query->where('localisation_id', $id)->whereBetween('day_at_in', [$start,  $end]);
         })->count();
 
         return view('pages.siteEmployees', compact('history_entries', 'filtreEmployees', 'site'));
     }
 
+
     public function employeeDetail(Request $request, $id)
     {
+        if (!empty($request->selectedDates)) {
+            $date_array = explode("to", $request->selectedDates);
+
+            if (count($date_array) !== 2) {
+                return redirect()->back()->with('Invalid date format in selectedDates');
+            }
+
+            try {
+                $start = Carbon::parse(trim($date_array[0]));
+                $end = Carbon::parse(trim($date_array[1]));
+            } catch (\Exception $e) {
+
+                throw new InvalidArgumentException("Error parsing dates: " . $e->getMessage());
+            }
+        } else {
+            try {
+                $start = Carbon::now()->startOfWeek();
+                $end = Carbon::now()->endOfWeek();
+            } catch (\Exception $e) {
+
+                throw new RuntimeException("Error generating default dates: " . $e->getMessage());
+            }
+        }
+
         $employee = Employee::findOrFail($id);
+
 
         if (!$employee) {
             abort(404);

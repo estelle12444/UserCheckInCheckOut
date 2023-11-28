@@ -24,30 +24,21 @@
             </li>
         </ul>
         <ul class="navbar-nav ms-auto">
-            @if (request()->is('/user-list'))
-                <li class="nav-item dropdown d-none d-lg-block">
+            @if (request()->is('flexibilite/employees') ||request()->is('employees/*/detail' ) || request()->is('absence' )|| request()->is('home' ))
+            <li class="nav-item d-none d-lg-block">
+                <form action="" id="date-filter">
+                    {{-- @dd( request()->get('selectedDates')) --}}
+                    <div class="input-group date datepicker navbar-date-picker">
+                        <span class="input-group-addon input-group-prepend border-right">
+                            <input type="text" id="datePicker" name="selectedDates" multiple>
+                            <span class="icon-calendar input-group-text calendar-icon"></span>
+                        </span>
 
-                    @php
-                        $currentSite = request()->segment(2);
-                        $localisations = config('localisation');
-                    @endphp
+                    </div>
+                </form>
 
-                    <select id="siteSelect"
-                        class="form-select nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split"
-                        aria-label="Large select example">
-                        <option selected>Selectionner le Site</option>
-                        @foreach ($localisations as $localisation)
-                            @php
-                                $siteId = $localisation['id'];
-                                $siteName = $localisation['name'];
-                            @endphp
-                            <option value="{{ $siteId }}" {{ $currentSite == $siteId ? 'selected' : '' }}>Site de
-                                {{ $siteName }}</option>
-                        @endforeach
-                    </select>
-
-                </li>
-            @else
+            </li>
+            @elseif ( request()->is('site/*/employees'))
                 <li class="nav-item dropdown d-none d-lg-block">
                     @php
                         $currentSite = request()->segment(2);
@@ -74,8 +65,7 @@
                         {{-- @dd( request()->get('selectedDates')) --}}
                         <div class="input-group date datepicker navbar-date-picker">
                             <span class="input-group-addon input-group-prepend border-right">
-                                <input type="text" id="datePicker" name="selectedDates"
-                                    value="{{ now()->format('Y-m-d') }}" multiple>
+                                <input type="text" id="datePicker" name="selectedDates" multiple>
                                 <span class="icon-calendar input-group-text calendar-icon"></span>
                             </span>
 
@@ -83,8 +73,10 @@
                     </form>
 
                 </li>
-
             @endif
+
+
+
             <li class="nav-item dropdown d-none d-lg-block user-dropdown">
                 <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                     <img class="img-xs rounded-circle"

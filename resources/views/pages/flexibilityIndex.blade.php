@@ -54,7 +54,7 @@
                                                                 </div>
                                                             </td>
                                                             <td> <h6  class="cbleu" ><em>{{ App\Helper::calculateTimeDifference($startOfWeek,$endOfWeek, $employee->id)}}</em></h6></td>
-                                                            <td> <h6 class="cRouge" > <em> {{ App\Helper::calculateTimeSupp($startOfWeek,$endOfWeek, $employee->id)}} </em></h6></td>
+                                                            <td> <h6 class="cRouge" > <em> {{ App\Helper::calculateTimeSuppParPeriode($startOfWeek,$endOfWeek, $employee->id)}} </em></h6></td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>

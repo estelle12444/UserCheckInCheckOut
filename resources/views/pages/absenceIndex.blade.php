@@ -27,7 +27,7 @@
                                         <div class="card-body" id="historyTable">
 
                                             @if (!$absence->isEmpty())
-                                                <h3>Employés Absents pour la journée du {{ $date }}</h3>
+                                                <h3>Employés Absents du {{$startOfWeek->format('Y-m-d') }} au  {{ $endOfWeek->format('Y-m-d')}} </h3>
                                                 <p class="card-subtitle card-subtitle-dash">Nous
                                                     avons {{ $nbre }} employés absents </p>
                                                 <div class="table-responsive  mt-1">
@@ -65,7 +65,7 @@
                                                                     <td>
                                                                         <h6>{{ App\Helper::searchByNameAndId('department', $employee->department_id)->name ?? '' }}
                                                                         </h6>
-                                                                        </p>
+                                                                      
                                                                     </td>
 
                                                                 </tr>
@@ -105,8 +105,9 @@
             var wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Feuille1');
 
-
-            var fileName = 'Absences' + '_' + 'employees' + '.xlsx';
+            let start = @json($startOfWeek->format('Y-m-d'));
+            let end =@json($endOfWeek->format('Y-m-d'));
+            var fileName = 'Absences_employees' + '_' + start +  'au '+ end+ '.xlsx';
             console.log("Nom du fichier", fileName);
 
             XLSX.writeFile(wb, fileName);

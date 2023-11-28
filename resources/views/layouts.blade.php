@@ -107,18 +107,35 @@
                 // Mettre à jour l'URL avec le nouvel identifiant de site
                 window.location.href = '/site/' + selectedSite + '/employees';
             });
+
+           var paramUrl = getQueryVariable('selectedDates');
+           console.log(paramUrl);
+
             flatpickr("#datePicker", {
                 mode: "range",
                 maxDate: new Date(),
-                //defaultDate:  ?,
+                defaultDate: paramUrl !== null && paramUrl !== undefined ? paramUrl.split('+to+') :  [ new Date(),  new Date()],
                 dateFormat: "Y-m-d",
                 onChange: function(selectedDates, dateStr, instance) {
-
-                    $('form#date-filter').submit();
-
-                    console.log('Dates sélectionnées:', selectedDates);
+                    if(selectedDates.length == 2) {
+                        $('form#date-filter').submit();
+                    }
+                    console.log('Dates sélectionnées:', selectedDates.length);
                 }
             });
+            //console.log(getQueryVariable('selectedDates').split('+to+'));
+
+            function getQueryVariable(variable) {
+            var query = window.location.search.substring(1);
+            var vars = query.split("&");
+            for (var i=0;i<vars.length;i++) {
+                var pair = vars[i].split("=");
+                if (pair[0] == variable) {
+                return pair[1];
+                }
+            }
+
+            }
 
         });
         document.getElementById('exportButton').addEventListener('click', function() {
