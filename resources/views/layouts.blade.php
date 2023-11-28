@@ -114,7 +114,7 @@
                 dateFormat: "Y-m-d",
                 onChange: function(selectedDates, dateStr, instance) {
 
-                    $('form#date-filter').submit();
+                    //$('form#date-filter').submit();
 
                     console.log('Dates sélectionnées:', selectedDates);
                 }

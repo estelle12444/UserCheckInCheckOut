@@ -70,7 +70,7 @@
 
                 </li>
                 <li class="nav-item d-none d-lg-block">
-                    <form action="" id="date-filter">
+                    {{-- <form action="" id="date-filter"> --}}
                         {{-- @dd( request()->get('selectedDates')) --}}
                         <div class="input-group date datepicker navbar-date-picker">
                             <span class="input-group-addon input-group-prepend border-right">
@@ -80,7 +80,7 @@
                             </span>
 
                         </div>
-                    </form>
+                    {{-- </form> --}}
 
                 </li>
 

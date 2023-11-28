@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Entry;
+use App\Helper;
 use App\Models\Employee;
 use App\Models\HistoryEntry;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
@@ -52,12 +54,16 @@ class HistoryEntryController extends Controller
         $employeeHistories = HistoryEntry::where([
             'employee_id' => $employee->id,
             'day_at_out' => null
-        ])->first();
+        ])->latest()->first();
 
         $entry = Entry::IN;
 
         if(!is_null($employeeHistories)){
-            if($employeeHistories->localisation_id == $request->localisation_id){
+            $now = Carbon::now();
+            $date = Carbon::parse($employeeHistories->date_at_in .' '.$employeeHistories->time_at_in);
+            if($now->diffInHours($date) > 20){
+                $this->createHistory($request, $employee);
+            }elseif($employeeHistories->localisation_id == $request->localisation_id){
                 $this->updateHistory($employeeHistories, $request);
                 $entry = Entry::OUT;
             }else{
@@ -98,6 +104,42 @@ class HistoryEntryController extends Controller
             'employee_id' => $employee->id,
             'day_at_in' => now()->format('Y-m-d'),
             'time_at_in' => now()->format('H:i:s'),
+        ]);
+    }
+
+    private function validate_key($key, $arr){
+        return array_key_exists($key, $arr) && isset($arr[$key]);
+    }
+
+    public function histories(Request $request){
+        $validator = Validator::make($request->all(), [
+            'start' => 'nullable|date',
+            'end' => 'nullable|date'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => "Bad request",
+                'errors' => $validator->errors(),
+                'success' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $data = [...$request->all()];
+
+        if($this->validate_key('end', $data) && $this->validate_key('start', $data)){
+            $histories = HistoryEntry::whereBetween('day_at_in',[Carbon::parse($data['start'])->format('Y-m-d'), Carbon::parse($data['end'])->format('Y-m-d')]);
+        }elseif($this->validate_key('start', $data)){
+            $date = Carbon::parse($data['start']);
+            $histories = HistoryEntry::whereBetween('day_at_in',[$date->startOfWeek()->format('Y-m-d'), $date->endOfWeek()->format('Y-m-d')]);
+        }else{
+            $now = Carbon::now();
+            $histories = HistoryEntry::whereBetween('day_at_in',[$now->startOfWeek()->format('Y-m-d'), $now->endOfWeek()->format('Y-m-d')]);
+        }
+        $entriesByLocalisationByDay = Helper::getNombres($histories->get());
+
+        return response()->json([
+            'data' => $entriesByLocalisationByDay
         ]);
     }
 }
