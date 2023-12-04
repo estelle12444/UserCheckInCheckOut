@@ -38,13 +38,14 @@ class Helper
     ///// Panier de flexibilité journalier
     public static function getTimeFlexParJour($id, $day)
     {
-        return self::calculateTotalSeconds($day, $day, $id)->map(function ($history) {
+        $results=self::calculateTotalSeconds($day, $day, $id)->map(function ($history) {
             return ceil(($history - 32400) / 3600);
         });
+        return $results->sum().'h';
     }
     // Heure Total journalier
 
-    public static function getHeuresEmployesParJour(int $employeId, string $jour): float
+    public static function getHeuresEmployesParJour(int $employeId, string $jour)
     {
         $regularHeure = 1;
         $overtime = 0;
@@ -57,8 +58,21 @@ class Helper
                 ->diffInHours(Carbon::parse($pointage->day_at_out . " " . $pointage->time_at_out));
         }) - $regularHeure;
 
-        return $overtime ;
+        return $overtime .'h';
     }
+    public static function calculateTimeDifferenceAndOvertime($start, $end)
+    {
+        $difference = Carbon::parse($start)->diffInHours(Carbon::parse($end));
+
+        $regularHeure = 8;
+        $overtime = ceil($difference - $regularHeure);
+
+        return [
+            'difference' => $difference ,
+            'overtime' => $overtime ,
+        ];
+    }
+
 
     /// Fonctions affichantes les élements pour une periode /////////////
 
@@ -70,15 +84,16 @@ class Helper
             return ceil(($history - 3600) / 3600);
         });
 
-        return $results->sum();
+        return $results->sum().'h';
     }
 
     ///// Panier de flexibilité journalier
     public static function getTimeFlexParPeriode($start, $end, $id)
     {
-        return self::calculateTotalSeconds($start, $end, $id)->map(function ($history) {
+         $results =self::calculateTotalSeconds($start, $end, $id)->map(function ($history) {
             return ceil(($history - 32400) / 3600);
         });
+        return $results->sum().'h';
     }
 
     ///// Cumul du Panier de flexibilite
@@ -88,7 +103,7 @@ class Helper
             return ceil(($history - 32400) / 3600);
         });
 
-        return $results->sum();
+        return $results->sum().'h';
     }
 
     ///// Nombre d'employée sur chaque site pour une periode
@@ -111,6 +126,6 @@ class Helper
             ->get()
             ->avg('total_seconds');
 
-        return ceil($totalSeconds / 3600);
+        return ceil($totalSeconds / 3600) .'h';
     }
 }

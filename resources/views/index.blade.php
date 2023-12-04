@@ -24,7 +24,7 @@
                                         </div>
 
                                         <div class="d-none d-md-block">
-                                            <p class="statistics-title">Durée moyenne des heures de travail</p>
+                                            <p class="statistics-title">Temps moyen passé au travail</p>
                                             @if (isset($averageHoursDuration))
                                                 <h3 class="rate-percentage">{{ $averageHoursDuration }} </h3>
                                             @else
@@ -44,7 +44,8 @@
                                                     <div class="d-sm-flex justify-content-between align-items-start mb-3">
 
                                                         <h4 class="card-title card-title-dash">
-                                                            Statistique des employées par site</h4>
+                                                            Représentation graphique du nombre d'employés entrants par site
+                                                        </h4>
                                                         <div id="performance-line-legend"></div>
                                                     </div>
                                                     @foreach ($weeklyEntries as $weekNumber => $entries)
@@ -73,8 +74,7 @@
                                                                         <td>Nombre d'employés entrants par site </td>
                                                                     </h4>
                                                                     <h5 class="card-subtitle card-subtitle-dash"
-                                                                        style="color:rgb(249, 139, 99)">Jour:
-                                                                        {{ Carbon\Carbon::now()->dayName }}
+                                                                        style="color:rgb(249, 139, 99)">Aujourd'hui
                                                                     </h5>
 
                                                                     <table class="table table-striped">
@@ -121,15 +121,15 @@
                                                 </div>
                                             </div>
                                             <div class="table-responsive  mt-1">
-                                                <table class="table select-table  table-hover">
+                                                <table id="lastTable" class="table select-table  table-hover">
                                                     <thead class="orange">
                                                         <tr>
                                                             <th class="text-white pl-2">Site</th>
                                                             <th class="text-white">Employée</th>
                                                             <th class="text-white">Département</th>
-                                                            <th class="text-white">Jour d'entrée</th>
-                                                            <th class="text-white">Heure d'entrée</th>
-                                                            <th class="text-white">Heure de Sortie</th>
+                                                            <th class="text-white">Date</th>
+                                                            <th class="text-white">Entrée</th>
+                                                            <th class="text-white">Sortie</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -172,7 +172,8 @@
                                                                 </td>
                                                                 <td>
                                                                     <h6 class="cRouge">
-                                                                        <em>{{ $history_entry->time_at_out }}</em></h6>
+                                                                        <em>{{ $history_entry->time_at_out }}</em>
+                                                                    </h6>
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -223,8 +224,10 @@
             let siteData = Object.values(el);
             let [startDate, endDate] = [moment(start), moment(end)];
 
-            let diff = endDate.diff(startDate, 'days');
-            if(start == null || end == null || diff <= 7){
+            let diff = endDate.diff(startDate, 'days') + 1;
+            console.log(diff, sites, siteData)
+
+            if (start == null || end == null || diff <= 7) {
                 labels = ["LUN", "MAR", "MER", "JEU", "VEN", "SAM", "DIM"];
 
                 for (let index = 0; index < sites.length; index++) {
@@ -238,11 +241,15 @@
                     datasetValues.push(datasetOptionGenerator(chartConfig[sites[index] - 1], jours));
                 }
 
-            }else{
+            } else {
                 labels = getRangeDate(startDate, endDate);
                 for (let index = 0; index < sites.length; index++) {
-                    let jours = Array(diff+1).fill([0]).flat();
+                    let jours = Array(diff).fill([0]).flat();
+                    console.log(siteData[index])
+
                     for (const iterator in siteData[index]) {
+                        console.log(siteData[index][iterator], iterator)
+
                         if (siteData[index][iterator] != 0) {
                             let goodDate = iterator.replace(/(\d{4})\-(\d{2})\-(\d{2})/, "$3/$2/$1");
                             let goodIndex = labels.indexOf(goodDate);
@@ -311,14 +318,14 @@
             document.getElementById('performance-line-legend').innerHTML = salesTop.generateLegend();
         });
 
-        function getRangeDate(startDate, endDate){
+        function getRangeDate(startDate, endDate) {
             const fixFormatting = (str) => str.replace(/^(\d{2})\/(\d{2})\/(\d{4})$/, "$2/$1/$3");
 
             let range = [];
             let fromDate = new Date(startDate.format('L'));
             let finishDate = new Date(endDate.format('L'));
 
-            while(fromDate <= finishDate){
+            while (fromDate <= finishDate) {
                 range.push(fixFormatting(moment(fromDate).format('L')));
                 let newDate = fromDate.setDate(fromDate.getDate() + 1);
                 fromDate = new Date(newDate);
@@ -327,28 +334,34 @@
             return range;
         }
 
-        function getPeriodFilter(){
+        function getPeriodFilter() {
             let [start, end] = [null, null];
             let params = new URL(document.location).searchParams.get('selectedDates');
 
-            if(params == null) return [start, end];
+            if (params == null) return [start, end];
 
-            params = params.split(new RegExp('to| ')).filter((el) => el.length > 0);
+            params = params.split(/to| /).filter((el) => el.length > 0);
 
-            if(params.length == 1){
+            if (params.length == 1) {
                 start = params[0];
-            }else if(params.length == 2){
+            } else if (params.length == 2) {
                 let dates = params.map(el => new Date(el));
                 [start, end] = dates[0].getTime() < dates[1].getTime() ? params : params.reverse();
             }
             return [start, end];
         }
 
-        async function getEntriesData(start=null, end=null){
-            let response = await fetch(`${window.location.origin}/api/histories`,{
+        async function getEntriesData(start = null, end = null) {
+            let response = await fetch(`${window.location.origin}/api/histories`, {
                 method: "POST",
-                mode: "same-origin",
-                body:JSON.stringify({start, end})
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    start,
+                    end
+                })
             });
 
             const resultat = await response.json();
@@ -379,5 +392,12 @@
                 pointBorderColor: repeat('#fff'),
             }
         }
+        new DataTable('#lastTable', {
+            paging: true,
+            pageLength: 5,
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/fr-FR.json'
+            }
+        });
     </script>
 @endpush

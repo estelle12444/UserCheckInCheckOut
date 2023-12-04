@@ -71,8 +71,4 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function showRegistrationEmployeeForm(){
-
-        return view('auth.employeeRegister');
-    }
 }

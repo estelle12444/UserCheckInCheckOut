@@ -46,8 +46,8 @@
                                                             <th class="text-white pl-2">Employée</th>
                                                             <th class="text-white">Département</th>
                                                             <th class="text-white">Date </th>
-                                                            <th class="text-white"> Heure d'entrée</th>
-                                                            <th class="text-white"> Heure de Sortie</th>
+                                                            <th class="text-white"> Entrée</th>
+                                                            <th class="text-white"> Sortie</th>
                                                             <th class="text-white"> Heure travaillée</th>
                                                             <th class="text-white"> Panier de flexibilité</th>
                                                         </tr>
@@ -101,7 +101,7 @@
                                                                 </td>
                                                                 <td>
                                                                     {{ App\Helper::getTimeFlexParJour($history_entry->employee->id, $history_entry->day_at_in) }}
-                                                
+
                                                                 </td>
 
                                                             </tr>
@@ -144,6 +144,13 @@
 
             XLSX.writeFile(wb, fileName);
             console.log("ficher telechargé créé avec succès");
+        });
+        new DataTable('#employeeTable', {
+            paging: true,
+            pageLength: 5,
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/fr-FR.json'
+            }
         });
     </script>
 @endpush

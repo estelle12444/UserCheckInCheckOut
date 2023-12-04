@@ -108,7 +108,7 @@ class HistoryEntryController extends Controller
     }
 
     private function validate_key($key, $arr){
-        return array_key_exists($key, $arr) && isset($arr[$key]);
+        return array_key_exists($key, $arr) && !is_null($arr[$key]);
     }
 
     public function histories(Request $request){

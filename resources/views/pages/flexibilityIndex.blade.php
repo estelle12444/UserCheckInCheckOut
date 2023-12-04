@@ -13,7 +13,7 @@
                                     <div class="card-body">
                                         <div class="d-sm-flex justify-content-between align-items-start">
                                             <div>
-                                                <h4 class="card-title card-title-dash">Listes des employées de Sah
+                                                <h4 class="card-title card-title-dash">Listes des employées de Sah Analytics
                                                 </h4>
                                                 <p class="card-subtitle card-subtitle-dash">Nous
                                                     avons {{ $employeeCount }} employées</p>
@@ -26,8 +26,8 @@
                                                     <tr>
                                                         <th class="text-white  pl-2">Quicklock ID</th>
                                                         <th class="text-white">Nom et Poste</th>
-                                                        <th class="text-white">Heures travaillées</th>
-                                                        <th class="text-white"> heures Supp</th>
+                                                        <th class="text-white">Total des Heures travaillées</th>
+                                                        <th class="text-white">Total du Panier de flexibilité </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -53,8 +53,8 @@
 
                                                                 </div>
                                                             </td>
-                                                            <td> <h6  class="cbleu" ><em>{{ App\Helper::calculateTimeDifference($startOfWeek,$endOfWeek, $employee->id)}}</em></h6></td>
-                                                            <td> <h6 class="cRouge" > <em> {{ App\Helper::calculateTimeSuppParPeriode($startOfWeek,$endOfWeek, $employee->id)}} </em></h6></td>
+                                                            <td> <h6  class="cbleu" >{{ App\Helper::getTimeDifferenceParPeriode($dateRange['start'],$dateRange['end'], $employee->id)}}</h6></td>
+                                                            <td> <h6 class="cRouge" > {{ App\Helper::getTimeFlexParPeriode($dateRange['start'],$dateRange['end'], $employee->id)}} </h6></td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>

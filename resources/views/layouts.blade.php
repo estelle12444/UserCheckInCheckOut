@@ -15,19 +15,16 @@
     <link rel="stylesheet" href="{{ asset('vendors/typicons/typicons.css') }}">
     <link rel="stylesheet" href="{{ asset('vendors/simple-line-icons/css/simple-line-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('vendors/css/vendor.bundle.base.css') }}">
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
-    {{-- <link rel="stylesheet" href="{{ asset('vendors/datatables.net-bs4/dataTables.bootstrap4.css') }}"> --}}
-    <link rel="stylesheet" href="{{ asset('js/select.dataTables.min.css') }}">
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+
+
     <link rel="stylesheet" href="{{ asset('css/vertical-layout-light/style.css') }}">
-    <!-- endinject -->
     <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}" />
     <link rel="apple-touch-icon" href="{{ asset('images/favicon.png') }}" />
 
-    {{-- <script src="{{ asset('node_modules/jspdf/dist/jspdf.min.js') }}"></script> --}}
-    <!-- Add Bootstrap CSS (if not already included) -->
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
     <!-- Add Daterangepicker CSS and JS -->
@@ -97,8 +94,10 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 
+    <script src="  https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="    https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script>
         // Utilisation de jQuery pour détecter le changement de  sélection
         $(document).ready(function() {
@@ -108,35 +107,38 @@
                 window.location.href = '/site/' + selectedSite + '/employees';
             });
 
-           var paramUrl = getQueryVariable('selectedDates');
-           console.log(paramUrl);
+
+            var paramUrl = getQueryVariable('selectedDates');
+
+            var firstday = @json(Carbon\Carbon::now()->startOfDay());
+            var lastday = @json(Carbon\Carbon::now()->endOfWeek());
 
             flatpickr("#datePicker", {
                 mode: "range",
                 maxDate: new Date(),
-                defaultDate: paramUrl !== null && paramUrl !== undefined ? paramUrl.split('+to+') :  [ new Date(),  new Date()],
+                defaultDate: paramUrl !== null && paramUrl !== undefined ? paramUrl.split('+to+') : [
+                    firstday, lastday
+                ],
                 dateFormat: "Y-m-d",
                 onChange: function(selectedDates, dateStr, instance) {
-                    if(selectedDates.length == 2) {
+                    if (selectedDates.length == 2) {
                         $('form#date-filter').submit();
                     }
-                    console.log('Dates sélectionnées:', selectedDates.length);
+
                 }
             });
             //console.log(getQueryVariable('selectedDates').split('+to+'));
 
             function getQueryVariable(variable) {
-            var query = window.location.search.substring(1);
-            var vars = query.split("&");
-            for (var i=0;i<vars.length;i++) {
-                var pair = vars[i].split("=");
-                if (pair[0] == variable) {
-                return pair[1];
+                var query = window.location.search.substring(1);
+                var vars = query.split("&");
+                for (var i = 0; i < vars.length; i++) {
+                    var pair = vars[i].split("=");
+                    if (pair[0] == variable) {
+                        return pair[1];
+                    }
                 }
             }
-
-            }
-
         });
         document.getElementById('exportButton').addEventListener('click', function() {
             try {
@@ -158,8 +160,6 @@
                         orientation: 'portrait'
                     }
                 };
-
-
                 // New Promise-based usage:
                 html2pdf().set(opt).from(historyTable).save();
 

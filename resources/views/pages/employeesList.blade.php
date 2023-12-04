@@ -13,23 +13,28 @@
                                         <div class="card-body">
                                             <div class="d-sm-flex justify-content-between align-items-start">
                                                 <div>
-                                                    <h4 class="card-title card-title-dash">Listes des employées du
-                                                        dashboard
+                                                    <h4 class="card-title card-title-dash">Listes des employées de Sah
+                                                        Analytics
                                                     </h4>
                                                     <p class="card-subtitle card-subtitle-dash">Nous
                                                         avons {{ $employeeCount }} employées</p>
                                                 </div>
+                                                <div>
+                                                    <a href="{{ route('employeeRegister') }}"
+                                                        class="btn btn-primary btn-lg text-white mb-0 me-0">
+                                                        <i class="mdi mdi-account-plus"></i> Ajouter un nouveau employé</a>
+                                                </div>
 
                                             </div>
                                             <div class="table-responsive  mt-1">
-                                                <table class="table select-table table-hover ">
+                                                <table id="employeeList" class="table select-table table-hover ">
                                                     <thead class="orange ">
                                                         <tr>
                                                             <th class="text-white pl-2">Nom</th>
                                                             <th class="text-white">Designation</th>
                                                             <th class="text-white">Matricule</th>
                                                             <th class="text-white">Administration</th>
-                                                            <th class="text-white"> Detail</th>
+                                                            <th class="text-white"> Actions</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -40,6 +45,8 @@
                                                                         @if ($employee->image_path)
                                                                             <img src="{{ asset($employee->image_path) }}"
                                                                                 alt="{{ $employee->name }}">
+                                                                            {{-- <img src="{{ asset('storage/' . $employee->image_path) }}"
+                                                                                alt="{{ $employee->name }}"> --}}
                                                                         @else
                                                                             Aucune image
                                                                         @endif
@@ -52,9 +59,7 @@
                                                                 <td>{{ $employee->matricule }}</td>
                                                                 <td>
                                                                     @if ($employee->activated)
-                                                                        <form
-                                                                            action="{{ route('deactivate.employee', $employee->id) }}"
-                                                                            method="post">
+                                                                        <form action="{{ route('deactivate.employee', $employee->id) }}" method="post">
                                                                             @csrf
                                                                             @method('DELETE')
                                                                             <button class=" text-white btn btn-success"
@@ -71,9 +76,12 @@
                                                                     @endif
                                                                 </td>
                                                                 <td>
-                                                                    <a class=" text-white btn btn-info"
+                                                                    <a class=" text-white btn btn-danger btn-icon-text"
+                                                                        href="{{ route('employees.show', ['id' => $employee->id]) }}">
+                                                                        <i class="mdi mdi-pencil"></i></a>
+                                                                    <a class=" text-white btn btn-primary"
                                                                         href="{{ route('employeeDetail', ['id' => $employee->id]) }}">
-                                                                        Voir Plus </a>
+                                                                        <i class="mdi mdi-account-details"></i> </a>
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -91,3 +99,14 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script>
+        new DataTable('#employeeList', {
+            paging: true,
+            pageLength: 10,
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/fr-FR.json'
+            }
+        });
+    </script>
+@endpush

@@ -11,8 +11,70 @@ use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use RuntimeException;
 
+use App\Imports\EmployeesImport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class EmployeeController extends Controller
 {
+
+    public function showRegistrationEmployeeForm()
+    {
+        return view('auth.employeeRegister');
+    }
+
+
+    public function importEmployee(Request $request)
+    {
+        $file = $request->file('file');
+        if ($file->isValid()) {
+            $extension = $file->getClientOriginalExtension();
+            if (in_array($extension, ['xls', 'xlsx', 'csv'])) {
+
+                Excel::import(new EmployeesImport(), $file);
+                return redirect('/employees/list')->with('success', 'Les employés ont été importés avec succès.');
+            } else {
+                return redirect()->back()->with('error', 'Le fichier n\'est pas un fichier Excel valide.');
+            }
+        } else {
+            return redirect()->back()->with('error', 'Le fichier n\'est pas un fichier valide.');
+        }
+    }
+
+    const STRING_RULE = 'required|string|max:255';
+
+
+    public function updateEmployee(Request $request, $id)
+    {
+        $request->validate([
+            'matricule' => self::STRING_RULE,
+            'name' => self::STRING_RULE,
+            'designation' => self::STRING_RULE,
+            'department_id' => 'required|int',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ], [
+            'image.image' => 'The file must be an image.',
+            'image.mimes' => 'The image must be a file of type: jpeg, png, jpg, gif, svg.',
+            'image.max' => 'The image may not be greater than 2048 kilobytes.',
+        ]);
+
+        $employee = Employee::findOrFail($id);
+        $employee->matricule = $request->input('matricule');
+        $employee->name = $request->input('name');
+        $employee->designation = $request->input('designation');
+        $employee->department_id = $request->input('department_id');
+
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('photos', 'public');
+            $employee->image_path = $imagePath;
+        }
+
+        $employee->save();
+
+        return redirect('/employees/list')->with('success', 'Données mises à jour avec succès.');
+    }
+
+
     public function index()
     {
         if (Auth::user()->role_id == 1) {
@@ -25,11 +87,10 @@ class EmployeeController extends Controller
     }
 
 
-    public function show($id)
+    public function show($id,Request $request)
     {
-
         $employee = Employee::findOrFail($id);
-        return view('pages.employeeShow', compact('employee'));
+        return view('pages.employeeShow', compact('employee','request'));
     }
 
 
@@ -82,83 +143,62 @@ class EmployeeController extends Controller
         }
     }
 
-    public function flexibilityIndex(Request $request)
+    public function dateRangeFromRequest($selectedDates)
     {
-        if (!empty($request->selectedDates)) {
-            $date_array = explode("to", $request->selectedDates);
+        if (!empty($selectedDates)) {
+            $dateArray = explode("to", $selectedDates);
 
-            if (count($date_array) !== 2) {
-                //throw new InvalidArgumentException("Invalid date format in selectedDates");
+            if (count($dateArray) !== 2) {
                 return redirect()->back()->with('Invalid date format in selectedDates');
             }
 
             try {
-                $startOfWeek = Carbon::parse(trim($date_array[0]));
-                $endOfWeek = Carbon::parse(trim($date_array[1]));
+                $start = Carbon::parse(trim($dateArray[0]));
+                $end = Carbon::parse(trim($dateArray[1]));
             } catch (\Exception $e) {
-
                 throw new InvalidArgumentException("Error parsing dates: " . $e->getMessage());
             }
         } else {
             try {
-                $startOfWeek = Carbon::now()->startOfWeek();
-                $endOfWeek = Carbon::now()->endOfWeek();
+                $start = Carbon::now()->startOfWeek();
+                $end = Carbon::now()->endOfWeek();
             } catch (\Exception $e) {
-
                 throw new RuntimeException("Error generating default dates: " . $e->getMessage());
             }
         }
+
+        return compact('start', 'end');
+    }
+
+    public function flexibilityIndex(Request $request)
+    {
+        $dateRange = $this->dateRangeFromRequest($request->selectedDates);
 
         if (Auth::user()->role_id == 1) {
             $employees = Employee::all();
             $employeeCount = $employees->count();
 
-            return view('pages.flexibilityIndex', compact('employees', 'employeeCount', 'startOfWeek', 'endOfWeek'));
+            return view('pages.flexibilityIndex', compact('employees', 'employeeCount', 'dateRange'));
         } else {
             abort(403, 'Unauthorized action.');
         }
     }
 
-
-    public function absenceIndex(Request $request,)
+    public function absenceIndex(Request $request)
     {
-        if (!empty($request->selectedDates)) {
-            $date_array = explode("to", $request->selectedDates);
-
-            if (count($date_array) !== 2) {
-                //throw new InvalidArgumentException("Invalid date format in selectedDates");
-                return redirect()->back()->with('Invalid date format in selectedDates');
-            }
-
-            try {
-                $startOfWeek = Carbon::parse(trim($date_array[0]));
-                $endOfWeek = Carbon::parse(trim($date_array[1]));
-            } catch (\Exception $e) {
-
-                throw new InvalidArgumentException("Error parsing dates: " . $e->getMessage());
-            }
-        } else {
-            try {
-                $startOfWeek = Carbon::now()->startOfWeek();
-                $endOfWeek = Carbon::now()->endOfWeek();
-            } catch (\Exception $e) {
-
-                throw new RuntimeException("Error generating default dates: " . $e->getMessage());
-            }
-        }
-
+        $dateRange = $this->dateRangeFromRequest($request->selectedDates);
 
         $absence = DB::table('employees')
-            ->whereNotExists(function ($query) use ($startOfWeek,  $endOfWeek) {
+            ->whereNotExists(function ($query) use ($dateRange) {
                 $query->select(DB::raw(1))
                     ->from('history_entries')
                     ->whereRaw('history_entries.employee_id = employees.id')
-                    ->whereBetween('history_entries.day_at_in', [$startOfWeek,  $endOfWeek]);
+                    ->whereBetween('history_entries.day_at_in', [$dateRange['start'], $dateRange['end']]);
             })
             ->get();
 
         $nbre = $absence->count();
 
-        return view('pages.absenceIndex', compact('absence', 'startOfWeek', 'endOfWeek', 'nbre'));
+        return view('pages.absenceIndex', compact('absence', 'dateRange', 'nbre'));
     }
 }

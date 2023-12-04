@@ -6,9 +6,7 @@
             <div class="col-sm-12">
                 <div class="home-tab">
                     <div class="d-sm-flex align-items-center justify-content-between border-bottom">
-
                         <div class="btn-wrapper">
-
                             <a href="#" class="btn btn-otline-dark"><i class="icon-printer"></i> Print</a>
                             <a href="#" id="exportButton" class="btn btn-primary text-white me-0"><i
                                     class="icon-download"></i>
@@ -17,7 +15,6 @@
                                     class="icon-download"></i>
                                 Exporter en excel</a>
                         </div>
-
                     </div>
                     <div class="tab-content tab-content-basic">
                         <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
@@ -25,11 +22,9 @@
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card card-rounded">
                                         <div class="card-body" id="historyTable">
-
                                             @if ($employee)
                                                 <div class="card-header orange text-white">Fiche de l'employé:
                                                     {{ $employee->name }}</div>
-
                                                 <div class="card-body">
                                                     <div class="row">
                                                         <div class="col-md-4">
@@ -38,6 +33,8 @@
                                                                     style="border: 2px solid #EF8032;"
                                                                     src="{{ asset($employee->image_path) }}"
                                                                     alt="{{ $employee->name }}">
+                                                                {{-- <img src="{{ asset('storage/' . $employee->image_path) }}"
+                                                                                alt="{{ $employee->name }}"> --}}
                                                             @else
                                                                 <p class="text-muted">Aucune image</p>
                                                             @endif
@@ -51,7 +48,7 @@
                                                                 <div class="col-md-5">
                                                                     <h6 class="font-weight-bold">Panier de flexibilité Total
                                                                         : </h6>
-                                                                    <p>{{ App\Helper::totalHeureFlex($employee->id) }} H
+                                                                    <p>{{ App\Helper::totalHeureFlex($employee->id) }}
                                                                     </p>
                                                                 </div>
                                                             </div>
@@ -65,58 +62,59 @@
                                                                     </p>
                                                                 </div>
                                                                 <div class="col-md-5">
-                                                                    <h6 class="font-weight-bold"> Total d'heures
-                                                                        : </h6>
+                                                                    <h6 class="font-weight-bold"> Total d'heure: </h6>
                                                                     <p> H
                                                                     </p>
                                                                 </div>
                                                             </div>
-
                                                             <h6 class="font-weight-bold">Quicklock ID:</h6>
                                                             <p>{{ $employee->matricule }}</p>
-
-
                                                         </div>
-
                                                         <h3 class="my-4 text-info">Historiques des Entrées et de sorties
                                                         </h3>
-                                                        <table id="employeeTablee" class="table table-striped">
+                                                        <table id="DetailEmployeeTable" class="table table-striped dataTable">
                                                             <thead class="bg-info">
                                                                 <tr>
                                                                     <th>Site </th>
                                                                     <th>Date</th>
-                                                                    <th>Heure d'Entrée</th>
-                                                                    <th>Heure de sortie</th>
-                                                                    <th>Total heure</th>
+                                                                    <th>Entrée</th>
+                                                                    <th>Sortie</th>
+                                                                    <th>Heure travaillée</th>
                                                                     <th>Panier de flexibilité</th>
-
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                @foreach ($employee->historyEntries as $entry)
-                                                                    <tr>
+                                                                <tr>
+                                                                    @php
+                                                                        $resultats = [];
+                                                                        $totalDifference = 0;
+                                                                        $totalOvertime = 0;
+                                                                    @endphp
+
+                                                                    @foreach ($groupedHistoryEntries as $entry)
                                                                         <td>{{ App\Helper::searchByNameAndId('localisation', $entry->localisation_id)->name ?? '' }}
                                                                         </td>
                                                                         <td>{{ $entry->day_at_in }}</td>
-
-                                                                        <td>
-                                                                            {{ App\Helper::getHeuresEmployesParJour($entry->employee->id, $entry->day_at_in) }}
-                                                                            h
-                                                                        </td>
-                                                                        <td>
-                                                                            {{ App\Helper::getTimeFlexParJour($entry->employee->id, $entry->day_at_in) }}h
-                                                                            {{-- @if ({{ App\Helper::getTimeFlexParJour($entry->employee->id, $entry->day_at_in) }})
-                                                                                 <i class="mdi mdi-arrow-up-drop-circle text-success"></i>
+                                                                        <td>{{ $entry->time_at_in }}</td>
+                                                                        <td>{{ $entry->time_at_out }}</td>
+                                                                        @php
+                                                                            $result = App\Helper::calculateTimeDifferenceAndOvertime($entry->time_at_in, $entry->time_at_out);
+                                                                            $resultats[] = $result;
+                                                                            $totalDifference += $result['difference'] ?? 0;
+                                                                            $totalOvertime += $result['overtime'] ?? 0;
+                                                                        @endphp
+                                                                        <td> {{ $result['difference'] }} h</td>
+                                                                        <td> {{ $result['overtime'] }} h
+                                                                            @if ($result['overtime'] > 0)
+                                                                                <i
+                                                                                    class="mdi mdi-arrow-up-drop-circle text-success"></i>
                                                                             @else
-                                                                                <i class="mdi mdi-arrow-top-right text-danger"></i>
-                                                                            @endif --}}
-
-
+                                                                                <i
+                                                                                    class="mdi mdi-arrow-down-drop-circle text-danger"></i>
+                                                                            @endif
                                                                         </td>
-
-
-                                                                    </tr>
-                                                                @endforeach
+                                                                    @endforeach
+                                                                </tr>
                                                             </tbody>
                                                         </table>
                                                     @else
@@ -125,7 +123,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -140,7 +137,6 @@
                                             <div>
                                                 <h4 class="card-title card-title-dash">
                                                     Statistique des heures cumulées d'un employée par jour</h4>
-
                                             </div>
                                             <div id="performance-line-legend"></div>
                                         </div>
@@ -154,7 +150,6 @@
                     </div>
                     <div class="col-lg-4 d-flex flex-column">
                         <div class="row flex-grow">
-
                             <div class="col-md-6 col-lg-12 grid-margin stretch-card">
                                 <div class="row flex-grow">
                                     <div class="col-12 grid-margin stretch-card">
@@ -177,16 +172,16 @@
                                                                 @php
                                                                     $i = 0;
                                                                 @endphp
-                                                                @foreach ($result as $key => $hour)
+                                                                {{-- @foreach ($result as $key => $hour)
                                                                     <tr>
                                                                         <td>N°{{ $key }}</td>
                                                                         <td>{{ $weekdays[$i] }}</td>
-                                                                        <td>{{ $hour }} H</td>
+                                                                        <td>{{ $hour }} </td>
                                                                     </tr>
                                                                     @php
                                                                         $i++;
                                                                     @endphp
-                                                                @endforeach
+                                                                @endforeach --}}
 
                                                             </tbody>
                                                         </table>
@@ -210,8 +205,15 @@
 @endsection
 @push('scripts')
     <script>
+        new DataTable('#DetailEmployeeTable', {
+            paging: true,
+            pageLength: 5,
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/fr-FR.json'
+            }
+        });
         document.getElementById('exportButtonExcell').addEventListener('click', function() {
-            var table = document.getElementById('employeeTablee');
+            var table = document.getElementById('DetailEmployeeTable');
             console.log(" table selectionné OK");
 
             var ws = XLSX.utils.table_to_sheet(table);
@@ -232,6 +234,8 @@
             XLSX.writeFile(wb, fileName);
             console.log("ficher telechargé créé avec succès");
         });
+
+
 
         let data = [0, 0, 0, 0, 0, 0, 0];
         let weekdays = @json(array_keys($result));

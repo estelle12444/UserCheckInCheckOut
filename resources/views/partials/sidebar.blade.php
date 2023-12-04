@@ -65,7 +65,7 @@
                         <a class="nav-link" href="{{route('employees.index')}}"> Employés </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="">Gestion des incidents</a>
+                        <a class="nav-link" href="{{route('incidents.index')}}">Gestion des incidents</a>
                     </li>
                 </ul>
             </div>

@@ -6,10 +6,10 @@
             </button>
         </div>
         <div>
-            <a class="navbar-brand brand-logo" href="index.html">
+            <a class="navbar-brand brand-logo" href="{{route('home')}}">
                 <img src="{{ asset('images/logo.png') }}" alt="logo" />
             </a>
-            <a class="navbar-brand brand-logo-mini" href="index.html">
+            <a class="navbar-brand brand-logo-mini" href="{{route('home')}}">
                 <img src="{{ asset('images/logo.png') }}" alt="logo" />
             </a>
         </div>
@@ -61,7 +61,7 @@
 
                 </li>
                 <li class="nav-item d-none d-lg-block">
-                    {{-- <form action="" id="date-filter"> --}}
+                    <form action="" id="date-filter">
                         {{-- @dd( request()->get('selectedDates')) --}}
                         <div class="input-group date datepicker navbar-date-picker">
                             <span class="input-group-addon input-group-prepend border-right">
@@ -70,13 +70,10 @@
                             </span>
 
                         </div>
-                    {{-- </form> --}}
+                    </form>
 
                 </li>
             @endif
-
-
-
             <li class="nav-item dropdown d-none d-lg-block user-dropdown">
                 <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                     <img class="img-xs rounded-circle"
@@ -101,7 +98,7 @@
                             {{ app('App\Http\Controllers\HomeController')->getEmail() }}
                         </p>
                     </div>
-                    <a class="dropdown-item"><i
+                    <a class="dropdown-item" href="{{ route('profile.show') }}"><i
                             class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> Mon Profile </a>
 
                     {{-- <a class="dropdown-item"><i

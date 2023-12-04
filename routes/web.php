@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\IncidentController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -36,17 +38,21 @@ Route::get('/absence', [EmployeeController::class, 'absenceIndex'])->name('absen
 
 
 Route::get('/logout', [App\Http\Controllers\HomeController::class, 'logout'])->name('logout');
+Route::get('/user/register', [RegisterController::class, 'showRegistrationForm'])->name('userRegister');
 
-
+Route::get('/employee/register', [EmployeeController::class, 'showRegistrationEmployeeForm'])->name('employeeRegister');
+Route::post('/import/employee', [EmployeeController::class, 'importEmployee'])->name('importEmployee');
+Route::get('/incidents', [IncidentController::class, 'index'])->name('incidents.index');
+Route::get('/profile', [ProfileController::class,'show'])->name('profile.show')->middleware('auth');;
+Route::post('/profile', [ProfileController::class,'update'])->name('profile.update');
 Route::middleware(['admin'])->group(function () {
     Route::get('user-list', [UserController::class, 'Userlist'])->name('user-list');
     Route::patch('/users/{user}/deactivate', [UserController::class,'deactivateUser'])->name('deactivate.user');
     Route::patch('/users/{user}/activate', [UserController::class, 'activateUser'])->name('activate.user');
     Route::get('/employees/list', [EmployeeController::class, 'index'])->name('employees.index');
-    Route::get('/employee/{id}', [EmployeeController::class, 'show'])->name('employees.show');
+    Route::get('/employee/{id}/edit', [EmployeeController::class, 'show'])->name('employees.show');
+    Route::put('/employees/{id}', [EmployeeController::class, 'updateEmployee'])->name('employees.update');
     Route::post('/employees/{employee}/activate', [EmployeeController::class, 'activateEmployee'])->name('activate.employee');
     Route::delete('/employees/{employee}/deactivate', [EmployeeController::class, 'deactivateEmployee'] )->name('deactivate.employee');
 
 });
-Route::get('/user/register', [RegisterController::class, 'showRegistrationEmployeeForm'])->name('userRegister');
-Route::get('/employee/register', [RegisterController::class, 'showRegistrationEmployeeForm'])->name('employeeRegister');
