@@ -33,7 +33,7 @@
                                                                 <th class="text-white  pl-2">Quicklock ID</th>
                                                                 <th class="text-white pl-2">Nom et Poste</th>
                                                                 <th class="text-white">Département</th>
-                                                                <th class="text-white">Jour</th>
+                                                                <th class="text-white">Jour d'absence </th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -50,17 +50,26 @@
                                                                             <div>
                                                                                 <a
                                                                                     href="{{ route('employeeDetail', ['id' => $employee->id]) }}">
-                                                                                    <h6>{{ $employee->name }}
-                                                                                    </h6>
+                                                                                    <h6>{{ $employee->name }}</h6>
                                                                                 </a>
-                                                                                <p>{{ $employee->designation }}
-                                                                                </p>
+                                                                                <p>{{ $employee->designation }}</p>
                                                                             </div>
                                                                         </div>
                                                                     </td>
                                                                     <td>
                                                                         <h6>{{ App\Helper::searchByNameAndId('department', $employee->department_id)->name ?? '' }}
                                                                         </h6>
+                                                                    </td>
+                                                                    <td>
+                                                                        @if ($employee->absence_dates)
+                                                                            <ul>
+                                                                                @foreach (explode(',', $employee->absence_dates) as $absenceDate)
+                                                                                    <li>{{ $absenceDate }}</li>
+                                                                                @endforeach
+                                                                            </ul>
+                                                                        @else
+                                                                            <p>Aucun jour d'absence enregistré</p>
+                                                                        @endif
                                                                     </td>
                                                                 </tr>
                                                             @endforeach

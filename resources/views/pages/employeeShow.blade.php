@@ -44,8 +44,10 @@
                                 <label for="department"
                                     class="col-md-4 col-form-label text-md-end">{{ __('Département') }}</label>
                                 <div class="col-md-8">
-                                    <select name="department_id" id="siteSelect" class="form-select nav-link dropdown-bordered" aria-label="Sélectionnez le département" style="color: #000000 !important">
-                                        <option  selected disabled>Sélectionner le département</option>
+                                    <select name="department_id" id="siteSelect"
+                                        class="form-select nav-link dropdown-bordered"
+                                        aria-label="Sélectionnez le département" style="color: #000000 !important">
+                                        <option selected disabled>Sélectionner le département</option>
                                         @foreach (config('department') as $department)
                                             <option value="{{ $department['id'] }}"
                                                 {{ old('department_id', $employee->department_id) == $department['id'] ? 'selected' : '' }}>

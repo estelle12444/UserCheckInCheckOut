@@ -95,11 +95,11 @@
                                                                     @endif
 
                                                                 </td>
-                                                                <td>
+                                                                <td class="text-center">
                                                                     {{ App\Helper::getHeuresEmployesParJour($history_entry->employee->id, $history_entry->day_at_in) }}
 
                                                                 </td>
-                                                                <td>
+                                                                <td class="text-center">
                                                                     {{ App\Helper::getTimeFlexParJour($history_entry->employee->id, $history_entry->day_at_in) }}
 
                                                                 </td>

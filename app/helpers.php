@@ -86,6 +86,15 @@ class Helper
 
         return $results->sum().'h';
     }
+// Heure Total
+    public static function getTimeDifferenceTotal( $id)
+    {
+        $results = self::calculateTotalSeconds(null,null, $id)->map(function ($history) {
+            return ceil(($history - 3600) / 3600);
+        });
+
+        return $results->sum().'h';
+    }
 
     ///// Panier de flexibilité journalier
     public static function getTimeFlexParPeriode($start, $end, $id)
@@ -100,6 +109,15 @@ class Helper
     public static function totalHeureFlex($id)
     {
         $results = self::calculateTotalSeconds(null, null, $id)->map(function ($history) {
+            return ceil(($history - 32400) / 3600);
+        });
+
+        return $results->sum().'h';
+    }
+
+    public static function totalHeureFlexPeride($start, $end,$id)
+    {
+        $results = self::calculateTotalSeconds($start, $end, $id)->map(function ($history) {
             return ceil(($history - 32400) / 3600);
         });
 

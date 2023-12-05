@@ -46,10 +46,11 @@
                                                                     <p>{{ $employee->name }}</p>
                                                                 </div>
                                                                 <div class="col-md-5">
-                                                                    <h6 class="font-weight-bold">Panier de flexibilité Total
-                                                                        : </h6>
-                                                                    <p>{{ App\Helper::totalHeureFlex($employee->id) }}
-                                                                    </p>
+                                                                    <h6>Total d'heure de travail
+                                                                    </h6>
+                                                                    <h5 class="text-info">
+                                                                        {{ App\Helper::getTimeDifferenceTotal($employee->id) }}
+                                                                    </h5>
                                                                 </div>
                                                             </div>
                                                             <h6 class="font-weight-bold">Poste:</h6>
@@ -62,9 +63,10 @@
                                                                     </p>
                                                                 </div>
                                                                 <div class="col-md-5">
-                                                                    <h6 class="font-weight-bold"> Total d'heure: </h6>
-                                                                    <p> H
-                                                                    </p>
+                                                                    <h6>Total Panier de flexibilité </h6>
+                                                                    <h5 class="text-info">
+                                                                        {{ App\Helper::totalHeureFlex($employee->id) }}
+                                                                    </h5>
                                                                 </div>
                                                             </div>
                                                             <h6 class="font-weight-bold">Quicklock ID:</h6>
@@ -72,53 +74,159 @@
                                                         </div>
                                                         <h3 class="my-4 text-info">Historiques des Entrées et de sorties
                                                         </h3>
-                                                        <table id="DetailEmployeeTable" class="table table-striped dataTable">
+                                                        {{-- <table aria-describedby="mydesc" id="detailEmployeeTable"
+                                                            class="table table-striped dataTable">
                                                             <thead class="bg-info">
                                                                 <tr>
-                                                                    <th>Site </th>
                                                                     <th>Date</th>
-                                                                    <th>Entrée</th>
-                                                                    <th>Sortie</th>
                                                                     <th>Heure travaillée</th>
                                                                     <th>Panier de flexibilité</th>
+                                                                    <th>Actions</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
+
+                                                                @foreach ($groupedHistoryEntries as $entry)
+
+                                                                    @foreach ($entry as $value)
+                                                                        <tr>
+                                                                            {{-- <td>{{ App\Helper::searchByNameAndId('localisation', $value->localisation_id)->name ?? '' }}</td>
+                                                                            <td>{{ $value->day_at_in }}</td>
+                                                                            @if ($loop->index == 0)
+                                                                                <td class="text-center">
+                                                                                    {{ $HeureTravail =App\Helper::getHeuresEmployesParJour($value->employee_id, $value->day_at_in) }}
+                                                                                </td>
+                                                                                <td class="text-center">
+                                                                                    {{$PanierFlex= App\Helper::getTimeFlexParJour($value->employee_id, $value->day_at_in) }}
+                                                                                    @if ($PanierFlex > 0)
+                                                                                        <i
+                                                                                            class="mdi mdi-arrow-up-drop-circle text-success"></i>
+                                                                                        @elseif ($PanierFlex < 0)
+                                                                                        <i
+                                                                                            class="mdi mdi-arrow-down-drop-circle text-danger"></i>
+                                                                                    @else
+                                                                                        <i></i>
+                                                                                    @endif
+                                                                                </td>
+
+                                                                                <td class="text-center">
+                                                                                    <button type="button" class="btn btn-info  text-white" data-toggle="modal"
+                                                                                        data-target="#exampleModal{{ $value->id }}">
+                                                                                        Entrées/Sorties
+                                                                                    </button>
+                                                                                </td>
+                                                                            @endif
+                                                                        </tr>
+
+                                                                        <!-- Modal -->
+                                                                        <div class="modal fade" id="exampleModal{{ $value->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                            <div class="modal-dialog" role="document">
+                                                                                <div class="modal-content">
+                                                                                    <div class="modal-header">
+                                                                                        <h5 class="modal-title" id="exampleModalLabel"> Entrées/Sorties pour le {{ $value->day_at_in }}</h5>
+                                                                                        <button type="button" class="close" data-dismiss="modal" -label="Close">
+                                                                                            <span aria-hidden="true">&times;</span>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                    <div class="modal-body">
+                                                                                        <h6 class="modal-title">Site:
+                                                                                            {{ App\Helper::searchByNameAndId('localisation', $value->localisation_id)->name ?? '' }}
+                                                                                        </h6>
+                                                                                        <h6 class="modal-title">
+                                                                                            Entrée:{{ $value->time_at_in }}
+                                                                                        </h6>
+                                                                                        <h6 class="modal-title">
+                                                                                            Sortie:{{ $value->time_at_out }}
+                                                                                        </h6>
+
+                                                                                    </div>
+                                                                                    <div class="modal-footer">
+                                                                                        <button type="button" class="btn btn-secondary text-white" data-dismiss="modal">Fermer</button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endforeach
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table> --}}
+                                                        <table aria-describedby="mydesc" id="detailEmployeeTable"
+                                                            class="table table-striped dataTable">
+                                                            <thead class="bg-info">
                                                                 <tr>
+
+                                                                    <th>Date</th>
+                                                                    <th>Entrée</th>
+                                                                    <th>Sorties</th>
+                                                                    <th>Site</th>
+                                                                    <th>Heure travaillée</th>
+                                                                    <th>Panier de flexibilité</th>
+
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+
+                                                                @foreach ($groupedHistoryEntries->groupby('day_at_in') as $entry)
                                                                     @php
-                                                                        $resultats = [];
-                                                                        $totalDifference = 0;
-                                                                        $totalOvertime = 0;
+                                                                        $difference = 0;
+                                                                        $overtime = 0;
+                                                                        foreach ($entry as $key => $value) {
+                                                                            $result = App\Helper::calculateTimeDifferenceAndOvertime($value->time_at_in, $value->time_at_out);
+                                                                            $difference += $result['difference'] ?? 0;
+                                                                            $overtime += $result['overtime'] ?? 0;
+                                                                        }
                                                                     @endphp
 
-                                                                    @foreach ($groupedHistoryEntries as $entry)
-                                                                        <td>{{ App\Helper::searchByNameAndId('localisation', $entry->localisation_id)->name ?? '' }}
-                                                                        </td>
-                                                                        <td>{{ $entry->day_at_in }}</td>
-                                                                        <td>{{ $entry->time_at_in }}</td>
-                                                                        <td>{{ $entry->time_at_out }}</td>
-                                                                        @php
-                                                                            $result = App\Helper::calculateTimeDifferenceAndOvertime($entry->time_at_in, $entry->time_at_out);
-                                                                            $resultats[] = $result;
-                                                                            $totalDifference += $result['difference'] ?? 0;
-                                                                            $totalOvertime += $result['overtime'] ?? 0;
-                                                                        @endphp
-                                                                        <td> {{ $result['difference'] }} h</td>
-                                                                        <td> {{ $result['overtime'] }} h
-                                                                            @if ($result['overtime'] > 0)
-                                                                                <i
-                                                                                    class="mdi mdi-arrow-up-drop-circle text-success"></i>
-                                                                            @else
-                                                                                <i
-                                                                                    class="mdi mdi-arrow-down-drop-circle text-danger"></i>
+
+                                                                    <tr>
+                                                                        @foreach ($entry as $value)
+                                                                            <td>{{ $value->day_at_in }}</td>
+                                                                            <td>{{ $value->time_at_in }}</td>
+                                                                            <td>{{ $value->time_at_out }}</td>
+                                                                            <td>{{ App\Helper::searchByNameAndId('localisation', $value->localisation_id)->name ?? '' }}
+                                                                            </td>
+                                                                            @if ($loop->index == 0)
+                                                                                <td class="text-center"
+                                                                                    rowspan="{{ $entry->count() }}">
+                                                                                    {{ $difference }} h</td>
+                                                                                <td class="text-center"
+                                                                                    rowspan="{{ $entry->count() }}">
+                                                                                    {{ $overtime }} h
+                                                                                    @if ($result['overtime'] > 0)
+                                                                                        <i
+                                                                                            class="mdi mdi-arrow-up-drop-circle text-success"></i>
+                                                                                        @elseif($result['overtime'] < 0)
+                                                                                        <i
+                                                                                            class="mdi mdi-arrow-down-drop-circle text-danger"></i>
+                                                                                    @else
+                                                                                        <i></i>
+                                                                                    @endif
+                                                                                </td>
                                                                             @endif
-                                                                        </td>
-                                                                    @endforeach
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    @else
-                                                        <p>Employee not found.</p>
+                                                                    </tr>
+                                                                @endforeach
+                                            @endforeach
+                                            </tbody>
+                                        </table>
+                                        {{ $groupedHistoryEntries->links() }}
+
+
+                                            <table class="mx-2  table ">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Total des heures travaillées:
+                                                            <strong>
+                                                                {{ App\Helper::getTimeDifferenceParPeriode($dateRange['start'], $dateRange['end'], $employee->id) }}</strong>
+                                                        </td>
+                                                        <td>Total du panier :
+                                                            <strong>{{ App\Helper::getTimeFlexParPeriode($dateRange['start'], $dateRange['end'], $employee->id) }}</strong>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+
+                                            </table>
+                                        @else
+                                            <p>Employee not found.</p>
                                             @endif
                                         </div>
                                     </div>
@@ -168,22 +276,22 @@
                                                                     <th>Total d'heures</th>
                                                                 </tr>
                                                             </thead>
-                                                            <tbody>
-                                                                @php
-                                                                    $i = 0;
-                                                                @endphp
-                                                                {{-- @foreach ($result as $key => $hour)
-                                                                    <tr>
-                                                                        <td>N°{{ $key }}</td>
-                                                                        <td>{{ $weekdays[$i] }}</td>
-                                                                        <td>{{ $hour }} </td>
-                                                                    </tr>
-                                                                    @php
-                                                                        $i++;
-                                                                    @endphp
-                                                                @endforeach --}}
+                                                            {{-- <tbody>
+                                                                                @php
+                                                                                    $i = 0;
+                                                                                @endphp
+                                                                                {{-- @foreach ($result as $key => $hour)
+                                                                                    <tr>
+                                                                                        <td>N°{{ $key }}</td>
+                                                                                        <td>{{ $weekdays[$i] }}</td>
+                                                                                        <td>{{ $hour }} </td>
+                                                                                    </tr>
+                                                                                    @php
+                                                                                        $i++;
+                                                                                    @endphp
+                                                                                @endforeach
 
-                                                            </tbody>
+                                                                            </tbody> --}}
                                                         </table>
                                                     </div>
                                                 </div>
@@ -198,22 +306,12 @@
             </div>
         </div>
     </div>
-
     </div>
-
-
 @endsection
 @push('scripts')
     <script>
-        new DataTable('#DetailEmployeeTable', {
-            paging: true,
-            pageLength: 5,
-            language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/fr-FR.json'
-            }
-        });
         document.getElementById('exportButtonExcell').addEventListener('click', function() {
-            var table = document.getElementById('DetailEmployeeTable');
+            var table = document.getElementById('detailEmployeeTable');
             console.log(" table selectionné OK");
 
             var ws = XLSX.utils.table_to_sheet(table);

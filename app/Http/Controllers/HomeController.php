@@ -111,15 +111,16 @@ class HomeController extends Controller
         $dateRange = $this->dateRangeFromRequest($request->selectedDates);
 
         $employee = Employee::findOrFail($id);
-        $groupedHistoryEntries = $employee->historyEntries
+        $groupedHistoryEntries = HistoryEntry::where('employee_id', $id)
             ->whereBetween('day_at_in', [$dateRange['start'], $dateRange['end']])
-            ->sortByDesc(function ($entries) {
-                return collect($entries)->max('day_at_in');
-            })->values()->all();
+            ->orderByDesc('day_at_in')
+            ->paginate(4)
+            ->withQueryString();
 
         if (!$employee) {
             abort(404);
         }
+
         $result = [];
         $jours = $employee->historyEntries->pluck('day_at_in')->unique()->toArray();
         $weekdays = [];
@@ -130,7 +131,7 @@ class HomeController extends Controller
             $result[$date->isoWeekday()] = $temp;
         }
 
-        return view('pages.employeeDetail', compact('employee', 'result', 'weekdays', 'groupedHistoryEntries'));
+        return view('pages.employeeDetail', compact('employee', 'result', 'weekdays', 'groupedHistoryEntries', 'dateRange'));
     }
 
 

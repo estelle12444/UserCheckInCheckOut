@@ -16,10 +16,17 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class EmployeeController extends Controller
 {
+    const STRING_RULE = 'required|string|max:255';
 
-    public function showRegistrationEmployeeForm()
+    public function showRegistrationEmployeeExcel()
     {
-        return view('auth.employeeRegister');
+        return view('auth.employeeExcelRegister');
+    }
+
+
+    public function registrationEmployeeForm()
+    {
+        return view('auth.employeeFormRegister');
     }
 
 
@@ -31,7 +38,7 @@ class EmployeeController extends Controller
             if (in_array($extension, ['xls', 'xlsx', 'csv'])) {
 
                 Excel::import(new EmployeesImport(), $file);
-                return redirect('/employees/list')->with('success', 'Les employés ont été importés avec succès.');
+                return redirect()->route('employees.index')->with('success', 'Les employés ont été importés avec succès.');
             } else {
                 return redirect()->back()->with('error', 'Le fichier n\'est pas un fichier Excel valide.');
             }
@@ -40,7 +47,31 @@ class EmployeeController extends Controller
         }
     }
 
-    const STRING_RULE = 'required|string|max:255';
+
+    public function store(Request $request)
+    {
+        // Validation des données du formulaire
+        $request->validate([
+            'matricule' => 'required',
+            'name' => 'required',
+            'designation' => 'required',
+            'department_id' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+
+        $imagePath = $request->file('image')->store('photos', 'public');
+        Employee::create([
+            'matricule' => $request->input('matricule'),
+            'name' => $request->input('name'),
+            'designation' => $request->input('designation'),
+            'department_id' => $request->input('department_id'),
+            'image_path' => $imagePath,
+        ]);
+        return redirect()->route('employees.index')->with('success', 'Employee created successfully');
+    }
+
+
 
 
     public function updateEmployee(Request $request, $id)
@@ -71,7 +102,7 @@ class EmployeeController extends Controller
 
         $employee->save();
 
-        return redirect('/employees/list')->with('success', 'Données mises à jour avec succès.');
+        return redirect()->route('employees.index')->with('success', 'Données mises à jour avec succès.');
     }
 
 
@@ -87,10 +118,10 @@ class EmployeeController extends Controller
     }
 
 
-    public function show($id,Request $request)
+    public function show($id, Request $request)
     {
         $employee = Employee::findOrFail($id);
-        return view('pages.employeeShow', compact('employee','request'));
+        return view('pages.employeeShow', compact('employee', 'request'));
     }
 
 
@@ -189,13 +220,22 @@ class EmployeeController extends Controller
         $dateRange = $this->dateRangeFromRequest($request->selectedDates);
 
         $absence = DB::table('employees')
-            ->whereNotExists(function ($query) use ($dateRange) {
-                $query->select(DB::raw(1))
-                    ->from('history_entries')
-                    ->whereRaw('history_entries.employee_id = employees.id')
+            ->leftJoin('history_entries', function ($join) use ($dateRange) {
+                $join->on('employees.id', '=', 'history_entries.employee_id')
                     ->whereBetween('history_entries.day_at_in', [$dateRange['start'], $dateRange['end']]);
             })
+            ->select(
+                'employees.id',
+                'employees.matricule',
+                'employees.name',
+                'employees.designation',
+                'employees.department_id',
+                'employees.image_path',
+                DB::raw('GROUP_CONCAT(history_entries.day_at_in) as absence_dates')
+            )
+            ->groupBy('employees.id', 'employees.matricule', 'employees.name', 'employees.designation', 'employees.department_id', 'employees.image_path')
             ->get();
+
 
         $nbre = $absence->count();
 

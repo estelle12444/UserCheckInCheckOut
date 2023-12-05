@@ -48,12 +48,18 @@
                                                         </h4>
                                                         <div id="performance-line-legend"></div>
                                                     </div>
-                                                    @foreach ($weeklyEntries as $weekNumber => $entries)
-                                                        <h5 class="card-subtitle card-subtitle-dash"
-                                                            style="color:rgb(249, 139, 99)">Semaine {{ $weekNumber }}
-                                                        </h5>
-                                                    @endforeach
-                                                    <div class="chartjs-wrapper mt-5">
+
+                                                        <?php
+                                                        $weekNumbers = [];
+                                                        foreach ($weeklyEntries as $weekNumber => $entries) {
+                                                            $weekNumbers[] = "Semaine $weekNumber";}
+
+                                                        $weekNumbersString = implode(', ', $weekNumbers);
+                                                        ?>
+
+                                                        <div class="d-flex flex-row " style="color:rgb(249, 139, 99)"><?= $weekNumbersString ?></div>
+
+                                                    <div class="chartjs-wrapper ">
                                                         <canvas id="performaneLinee"></canvas>
                                                     </div>
                                                 </div>
@@ -73,9 +79,9 @@
                                                                     <h4 class="card-title card-title-dash">
                                                                         <td>Nombre d'employés entrants par site </td>
                                                                     </h4>
-                                                                    <h5 class="card-subtitle card-subtitle-dash"
+                                                                    <h6 class="card-subtitle card-subtitle-dash"
                                                                         style="color:rgb(249, 139, 99)">Aujourd'hui
-                                                                    </h5>
+                                                                    </h6>
 
                                                                     <table class="table table-striped">
                                                                         <thead>
@@ -166,11 +172,11 @@
                                                                 <td>
                                                                     <h6>{{ $history_entry->day_at_in }}</h6>
                                                                 </td>
-                                                                <td>
+                                                                <td class="text-center">
                                                                     <h6 class="cbleu"><em>{{ $history_entry->time_at_in }}
                                                                         </em></h6>
                                                                 </td>
-                                                                <td>
+                                                                <td class="text-center">
                                                                     <h6 class="cRouge">
                                                                         <em>{{ $history_entry->time_at_out }}</em>
                                                                     </h6>

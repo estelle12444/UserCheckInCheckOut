@@ -21,7 +21,7 @@
 
                                         </div>
                                         <div class="table-responsive  mt-1">
-                                            <table class="table select-table table-hover ">
+                                            <table id="flexibitlite" class="table select-table table-hover ">
                                                 <thead class="orange ">
                                                     <tr>
                                                         <th class="text-white  pl-2">Quicklock ID</th>
@@ -53,8 +53,8 @@
 
                                                                 </div>
                                                             </td>
-                                                            <td> <h6  class="cbleu" >{{ App\Helper::getTimeDifferenceParPeriode($dateRange['start'],$dateRange['end'], $employee->id)}}</h6></td>
-                                                            <td> <h6 class="cRouge" > {{ App\Helper::getTimeFlexParPeriode($dateRange['start'],$dateRange['end'], $employee->id)}} </h6></td>
+                                                            <td> <h6  class="cbleu text-center" >{{ App\Helper::getTimeDifferenceParPeriode($dateRange['start'],$dateRange['end'], $employee->id)}}</h6></td>
+                                                            <td> <h6 class="cRouge text-center" > {{ App\Helper::getTimeFlexParPeriode($dateRange['start'],$dateRange['end'], $employee->id)}} </h6></td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -72,3 +72,15 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    new DataTable('#flexibitlite', {
+        paging: true,
+        pageLength: 10,
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/fr-FR.json'
+        }
+    });
+</script>
+@endpush

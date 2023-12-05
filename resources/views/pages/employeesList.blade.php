@@ -5,6 +5,16 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="home-tab">
+                    <div class="d-sm-flex align-items-center justify-content-between border-bottom">
+                        <div class="btn-wrapper">
+
+
+                            <a href="{{ route('employeeRegisterForm') }}"  class="btn btn-primary text-white me-0"><i class="mdi mdi-account-plus"></i>
+                                Enregistrer un nouvel employé</a>
+                            <a href="{{ route('employeeRegister') }}" class="btn btn-success text-white me-0">
+                                <i class="mdi mdi-account-plus"></i> Importer un fichier excel </a>
+                        </div>
+                    </div>
                     <div class="tab-content tab-content-basic">
                         <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
                             <div class="row flex-grow">
@@ -19,11 +29,7 @@
                                                     <p class="card-subtitle card-subtitle-dash">Nous
                                                         avons {{ $employeeCount }} employées</p>
                                                 </div>
-                                                <div>
-                                                    <a href="{{ route('employeeRegister') }}"
-                                                        class="btn btn-primary btn-lg text-white mb-0 me-0">
-                                                        <i class="mdi mdi-account-plus"></i> Ajouter un nouveau employé</a>
-                                                </div>
+
 
                                             </div>
                                             <div class="table-responsive  mt-1">
@@ -59,7 +65,9 @@
                                                                 <td>{{ $employee->matricule }}</td>
                                                                 <td>
                                                                     @if ($employee->activated)
-                                                                        <form action="{{ route('deactivate.employee', $employee->id) }}" method="post">
+                                                                        <form
+                                                                            action="{{ route('deactivate.employee', $employee->id) }}"
+                                                                            method="post">
                                                                             @csrf
                                                                             @method('DELETE')
                                                                             <button class=" text-white btn btn-success"

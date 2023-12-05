@@ -32,24 +32,30 @@ Auth::routes([
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/site/{id}/employees/{query?}', [App\Http\Controllers\HomeController::class, 'siteEmployees'])->name('siteEmployees');
 Route::get('/employees/{id}/detail', [App\Http\Controllers\HomeController::class, 'employeeDetail'])->name('employeeDetail');
-Route::get('/flexibilite/employees', [EmployeeController::class, 'flexibilityIndex'])->name('flexibilityIndex');
-Route::get('/absence', [EmployeeController::class, 'absenceIndex'])->name('absenceIndex');
+Route::get('//employee/flexibilite', [EmployeeController::class, 'flexibilityIndex'])->name('flexibilityIndex');
+Route::get('/employee/absence', [EmployeeController::class, 'absenceIndex'])->name('absenceIndex');
 
 
 
 Route::get('/logout', [App\Http\Controllers\HomeController::class, 'logout'])->name('logout');
 Route::get('/user/register', [RegisterController::class, 'showRegistrationForm'])->name('userRegister');
+Route::get('/employee/register/form', [EmployeeController::class, 'registrationEmployeeForm'])->name('employeeRegisterForm');
+Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
 
-Route::get('/employee/register', [EmployeeController::class, 'showRegistrationEmployeeForm'])->name('employeeRegister');
+
+Route::get('/employee/register/excel', [EmployeeController::class, 'showRegistrationEmployeeExcel'])->name('employeeRegister');
 Route::post('/import/employee', [EmployeeController::class, 'importEmployee'])->name('importEmployee');
 Route::get('/incidents', [IncidentController::class, 'index'])->name('incidents.index');
 Route::get('/profile', [ProfileController::class,'show'])->name('profile.show')->middleware('auth');;
 Route::post('/profile', [ProfileController::class,'update'])->name('profile.update');
+
+
+
 Route::middleware(['admin'])->group(function () {
     Route::get('user-list', [UserController::class, 'Userlist'])->name('user-list');
     Route::patch('/users/{user}/deactivate', [UserController::class,'deactivateUser'])->name('deactivate.user');
     Route::patch('/users/{user}/activate', [UserController::class, 'activateUser'])->name('activate.user');
-    Route::get('/employees/list', [EmployeeController::class, 'index'])->name('employees.index');
+    Route::get('/employee/list', [EmployeeController::class, 'index'])->name('employees.index');
     Route::get('/employee/{id}/edit', [EmployeeController::class, 'show'])->name('employees.show');
     Route::put('/employees/{id}', [EmployeeController::class, 'updateEmployee'])->name('employees.update');
     Route::post('/employees/{employee}/activate', [EmployeeController::class, 'activateEmployee'])->name('activate.employee');
