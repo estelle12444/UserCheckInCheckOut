@@ -82,7 +82,7 @@ class HomeController extends Controller
             ->get(['localisation_id', 'day_at_in', 'employee_id'])
             ->groupBy('localisation_id');
 
-        return view('index', compact('employeeCountBySite', 'lastentriesAndExits', 'nombres', 'weeklyEntries', 'nombreSites', 'countEntries', 'averageHoursDuration'));
+        return view('index', compact('dateRange','employeeCountBySite', 'lastentriesAndExits', 'nombres', 'weeklyEntries', 'nombreSites', 'countEntries', 'averageHoursDuration'));
     }
 
 
@@ -129,7 +129,7 @@ class HomeController extends Controller
             $statData[$jour] = Helper::getHeuresEmployesParJour($employee->id, $jour);
         }
 
-        return view('pages.employeeDetail', compact('employee', 'statData', 'groupedHistoryEntries'));
+        return view('pages.employeeDetail', compact('employee', 'statData', 'groupedHistoryEntries','dateRange'));
     }
 
 

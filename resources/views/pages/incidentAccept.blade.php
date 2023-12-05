@@ -5,10 +5,10 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="home-tab">
-                    <h2 class="card-title">Liste des Incidents en attente</h2>
+                    <h2 class="card-title">Liste des Incidents Acceptés</h2>
                     <div class="tab-content tab-content-basic">
 
-                        @foreach ($incidents as $request)
+                        @foreach ($listAccepts  as $request)
                             <div class="col-md-4 grid-margin stretch-card">
                                 <div class="card">
                                     <div class="card-body ">
@@ -22,13 +22,13 @@
 
                                                 @if (!$request->accepted)
                                                     <div class="d-flex">
-                                                        <form method="post"
+                                                        {{-- <form method="post"
                                                             action="{{ route('incidents.accept', $request->id) }}">
                                                             @csrf
                                                             <button type="submit"
                                                                 class="text-white btn btn-success mr-2">Accepter
                                                                 </button>
-                                                        </form>
+                                                        </form> --}}
                                                         <form method="post"
                                                             action="{{ route('incidents.reject', $request->id) }}">
                                                             @csrf

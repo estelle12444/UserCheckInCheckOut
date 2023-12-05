@@ -49,15 +49,10 @@
                                                         <div id="performance-line-legend"></div>
                                                     </div>
 
-                                                        <?php
-                                                        $weekNumbers = [];
-                                                        foreach ($weeklyEntries as $weekNumber => $entries) {
-                                                            $weekNumbers[] = "Semaine $weekNumber";}
-
-                                                        $weekNumbersString = implode(', ', $weekNumbers);
-                                                        ?>
-
-                                                        <div class="d-flex flex-row " style="color:rgb(249, 139, 99)"><?= $weekNumbersString ?></div>
+                                                    <h6 class="card-subtitle card-subtitle-dash" 
+                                                    style="color:rgb(249, 139, 99)">Du {{ $dateRange['start']->format('Y-m-d') }} au
+                                                    {{ $dateRange['end']->format('Y-m-d') }}
+                                                </h6>
 
                                                     <div class="chartjs-wrapper ">
                                                         <canvas id="performaneLinee"></canvas>

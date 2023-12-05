@@ -46,7 +46,15 @@ Route::post('/employees', [EmployeeController::class, 'store'])->name('employees
 Route::get('/employee/register/excel', [EmployeeController::class, 'showRegistrationEmployeeExcel'])->name('employeeRegister');
 Route::post('/import/employee', [EmployeeController::class, 'importEmployee'])->name('importEmployee');
 Route::get('/incidents', [IncidentController::class, 'index'])->name('incidents.index');
-Route::get('/profile', [ProfileController::class,'show'])->name('profile.show')->middleware('auth');;
+Route::get('/incidents/Accept', [IncidentController::class, 'listAccept'])->name('incidents.listAccept');
+Route::get('/incidents/Reject', [IncidentController::class, 'listReject'])->name('incidents.listReject');
+
+
+Route::get('/incidents/{incident}', [IncidentController::class, 'show'])->name('incidents.show');
+Route::post('/incidents/{incident}/accept', [IncidentController::class, 'accept'])->name('incidents.accept');
+Route::post('/incidents/{incident}/reject', [IncidentController::class, 'reject'])->name('incidents.reject');
+
+Route::get('/profile', [ProfileController::class,'show'])->name('profile.show')->middleware('auth');
 Route::post('/profile', [ProfileController::class,'update'])->name('profile.update');
 
 

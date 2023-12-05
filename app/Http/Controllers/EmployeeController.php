@@ -151,7 +151,7 @@ class EmployeeController extends Controller
     {
 
         if ($employee->user) {
-            dd('Before user deletion', $employee->user);
+       
 
             if ($employee->user->delete()) {
                 // La suppression a réussi

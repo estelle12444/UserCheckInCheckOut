@@ -72,9 +72,13 @@
                                                             <h6 class="font-weight-bold">Quicklock ID:</h6>
                                                             <p>{{ $employee->matricule }}</p>
                                                         </div>
-                                                        <h3 class="my-4 text-info">Historiques des Entrées et de sorties
-                                                        </h3>
-                                                        {{-- <table aria-describedby="mydesc" id="detailEmployeeTable"
+                                                        <h3 class="mt-4 text-info">Historiques des Entrées et de sorties
+                                                            <h5 class="card-subtitle card-subtitle-dash"
+                                                                style="color:rgb(249, 139, 99)">Du
+                                                                {{ $dateRange['start']->format('Y-m-d') }} au
+                                                                {{ $dateRange['end']->format('Y-m-d') }}
+                                                            </h5>
+                                                            {{-- <table aria-describedby="mydesc" id="detailEmployeeTable"
                                                             class="table table-striped dataTable">
                                                             <thead class="bg-info">
                                                                 <tr>
@@ -150,65 +154,65 @@
                                                                 @endforeach
                                                             </tbody>
                                                         </table> --}}
-                                                        <table aria-describedby="mydesc" id="detailEmployeeTable"
-                                                            class="table table-striped dataTable">
-                                                            <thead class="bg-info">
-                                                                <tr>
-
-                                                                    <th>Date</th>
-                                                                    <th>Entrée</th>
-                                                                    <th>Sorties</th>
-                                                                    <th>Site</th>
-                                                                    <th>Heure travaillée</th>
-                                                                    <th>Panier de flexibilité</th>
-
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-
-                                                                @foreach ($groupedHistoryEntries->groupby('day_at_in') as $entry)
-                                                                    @php
-                                                                        $difference = 0;
-                                                                        $overtime = 0;
-                                                                        foreach ($entry as $key => $value) {
-                                                                            $result = App\Helper::calculateTimeDifferenceAndOvertime($value->time_at_in, $value->time_at_out);
-                                                                            $difference += $result['difference'] ?? 0;
-                                                                            $overtime += $result['overtime'] ?? 0;
-                                                                        }
-                                                                    @endphp
-
-
+                                                            <table aria-describedby="mydesc" id="detailEmployeeTable"
+                                                                class="table table-striped dataTable">
+                                                                <thead class="bg-info">
                                                                     <tr>
-                                                                        @foreach ($entry as $value)
-                                                                            <td>{{ $value->day_at_in }}</td>
-                                                                            <td>{{ $value->time_at_in }}</td>
-                                                                            <td>{{ $value->time_at_out }}</td>
-                                                                            <td>{{ App\Helper::searchByNameAndId('localisation', $value->localisation_id)->name ?? '' }}
-                                                                            </td>
-                                                                            @if ($loop->index == 0)
-                                                                                <td class="text-center"
-                                                                                    rowspan="{{ $entry->count() }}">
-                                                                                    {{ $difference }} h</td>
-                                                                                <td class="text-center"
-                                                                                    rowspan="{{ $entry->count() }}">
-                                                                                    {{ $overtime }} h
-                                                                                    @if ($result['overtime'] > 0)
-                                                                                        <i
-                                                                                            class="mdi mdi-arrow-up-drop-circle text-success"></i>
-                                                                                        @elseif($result['overtime'] < 0)
-                                                                                        <i
-                                                                                            class="mdi mdi-arrow-down-drop-circle text-danger"></i>
-                                                                                    @else
-                                                                                        <i></i>
-                                                                                    @endif
-                                                                                </td>
-                                                                            @endif
+
+                                                                        <th>Date</th>
+                                                                        <th>Entrée</th>
+                                                                        <th>Sorties</th>
+                                                                        <th>Site</th>
+                                                                        <th>Heure travaillée</th>
+                                                                        <th>Panier de flexibilité</th>
+
                                                                     </tr>
-                                                                @endforeach
+                                                                </thead>
+                                                                <tbody>
+
+                                                                    @foreach ($groupedHistoryEntries->groupby('day_at_in') as $entry)
+                                                                        @php
+                                                                            $difference = 0;
+                                                                            $overtime = 0;
+                                                                            foreach ($entry as $key => $value) {
+                                                                                $result = App\Helper::calculateTimeDifferenceAndOvertime($value->time_at_in, $value->time_at_out);
+                                                                                $difference += $result['difference'] ?? 0;
+                                                                                $overtime += $result['overtime'] ?? 0;
+                                                                            }
+                                                                        @endphp
+
+
+                                                                        <tr>
+                                                                            @foreach ($entry as $value)
+                                                                                <td>{{ $value->day_at_in }}</td>
+                                                                                <td>{{ $value->time_at_in }}</td>
+                                                                                <td>{{ $value->time_at_out }}</td>
+                                                                                <td>{{ App\Helper::searchByNameAndId('localisation', $value->localisation_id)->name ?? '' }}
+                                                                                </td>
+                                                                                @if ($loop->index == 0)
+                                                                                    <td class="text-center"
+                                                                                        rowspan="{{ $entry->count() }}">
+                                                                                        {{ $difference }} h</td>
+                                                                                    <td class="text-center"
+                                                                                        rowspan="{{ $entry->count() }}">
+                                                                                        {{ $overtime }} h
+                                                                                        @if ($result['overtime'] > 0)
+                                                                                            <i
+                                                                                                class="mdi mdi-arrow-up-drop-circle text-success"></i>
+                                                                                        @elseif($result['overtime'] < 0)
+                                                                                            <i
+                                                                                                class="mdi mdi-arrow-down-drop-circle text-danger"></i>
+                                                                                        @else
+                                                                                            <i></i>
+                                                                                        @endif
+                                                                                    </td>
+                                                                                @endif
+                                                                        </tr>
+                                                                    @endforeach
                                             @endforeach
                                             </tbody>
-                                        </table>
-                                        {{ $groupedHistoryEntries->links() }}
+                                            </table>
+                                          <div class="justify-content">{{ $groupedHistoryEntries->links() }}</div>
 
 
                                             <table class="mx-2  table ">
@@ -244,7 +248,13 @@
                                         <div class="d-sm-flex justify-content-between align-items-start mb-3">
                                             <div>
                                                 <h4 class="card-title card-title-dash">
-                                                    Statistique des heures cumulées d'un employée par jour</h4>
+                                                    Statistique des heures cumulées d'un employée </h4>
+
+                                                <h6 class="card-subtitle card-subtitle-dash"
+                                                    style="color:rgb(249, 139, 99)">Du
+                                                    {{ $dateRange['start']->format('Y-m-d') }} au
+                                                    {{ $dateRange['end']->format('Y-m-d') }}
+                                                </h6>
                                             </div>
                                             <div id="performance-line-legend"></div>
                                         </div>
@@ -265,9 +275,14 @@
                                             <div class="card-body">
                                                 <div class="row">
                                                     <div class="col-lg-12">
+                                                        <h4 class="card-title card-title-dash"> Heures Cumulées </h4>
                                                         <div class="d-flex justify-content-between align-items-center mb-3">
-                                                            <h4 class="card-title card-title-dash"> Heures Cumulées pour la
-                                                                semaine</h4>
+
+                                                            <h6 class="card-subtitle card-subtitle-dash"
+                                                                style="color:rgb(249, 139, 99)">Du
+                                                                {{ $dateRange['start']->format('Y-m-d') }} au
+                                                                {{ $dateRange['end']->format('Y-m-d') }}
+                                                            </h6>
                                                         </div>
                                                         <table class="table table-striped">
                                                             <thead>
@@ -276,22 +291,22 @@
                                                                     <th>Total d'heures</th>
                                                                 </tr>
                                                             </thead>
-                                                            {{-- <tbody>
-                                                                                @php
-                                                                                    $i = 0;
-                                                                                @endphp
-                                                                                {{-- @foreach ($result as $key => $hour)
-                                                                                    <tr>
-                                                                                        <td>N°{{ $key }}</td>
-                                                                                        <td>{{ $weekdays[$i] }}</td>
-                                                                                        <td>{{ $hour }} </td>
-                                                                                    </tr>
-                                                                                    @php
-                                                                                        $i++;
-                                                                                    @endphp
-                                                                                @endforeach
+                                                            <tbody>
+                                                                @php
+                                                                    $i = 0;
+                                                                @endphp
+                                                                @foreach ($statData as $key => $hour)
+                                                                    <tr>
+                                                                        <td>{{ $key }}</td>
+                                                                        <td></td>
+                                                                        <td>{{ $hour }} </td>
+                                                                    </tr>
+                                                                    @php
+                                                                        $i++;
+                                                                    @endphp
+                                                                @endforeach
 
-                                                                            </tbody> --}}
+                                                            </tbody>
                                                         </table>
                                                     </div>
                                                 </div>
@@ -373,18 +388,18 @@
         let days = @json(array_keys($statData));
         let statData = @json(array_values($statData));
 
-        if(start == null || end == null || diff <= 7){
-                labels = ["LUN", "MAR", "MER", "JEU", "VEN", "SAM", "DIM"];
-                data = Array(7).fill([0]).flat();
-                for (let index = 0; index < days.length; index++) {
-                    const day = days[index];
-                    if(statData[index] != 0){
-                        data[day - 1] = statData[index];
-                    }
+        if (start == null || end == null || diff <= 7) {
+            labels = ["LUN", "MAR", "MER", "JEU", "VEN", "SAM", "DIM"];
+            data = Array(7).fill([0]).flat();
+            for (let index = 0; index < days.length; index++) {
+                const day = days[index];
+                if (statData[index] != 0) {
+                    data[day - 1] = statData[index];
                 }
-        }else{
+            }
+        } else {
             labels = getRangeDate(startDate, endDate);
-            data = Array(diff+1).fill([0]).flat();
+            data = Array(diff + 1).fill([0]).flat();
             for (let index = 0; index < days.length; index++) {
                 let day = days[index].replace(/(\d{4})\-(\d{2})\-(\d{2})/, "$3/$2/$1");
                 let goodIndex = labels.indexOf(day);

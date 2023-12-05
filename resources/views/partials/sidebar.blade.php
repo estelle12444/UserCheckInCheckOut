@@ -146,7 +146,13 @@
             <div class="collapse" id="incidents">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('incidents.index') }}">Liste</a>
+                        <a class="nav-link" href="{{ route('incidents.index') }}">En attente</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('incidents.listAccept') }}">Accepter</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('incidents.listReject') }}">Refuser</a>
                     </li>
 
                 </ul>
