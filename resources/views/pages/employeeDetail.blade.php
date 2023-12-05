@@ -201,17 +201,16 @@
 
     </div>
 
-
 @endsection
 @push('scripts')
     <script>
-        new DataTable('#DetailEmployeeTable', {
-            paging: true,
-            pageLength: 5,
-            language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/fr-FR.json'
-            }
-        });
+        // new DataTable('#DetailEmployeeTable', {
+        //     paging: true,
+        //     pageLength: 5,
+        //     language: {
+        //         url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/fr-FR.json'
+        //     }
+        // });
         document.getElementById('exportButtonExcell').addEventListener('click', function() {
             var table = document.getElementById('DetailEmployeeTable');
             console.log(" table selectionné OK");
@@ -235,23 +234,72 @@
             console.log("ficher telechargé créé avec succès");
         });
 
+        function getPeriodFilter() {
+            let [start, end] = [null, null];
+            let params = new URL(document.location).searchParams.get('selectedDates');
 
+            if (params == null) return [start, end];
 
-        let data = [0, 0, 0, 0, 0, 0, 0];
-        let weekdays = @json(array_keys($result));
-        let hours = @json(array_values($result));
-        let i = 0;
-        for (const day of weekdays) {
-            data[day - 1] = hours[i];
-            i++;
+            params = params.split(/to| /).filter((el) => el.length > 0);
+
+            if (params.length == 1) {
+                start = params[0];
+            } else if (params.length == 2) {
+                let dates = params.map(el => new Date(el));
+                [start, end] = dates[0].getTime() < dates[1].getTime() ? params : params.reverse();
+            }
+            return [start, end];
         }
+
+        function getRangeDate(startDate, endDate) {
+            const fixFormatting = (str) => str.replace(/^(\d{2})\/(\d{2})\/(\d{4})$/, "$2/$1/$3");
+
+            let range = [];
+            let fromDate = new Date(startDate.format('L'));
+            let finishDate = new Date(endDate.format('L'));
+
+            while (fromDate <= finishDate) {
+                range.push(fixFormatting(moment(fromDate).format('L')));
+                let newDate = fromDate.setDate(fromDate.getDate() + 1);
+                fromDate = new Date(newDate);
+            }
+
+            return range;
+        }
+
+        const [start, end] = getPeriodFilter();
+        let labels, data;
+        let [startDate, endDate] = [moment(start), moment(end)];
+        let diff = endDate.diff(startDate, 'days') + 1;
+        let days = @json(array_keys($statData));
+        let statData = @json(array_values($statData));
+
+        if(start == null || end == null || diff <= 7){
+                labels = ["LUN", "MAR", "MER", "JEU", "VEN", "SAM", "DIM"];
+                data = Array(7).fill([0]).flat();
+                for (let index = 0; index < days.length; index++) {
+                    const day = days[index];
+                    if(statData[index] != 0){
+                        data[day - 1] = statData[index];
+                    }
+                }
+        }else{
+            labels = getRangeDate(startDate, endDate);
+            data = Array(diff+1).fill([0]).flat();
+            for (let index = 0; index < days.length; index++) {
+                let day = days[index].replace(/(\d{4})\-(\d{2})\-(\d{2})/, "$3/$2/$1");
+                let goodIndex = labels.indexOf(day);
+                data[goodIndex] = parseInt(statData[index]);
+            }
+        }
+
         var graphGradient = document.getElementById("performaneLine").getContext('2d');
         var saleGradientBg = graphGradient.createLinearGradient(5, 0, 5, 100);
         saleGradientBg.addColorStop(0, 'rgba(26, 115, 232, 0.18)');
         saleGradientBg.addColorStop(1, 'rgba(26, 115, 232, 0.02)');
 
         var salesTopData = {
-            labels: ["LUN", "MAR", "MER", "JEU", "VEN", "SAM", "DIM"],
+            labels: labels,
             datasets: [{
                 label: '',
                 data: data,

@@ -120,17 +120,16 @@ class HomeController extends Controller
         if (!$employee) {
             abort(404);
         }
-        $result = [];
-        $jours = $employee->historyEntries->pluck('day_at_in')->unique()->toArray();
-        $weekdays = [];
+
+        $statData = [];
+        $jours = $employee->historyEntries->whereBetween('day_at_in', [$dateRange['start'], $dateRange['end']])
+            ->pluck('day_at_in')->unique()->toArray();
+
         foreach ($jours as $jour) {
-            $temp = Helper::getHeuresEmployesParJour($employee->id, $jour);
-            $date = Carbon::parse($jour);
-            array_push($weekdays, ucfirst($date->dayName));
-            $result[$date->isoWeekday()] = $temp;
+            $statData[$jour] = Helper::getHeuresEmployesParJour($employee->id, $jour);
         }
 
-        return view('pages.employeeDetail', compact('employee', 'result', 'weekdays', 'groupedHistoryEntries'));
+        return view('pages.employeeDetail', compact('employee', 'statData', 'groupedHistoryEntries'));
     }
 
 
