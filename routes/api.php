@@ -20,6 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/report', [App\Http\Controllers\HistoryEntryController::class, 'in_out'])->name('report');
 Route::post('/histories', [App\Http\Controllers\HistoryEntryController::class, 'histories'])->name('histories');
+Route::post('/request_image_change', [App\Http\Controllers\HistoryEntryController::class, 'requestUpdateImage'])->name('updateImage');
 Route::group([
 
     'middleware' => 'api',
