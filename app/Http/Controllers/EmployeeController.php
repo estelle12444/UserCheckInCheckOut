@@ -50,7 +50,7 @@ class EmployeeController extends Controller
             'name' => self::STRING_RULE,
             'designation' => self::STRING_RULE,
             'department_id' => 'required|int',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'image|mimes:jpeg,png,jpg|max:2048',
         ], [
             'image.image' => 'The file must be an image.',
             'image.mimes' => 'The image must be a file of type: jpeg, png, jpg, gif, svg.',

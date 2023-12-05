@@ -6,6 +6,7 @@ use App\Enums\Entry;
 use App\Helper;
 use App\Models\Employee;
 use App\Models\HistoryEntry;
+use App\Models\RequestUser;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -141,5 +142,30 @@ class HistoryEntryController extends Controller
         return response()->json([
             'data' => $entriesByLocalisationByDay
         ]);
+    }
+
+    public function requestUpdateImage(Request $request){
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|image|mimes:png,jpg,jpeg|max:2048',
+            'matricule' => 'required|exists:employees,matricule'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => "Bad request",
+                'errors' => $validator->errors(),
+                'success' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $employee = Employee::select('id')->where('matricule', $request->matricule)->first();
+
+        $requestUser = new RequestUser();
+        $requestUser->employee_id = $employee->id;
+        $requestUser->image = $request->file('image')->store('photos', 'public');
+        $requestUser->status = 'pending';
+        $requestUser->save();
+
+        return response()->json([], Response::HTTP_CREATED);
     }
 }
