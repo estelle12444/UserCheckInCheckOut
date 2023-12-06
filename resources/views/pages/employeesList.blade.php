@@ -54,7 +54,7 @@
                                                                             {{-- <img src="{{ asset('storage/' . $employee->image_path) }}"
                                                                                 alt="{{ $employee->name }}"> --}}
                                                                         @else
-                                                                            Aucune image
+                                                                        <img src="{{ asset('images/default.png')}}" alt="{{ $employee->name }}">
                                                                         @endif
                                                                         <div>
                                                                             <h6>{{ $employee->name }}</h6>

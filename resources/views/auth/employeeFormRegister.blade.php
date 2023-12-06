@@ -8,7 +8,7 @@
                     <div class="tab-content tab-content-basic">
                         <div class="col-md-12 grid-margin stretch-card">
                             <div class="card">
-                               
+
                                     <div class="card-header">{{ __('Enregistrement de l\'employée') }}</div>
                                     <div class="card-body">
                                         <form action="{{ route('employees.store') }}" method="post"
@@ -72,11 +72,10 @@
 
                                                 <div class="col-md-8">
 
-                                                    <select name="department_id" id="siteSelect"
-                                                        style="color: #000000 !important"
+                                                    <select name="department_id" style="color: #000000 !important"
                                                         class="form-select nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split"
                                                         aria-label="Large select example">
-                                                        <option selected>Selectionner le departement</option>
+                                                        <option selected>Selectionner le département</option>
                                                         @foreach (config('department') as $department)
                                                             <option value="{{ $department['id'] }}">
                                                                 {{ $department['name'] }}</option>

@@ -49,7 +49,7 @@
                                                         <div id="performance-line-legend"></div>
                                                     </div>
 
-                                                    <h6 class="card-subtitle card-subtitle-dash" 
+                                                    <h6 class="card-subtitle card-subtitle-dash"
                                                     style="color:rgb(249, 139, 99)">Du {{ $dateRange['start']->format('Y-m-d') }} au
                                                     {{ $dateRange['end']->format('Y-m-d') }}
                                                 </h6>
@@ -230,16 +230,23 @@
 
             if (start == null || end == null || diff <= 7) {
                 labels = ["LUN", "MAR", "MER", "JEU", "VEN", "SAM", "DIM"];
-
-                for (let index = 0; index < sites.length; index++) {
+                if(siteData.length == 0){
                     let jours = Array(7).fill([0]).flat();
-                    for (const iterator in siteData[index]) {
-                        if (siteData[index][iterator] != 0) {
-                            const weekday = (new Date(iterator)).getDay();
-                            jours[weekday - 1] = siteData[index][iterator];
+
+                    datasetValues.push(datasetOptionGenerator(chartConfig[0], jours));
+                    datasetValues.push(datasetOptionGenerator(chartConfig[1], jours));
+                    datasetValues.push(datasetOptionGenerator(chartConfig[2], jours));
+                }else{
+                    for (let index = 0; index < sites.length; index++) {
+                        let jours = Array(7).fill([0]).flat();
+                        for (const iterator in siteData[index]) {
+                            if (siteData[index][iterator] != 0) {
+                                const weekday = (new Date(iterator)).getDay();
+                                jours[weekday - 1] = siteData[index][iterator];
+                            }
                         }
+                        datasetValues.push(datasetOptionGenerator(chartConfig[sites[index] - 1], jours));
                     }
-                    datasetValues.push(datasetOptionGenerator(chartConfig[sites[index] - 1], jours));
                 }
 
             } else {
@@ -339,7 +346,7 @@
             let [start, end] = [null, null];
             let params = new URL(document.location).searchParams.get('selectedDates');
 
-            if (params == null) return [start, end];
+            if (params == null) return [moment().weekday(0), moment().weekday(6)];
 
             params = params.split(/to| /).filter((el) => el.length > 0);
 

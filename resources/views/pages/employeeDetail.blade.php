@@ -8,7 +8,7 @@
                     <div class="d-sm-flex align-items-center justify-content-between border-bottom">
                         <div class="btn-wrapper">
                             <a href="#" class="btn btn-otline-dark"><i class="icon-printer"></i> Print</a>
-                            <a href="#" id="exportButton" class="btn btn-primary text-white me-0"><i
+                            <a href="#" id="exportButtonDetailEmployee" class="btn btn-primary text-white me-0"><i
                                     class="icon-download"></i>
                                 Exporter en pdf</a>
                             <a href="#" id="exportButtonExcell" class="btn btn-success text-white me-0"><i
@@ -21,16 +21,14 @@
                             <div class="row flex-grow">
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card card-rounded">
-                                        <div class="card-body" id="historyTable">
+                                        <div class="card-body" id="DetailEmployeeTable">
                                             @if ($employee)
-                                                <div class="card-header orange text-white">Fiche de l'employé:
-                                                    {{ $employee->name }}</div>
+                                            <div class="card-header orange text-white">Fiche de l'employé:{{ $employee->name }}</div>
                                                 <div class="card-body">
                                                     <div class="row">
                                                         <div class="col-md-4">
                                                             @if ($employee->image_path)
-                                                                <img class="img-fluid rounded"
-                                                                    style="border: 2px solid #EF8032;"
+                                                            <img class="img-fluid rounded" style="border: 2px solid #EF8032;"
                                                                     src="{{ asset($employee->image_path) }}"
                                                                     alt="{{ $employee->name }}">
                                                                 {{-- <img src="{{ asset('storage/' . $employee->image_path) }}"
@@ -46,11 +44,9 @@
                                                                     <p>{{ $employee->name }}</p>
                                                                 </div>
                                                                 <div class="col-md-5">
-                                                                    <h6>Total d'heure de travail
-                                                                    </h6>
+                                                                    <h6>Total d'heure de travail</h6>
                                                                     <h5 class="text-info">
-                                                                        {{ App\Helper::getTimeDifferenceTotal($employee->id) }}
-                                                                    </h5>
+                                                                        {{ App\Helper::getTimeDifferenceTotal($employee->id) }}</h5>
                                                                 </div>
                                                             </div>
                                                             <h6 class="font-weight-bold">Poste:</h6>
@@ -59,14 +55,11 @@
                                                             <div class="row">
                                                                 <div class="col-md-7">
                                                                     <h6 class="font-weight-bold">Département :</h6>
-                                                                    <p>{{ App\Helper::searchByNameAndId('department', $employee->department_id)->name ?? '' }}
-                                                                    </p>
+                                                                    <p>{{ App\Helper::searchByNameAndId('department', $employee->department_id)->name ?? '' }} </p>
                                                                 </div>
                                                                 <div class="col-md-5">
                                                                     <h6>Total Panier de flexibilité </h6>
-                                                                    <h5 class="text-info">
-                                                                        {{ App\Helper::totalHeureFlex($employee->id) }}
-                                                                    </h5>
+                                                                    <h5 class="text-info"> {{ App\Helper::totalHeureFlex($employee->id) }}</h5>
                                                                 </div>
                                                             </div>
                                                             <h6 class="font-weight-bold">Quicklock ID:</h6>
@@ -158,18 +151,15 @@
                                                                 class="table table-striped dataTable">
                                                                 <thead class="bg-info">
                                                                     <tr>
-
                                                                         <th>Date</th>
                                                                         <th>Entrée</th>
                                                                         <th>Sorties</th>
                                                                         <th>Site</th>
                                                                         <th>Durée de travail</th>
                                                                         <th>Panier de flexibilité</th>
-
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-
                                                                     @foreach ($groupedHistoryEntries->groupby('day_at_in') as $entry)
                                                                         @php
                                                                             $difference = 0;
@@ -192,20 +182,23 @@
                                                                                 @if ($loop->index == 0)
                                                                                     <td class="text-center"
                                                                                         rowspan="{{ $entry->count() }}">
-                                                                                        <h6  class="cbleu" >   {{ $difference }} h </h6></td>
+                                                                                        <h6 class="cbleu">
+                                                                                            {{ $difference }} h </h6>
+                                                                                    </td>
                                                                                     <td class="text-center"
                                                                                         rowspan="{{ $entry->count() }}">
-                                                                                        <h6 class="cRouge " > {{ $overtime }} h
-                                                                                        @if ($result['overtime'] > 0)
-                                                                                            <i
-                                                                                                class="mdi mdi-arrow-up-drop-circle text-success"></i>
-                                                                                        @elseif($result['overtime'] < 0)
-                                                                                            <i
-                                                                                                class="mdi mdi-arrow-down-drop-circle text-danger"></i>
-                                                                                        @else
-                                                                                            <i></i>
-                                                                                        @endif
-                                                                                    </h6>
+                                                                                        <h6 class="cRouge ">
+                                                                                            {{ $overtime }} h
+                                                                                            @if ($result['overtime'] > 0)
+                                                                                                <i
+                                                                                                    class="mdi mdi-arrow-up-drop-circle text-success"></i>
+                                                                                            @elseif($result['overtime'] < 0)
+                                                                                                <i
+                                                                                                    class="mdi mdi-arrow-down-drop-circle text-danger"></i>
+                                                                                            @else
+                                                                                                <i></i>
+                                                                                            @endif
+                                                                                        </h6>
                                                                                     </td>
                                                                                 @endif
                                                                         </tr>
@@ -213,9 +206,7 @@
                                             @endforeach
                                             </tbody>
                                             </table>
-                                          <div class="justify-content">{{ $groupedHistoryEntries->links() }}</div>
-
-
+                                            <div class="justify-content">{{ $groupedHistoryEntries->links() }}</div>
                                             <table class="mx-2  table ">
                                                 <tbody>
                                                     <tr>
@@ -347,6 +338,38 @@
 
             XLSX.writeFile(wb, fileName);
             console.log("ficher telechargé créé avec succès");
+        });
+        document.getElementById('exportButtonDetailEmployee').addEventListener('click', function() {
+            var employeeName = @json($employee->name);
+            var employeeMartricule = @json($employee->matricule);
+
+            var fileName = employeeName + '_' + employeeMartricule + '.pdf';
+            try {
+                var element = document.getElementById('exportButtonDetailEmployee');
+                var DetailEmployeeTable = document.getElementById('DetailEmployeeTable');
+                var opt = {
+                    margin: 1,
+                    filename: fileName,
+                    image: {
+                        type: 'jpeg',
+                        quality: 0.98
+                    },
+                    html2canvas: {
+                        scale: 2
+                    },
+                    jsPDF: {
+                        unit: 'in',
+                        format: 'letter',
+                        orientation: 'portrait'
+                    }
+                };
+
+                html2pdf().set(opt).from(DetailEmployeeTable).save();
+                html2pdf(DetailEmployeeTable, opt);
+
+            } catch (error) {
+                console.error('An error occurred:', error);
+            }
         });
 
         function getPeriodFilter() {

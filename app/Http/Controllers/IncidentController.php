@@ -35,13 +35,13 @@ class IncidentController extends Controller
     public function accept(Request $request, RequestUser $incident)
     {
         $incident->update(['status' => 'accept']);
-        return redirect()->route('incidents.listAccept')->with('success', 'Incident accepté avec succès.');
+        return redirect()->back()->with('success', 'Incident accepté avec succès.');
     }
 
     public function reject(Request $request, RequestUser $incident)
     {
         $incident->update(['status' => 'reject']);
-        return redirect()->route('incidents.listReject')->with('success', 'Incident refusé avec succès.');
+        return redirect()->back()->with('success', 'Incident refusé avec succès.');
     }
 
 
