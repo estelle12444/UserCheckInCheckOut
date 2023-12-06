@@ -52,13 +52,21 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         // Validation des données du formulaire
-        $request->validate([
-            'matricule' => 'required',
-            'name' => 'required',
-            'designation' => 'required',
-            'department_id' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        $request->validate(
+            [
+                'matricule' => 'required',
+                'name' => 'required',
+                'designation' => 'required',
+                'department_id' => 'required',
+                'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+
+            ],
+            [
+                'image.image' => 'The file must be an image.',
+                'image.mimes' => 'The image must be a file of type: jpeg, png, jpg.',
+                'image.max' => 'The image may not be greater than 2048 kilobytes.',
+            ]
+        );
 
 
         $imagePath = $request->file('image')->store('photos', 'public');
@@ -85,7 +93,7 @@ class EmployeeController extends Controller
             'image' => 'image|mimes:jpeg,png,jpg|max:2048',
         ], [
             'image.image' => 'The file must be an image.',
-            'image.mimes' => 'The image must be a file of type: jpeg, png, jpg, gif, svg.',
+            'image.mimes' => 'The image must be a file of type: jpeg, png, jpg.',
             'image.max' => 'The image may not be greater than 2048 kilobytes.',
         ]);
 
@@ -240,7 +248,7 @@ class EmployeeController extends Controller
             $employee->absentDays = $absentDays;
         }
 
-       
+
 
         $nbre = count($employees);
 

@@ -10,7 +10,7 @@
                         <div class="btn-wrapper">
 
                             <a href="#" class="btn btn-otline-dark"><i class="icon-printer"></i> Print</a>
-                            <a href="#" id="exportButton" class="btn btn-primary text-white me-0"><i
+                            <a href="#" id="exportButtonSite" class="btn btn-primary text-white me-0"><i
                                     class="icon-download"></i>
                                 Exporter en pdf</a>
                             <a href="#" id="ButtonExcel" class="btn btn-success text-white me-0"><i
@@ -27,7 +27,7 @@
                             <div class="row flex-grow">
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card card-rounded">
-                                        <div class="card-body" id="historyTable">
+                                        <div class="card-body" id="siteEmployeeTable">
                                             <div class="d-sm-flex justify-content-between align-items-start">
                                                 <div>
                                                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
@@ -154,6 +154,39 @@
 
             XLSX.writeFile(wb, fileName);
             console.log("ficher telechargé créé avec succès");
+        });
+
+        document.getElementById('exportButtonSite').addEventListener('click', function() {
+            let start = @json($dateRange['start']->format('Y-m-d'));
+            let end = @json($dateRange['end']->format('Y-m-d'));
+            let site = @json($site->name);
+            let fileName = 'listes_employees_site_'+site+ '_du_' + start + '_au_' + end + '.pdf';
+            try {
+                var element = document.getElementById('exportButtonSite');
+                var SiteEmployeeTable = document.getElementById('siteEmployeeTable');
+                var opt = {
+                    margin: 1,
+                    filename: fileName,
+                    image: {
+                        type: 'jpeg',
+                        quality: 0.98
+                    },
+                    html2canvas: {
+                        scale: 2
+                    },
+                    jsPDF: {
+                        unit: 'in',
+                        format: 'letter',
+                        orientation: 'portrait'
+                    }
+                };
+
+                html2pdf().set(opt).from(SiteEmployeeTable).save();
+                html2pdf(SiteEmployeeTable, opt);
+
+            } catch (error) {
+                console.error('An error occurred:', error);
+            }
         });
         new DataTable('#employeeTable', {
             paging: true,
