@@ -3,43 +3,40 @@
 return [
     [
         'id' => 1,
-        'name' => 'Développement Web et Mobile',
+        'name' => 'Human Ressources Manager',
     ],
     [
         'id' => 2,
-        'name' => 'Data Analytics',
+        'name' => 'Sales',
     ],
     [
         'id' => 3,
-        'name' => 'Project Management owner',
+        'name' => 'Marketing,Communication & Partnership Manager',
     ],
     [
-        'id'=>4,
-        'name'=>'Système Information Géographique'
+        'id' => 4,
+        'name' => 'Cybersecurity Manager'
     ],
     [
-        'id'=>5,
-        'name'=>'SOC'
+        'id' => 5,
+        'name' => 'Project Manager '
 
     ],
     [
-        'id'=>6,
-        'name'=>'Moyen généraux'
+        'id' => 6,
+        'name' => ' General Services'
     ],
     [
-        'id'=>7,
-        'name'=>'Marketing et Communication'
+        'id' => 7,
+        'name' => 'Analyst  statician'
     ],
     [
-        'id'=>8,
-        'name'=>'Ressources Humaines'
+        'id' => 8,
+        'name' => 'Technical Expert'
     ],
     [
         'id'=>9,
-        'name'=>'Juridique'
-    ],
-    [
-        'id'=>10,
-        'name'=>'Commercials'
+        'name'=>' Accountig Manager'
     ]
+
 ];

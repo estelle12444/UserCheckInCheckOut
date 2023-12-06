@@ -14,7 +14,8 @@
                                         <div class="card-body">
                                             <div class="d-sm-flex justify-content-between align-items-start">
                                                 <div>
-                                                    <h4 class="card-title card-title-dash">Administrateurs du Tableau de bord
+                                                    <h4 class="card-title card-title-dash">Administrateurs du Tableau de
+                                                        bord
                                                     </h4>
                                                     <p class="card-subtitle card-subtitle-dash">Nous
                                                         avons {{ $userCount }} utilisateurs</p>
@@ -25,45 +26,36 @@
                                                 <table class="table select-table table-hover">
                                                     <thead class="orange">
                                                         <tr>
-                                                            {{-- <th>
-                                                                <div class="form-check form-check-flat mt-0">
-                                                                    <label class="form-check-label">
-                                                                        <input type="checkbox" class="form-check-input"
-                                                                            aria-checked="false"><i
-                                                                            class="input-helper"></i></label>
-                                                                </div>
-                                                            </th> --}}
-                                                            <th class="text-white pl-2">Nom et EMail</th>
+                                                            <th class="text-white pl-2">Nom et Email</th>
                                                             <th class="text-white">Role</th>
-
-                                                            <th  class="text-white">Status</th>
-                                                            <th  class="text-white">Actions</th>
+                                                            <th class="text-white">Status</th>
+                                                            <th class="text-white">Actions</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         @foreach ($users as $user)
                                                             <tr>
-
                                                                 <td>
-
                                                                     <div class="d-flex ">
                                                                         @if ($user->employee && $user->employee->image_path)
-                                                                        <img src="{{ asset($user->employee->image_path) }}" alt="{{ $user->name }}">
-                                                                    @else
-                                                                    <img src="{{ asset('images/default.png')}}" alt="{{ $user->name }}">
-                                                                    @endif
+                                                                            <img src="{{ asset('storage/' . $user->employee->image_path) }}"
+                                                                                alt="{{ $user->name }}">
+                                                                        @else
+                                                                            <img src="{{ asset('images/default.png') }}"
+                                                                                alt="{{ $user->name }}">
+                                                                        @endif
                                                                         <div>
-                                                                            <h6>{{ $user->name  }}</h6>
-
+                                                                            <h6>{{ $user->name }}</h6>
                                                                         </div>
                                                                     </div>
                                                                 </td>
 
                                                                 <td>
                                                                     <p>{{ $user->role->name }}</p>
-
                                                                 </td>
-                                                                <td><h6>{{ $user->activated ? 'Actif' : 'Inactif' }}</h6></td>
+                                                                <td>
+                                                                    <h6>{{ $user->activated ? 'Actif' : 'Inactif' }}</h6>
+                                                                </td>
                                                                 <td>
                                                                     @if ($user->activated)
                                                                         <form
@@ -71,7 +63,8 @@
                                                                             method="post">
                                                                             @csrf
                                                                             @method('PATCH')
-                                                                            <button class=" text-white btn btn-danger" type="submit">Désactiver</button>
+                                                                            <button class=" text-white btn btn-danger"
+                                                                                type="submit">Désactiver</button>
                                                                         </form>
                                                                     @else
                                                                         <form
@@ -79,7 +72,8 @@
                                                                             method="post">
                                                                             @csrf
                                                                             @method('PATCH')
-                                                                            <button class=" text-white btn btn-success" type="submit">Activer</button>
+                                                                            <button
+                                                                                class=" text-white btn btn-success"type="submit">Activer</button>
                                                                         </form>
                                                                     @endif
 

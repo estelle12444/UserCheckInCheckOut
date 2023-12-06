@@ -26,19 +26,12 @@
                                             </div>
                                             @if (!$request->accepted)
                                                 <div class="d-flex mt-2">
-                                                    <form method="post"
-                                                        action="{{ route('incidents.accept', $request->id) }}">
-                                                        @csrf
-                                                        <button type="submit"
-                                                            class="text-white btn btn-success mr-2">Accepter
-                                                        </button>
-                                                    </form>
                                                     <form action="{{ route('incidents.destroy', $request) }}"
                                                         method="POST">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="text-white btn btn-danger mr-2"
-                                                            onclick="return confirm('Are you sure you want to delete this incident?')">Supprimer</button>
+                                                        <button type="submit"
+                                                            onclick="return confirm('Are you sure you want to delete this incident?')">Delete</button>
                                                     </form>
                                                     @if (session('success'))
                                                         <div class="alert alert-success">

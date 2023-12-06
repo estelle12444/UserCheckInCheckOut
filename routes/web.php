@@ -48,11 +48,12 @@ Route::post('/import/employee', [EmployeeController::class, 'importEmployee'])->
 Route::get('/incidents', [IncidentController::class, 'index'])->name('incidents.index');
 Route::get('/incidents/Accept', [IncidentController::class, 'listAccept'])->name('incidents.listAccept');
 Route::get('/incidents/Reject', [IncidentController::class, 'listReject'])->name('incidents.listReject');
-
+Route::get('/incidents/delete', [IncidentController::class, 'listToDelete'])->name('incidents.to_delete');
 
 Route::get('/incidents/{incident}', [IncidentController::class, 'show'])->name('incidents.show');
 Route::post('/incidents/{incident}/accept', [IncidentController::class, 'accept'])->name('incidents.accept');
 Route::post('/incidents/{incident}/reject', [IncidentController::class, 'reject'])->name('incidents.reject');
+Route::delete('/incidents/{incident}', [IncidentController::class, 'destroy'])->name('incidents.destroy');
 
 Route::get('/profile', [ProfileController::class,'show'])->name('profile.show')->middleware('auth');
 Route::post('/profile', [ProfileController::class,'update'])->name('profile.update');

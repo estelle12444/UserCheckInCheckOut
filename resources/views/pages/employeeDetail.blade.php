@@ -23,18 +23,18 @@
                                     <div class="card card-rounded">
                                         <div class="card-body" id="DetailEmployeeTable">
                                             @if ($employee)
-                                            <div class="card-header orange text-white">Fiche de l'employé:{{ $employee->name }}</div>
+                                                <div class="card-header orange text-white">Fiche de
+                                                    l'employé:{{ $employee->name }}</div>
                                                 <div class="card-body">
                                                     <div class="row">
                                                         <div class="col-md-4">
                                                             @if ($employee->image_path)
-                                                            <img class="img-fluid rounded" style="border: 2px solid #EF8032;"
-                                                                    src="{{ asset($employee->image_path) }}"
+                                                                <img class="img-fluid rounded"
+                                                                    style="border: 2px solid #EF8032;"src="{{ asset('storage/' . $employee->image_path) }}"
                                                                     alt="{{ $employee->name }}">
-                                                                {{-- <img src="{{ asset('storage/' . $employee->image_path) }}"
-                                                                                alt="{{ $employee->name }}"> --}}
                                                             @else
-                                                                <p class="text-muted">Aucune image</p>
+                                                                <img src="{{ asset('images/default.png') }}"
+                                                                    alt="{{ $employee->name }}">
                                                             @endif
                                                         </div>
                                                         <div class="col-md-8">
@@ -46,7 +46,8 @@
                                                                 <div class="col-md-5">
                                                                     <h6>Total d'heure de travail</h6>
                                                                     <h5 class="text-info">
-                                                                        {{ App\Helper::getTimeDifferenceTotal($employee->id) }}</h5>
+                                                                        {{ App\Helper::getTimeDifferenceTotal($employee->id) }}
+                                                                    </h5>
                                                                 </div>
                                                             </div>
                                                             <h6 class="font-weight-bold">Poste:</h6>
@@ -55,11 +56,14 @@
                                                             <div class="row">
                                                                 <div class="col-md-7">
                                                                     <h6 class="font-weight-bold">Département :</h6>
-                                                                    <p>{{ App\Helper::searchByNameAndId('department', $employee->department_id)->name ?? '' }} </p>
+                                                                    <p>{{ App\Helper::searchByNameAndId('department', $employee->department_id)->name ?? '' }}
+                                                                    </p>
                                                                 </div>
                                                                 <div class="col-md-5">
                                                                     <h6>Total Panier de flexibilité </h6>
-                                                                    <h5 class="text-info"> {{ App\Helper::totalHeureFlex($employee->id) }}</h5>
+                                                                    <h5 class="text-info">
+                                                                        {{ App\Helper::totalHeureFlex($employee->id) }}
+                                                                    </h5>
                                                                 </div>
                                                             </div>
                                                             <h6 class="font-weight-bold">Quicklock ID:</h6>
@@ -71,82 +75,7 @@
                                                                 {{ $dateRange['start']->format('Y-m-d') }} au
                                                                 {{ $dateRange['end']->format('Y-m-d') }}
                                                             </h5>
-                                                            {{-- <table aria-describedby="mydesc" id="detailEmployeeTable"
-                                                            class="table table-striped dataTable">
-                                                            <thead class="bg-info">
-                                                                <tr>
-                                                                    <th>Date</th>
-                                                                    <th>Heure travaillée</th>
-                                                                    <th>Panier de flexibilité</th>
-                                                                    <th>Actions</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
 
-                                                                @foreach ($groupedHistoryEntries as $entry)
-
-                                                                    @foreach ($entry as $value)
-                                                                        <tr>
-                                                                            {{-- <td>{{ App\Helper::searchByNameAndId('localisation', $value->localisation_id)->name ?? '' }}</td>
-                                                                            <td>{{ $value->day_at_in }}</td>
-                                                                            @if ($loop->index == 0)
-                                                                                <td class="text-center">
-                                                                                    {{ $HeureTravail =App\Helper::getHeuresEmployesParJour($value->employee_id, $value->day_at_in) }}
-                                                                                </td>
-                                                                                <td class="text-center">
-                                                                                    {{$PanierFlex= App\Helper::getTimeFlexParJour($value->employee_id, $value->day_at_in) }}
-                                                                                    @if ($PanierFlex > 0)
-                                                                                        <i
-                                                                                            class="mdi mdi-arrow-up-drop-circle text-success"></i>
-                                                                                        @elseif ($PanierFlex < 0)
-                                                                                        <i
-                                                                                            class="mdi mdi-arrow-down-drop-circle text-danger"></i>
-                                                                                    @else
-                                                                                        <i></i>
-                                                                                    @endif
-                                                                                </td>
-
-                                                                                <td class="text-center">
-                                                                                    <button type="button" class="btn btn-info  text-white" data-toggle="modal"
-                                                                                        data-target="#exampleModal{{ $value->id }}">
-                                                                                        Entrées/Sorties
-                                                                                    </button>
-                                                                                </td>
-                                                                            @endif
-                                                                        </tr>
-
-                                                                        <!-- Modal -->
-                                                                        <div class="modal fade" id="exampleModal{{ $value->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                                            <div class="modal-dialog" role="document">
-                                                                                <div class="modal-content">
-                                                                                    <div class="modal-header">
-                                                                                        <h5 class="modal-title" id="exampleModalLabel"> Entrées/Sorties pour le {{ $value->day_at_in }}</h5>
-                                                                                        <button type="button" class="close" data-dismiss="modal" -label="Close">
-                                                                                            <span aria-hidden="true">&times;</span>
-                                                                                        </button>
-                                                                                    </div>
-                                                                                    <div class="modal-body">
-                                                                                        <h6 class="modal-title">Site:
-                                                                                            {{ App\Helper::searchByNameAndId('localisation', $value->localisation_id)->name ?? '' }}
-                                                                                        </h6>
-                                                                                        <h6 class="modal-title">
-                                                                                            Entrée:{{ $value->time_at_in }}
-                                                                                        </h6>
-                                                                                        <h6 class="modal-title">
-                                                                                            Sortie:{{ $value->time_at_out }}
-                                                                                        </h6>
-
-                                                                                    </div>
-                                                                                    <div class="modal-footer">
-                                                                                        <button type="button" class="btn btn-secondary text-white" data-dismiss="modal">Fermer</button>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    @endforeach
-                                                                @endforeach
-                                                            </tbody>
-                                                        </table> --}}
                                                             <table aria-describedby="mydesc" id="detailEmployeeTable"
                                                                 class="table table-striped dataTable">
                                                                 <thead class="bg-info">

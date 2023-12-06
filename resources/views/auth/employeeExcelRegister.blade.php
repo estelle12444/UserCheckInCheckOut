@@ -101,7 +101,6 @@
                                     <h2 class="card-title"> Bienvenue sur la page d'enregistrement des employés.</h2>
                                     <p>Vous pouvez utiliser un fichier Excel pour
                                         importer plusieurs employés en une seule fois.</p>
-
                                     </p>
 
                                     <div class="alert alert-info">
@@ -121,6 +120,34 @@
                                         <button class="btn btn-primary text-white" id="showSwalButton">
                                             Afficher l'example
                                         </button>
+                                        <button type="button" class="btn btn-primary text-white" data-toggle="modal" data-target="#exampleModal">
+                                            Afficher Listes des départements
+                                        </button>
+                                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Listes des départements</h5>
+                                                        <button type="button" class="btn btn-danger text-white" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <ul class="list-ticked">
+
+                                                            @foreach(config('department') as $jobTitle)
+                                                                <li>{{ $jobTitle['id'] }}.{{ $jobTitle['name'] }}</li>
+
+                                                            @endforeach
+
+                                                        </ul>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-primary text-white" data-dismiss="modal">Fermer</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <button class="btn btn-success text-white" id="showFormButton">
                                             Importation

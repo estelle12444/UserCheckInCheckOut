@@ -30,13 +30,16 @@
                                         <div class="card-body" id="siteEmployeeTable">
                                             <div class="d-sm-flex justify-content-between align-items-start">
                                                 <div>
-                                                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
+                                                    <div
+                                                        class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
                                                         <h3 class="card-title card-title-dash mb-2 mb-sm-0">
-                                                            Liste des employés du site : <strong class="orange">{{ $site->name ?? ' ' }}</strong>
+                                                            Liste des employés du site : <strong
+                                                                class="orange">{{ $site->name ?? ' ' }}</strong>
                                                         </h3>
                                                         <h3 class="ml-4 card-title card-title-dash mb-2 mb-sm-0"
                                                             style="color:rgb(249, 139, 99);font-weight:700">
-                                                            Du {{ $dateRange['start']->format('Y-m-d') }} au {{ $dateRange['end']->format('Y-m-d') }}
+                                                            Du {{ $dateRange['start']->format('Y-m-d') }} au
+                                                            {{ $dateRange['end']->format('Y-m-d') }}
                                                         </h3>
                                                     </div>
                                                     <p class="card-subtitle card-subtitle-dash">Nous
@@ -59,63 +62,75 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach ($history_entries as $history_entry)
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="d-flex ">
-                                                                        <a
-                                                                            href="{{ route('employeeDetail', ['id' => $history_entry->employee->id]) }}">
-                                                                            <img src="{{ asset($history_entry->employee->image_path) }}"
-                                                                                alt="{{ $history_entry->employee->name }}">
-                                                                        </a>
-                                                                        <div>
+                                                        @if (!$history_entries->isEmpty())
+                                                            @foreach ($history_entries as $history_entry)
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="d-flex ">
                                                                             <a
                                                                                 href="{{ route('employeeDetail', ['id' => $history_entry->employee->id]) }}">
-                                                                                <h6>{{ $history_entry->employee->name }}
-                                                                                </h6>
+
+                                                                                @if ($history_entry->employee->image_path)
+                                                                                    <img src="{{ asset('storage/' . $history_entry->employee->image_path) }}"
+                                                                                        alt="{{ $history_entry->employee->name }}">
+                                                                                @else
+                                                                                    <img src="{{ asset('/public/images/default.png') }}"
+                                                                                        alt="{{ $employee->name }}">
+                                                                                @endif
                                                                             </a>
-                                                                            <p>{{ $history_entry->employee->designation }}
-                                                                            </p>
+                                                                            <div>
+                                                                                <a
+                                                                                    href="{{ route('employeeDetail', ['id' => $history_entry->employee->id]) }}">
+                                                                                    <h6>{{ $history_entry->employee->name }}
+                                                                                    </h6>
+                                                                                </a>
+                                                                                <p>{{ $history_entry->employee->designation }}
+                                                                                </p>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <h6>{{ App\Helper::searchByNameAndId('department', $history_entry->employee->department_id)->name ?? '' }}
-                                                                    </h6>
-                                                                    </p>
-                                                                </td>
-                                                                <td>
-                                                                    <h6>{{ $history_entry->day_at_in }}</h6>
-                                                                </td>
-                                                                <td>
-                                                                    <h6 class="marron">{{ $history_entry->time_at_in }}
-                                                                    </h6>
-                                                                </td>
+                                                                    </td>
+                                                                    <td>
+                                                                        <h6>{{ App\Helper::searchByNameAndId('department', $history_entry->employee->department_id)->name ?? '' }}
+                                                                        </h6>
+                                                                        </p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <h6>{{ $history_entry->day_at_in }}</h6>
+                                                                    </td>
+                                                                    <td>
+                                                                        <h6 class="marron">{{ $history_entry->time_at_in }}
+                                                                        </h6>
+                                                                    </td>
 
-                                                                <td>
-                                                                    @if ($history_entry->day_at_out && $history_entry->time_at_out)
-                                                                        <h6 class="marron">
-                                                                            {{ $history_entry->time_at_out }}</h6>
-                                                                    @else
-                                                                        Pas encore sorti
-                                                                    @endif
+                                                                    <td>
+                                                                        @if ($history_entry->day_at_out && $history_entry->time_at_out)
+                                                                            <h6 class="marron">
+                                                                                {{ $history_entry->time_at_out }}</h6>
+                                                                        @else
+                                                                            Pas encore sorti
+                                                                        @endif
 
-                                                                </td>
-                                                                <td class="">
-                                                                    <h6 class="cbleu">
-                                                                        {{ App\Helper::getHeuresEmployesParJour($history_entry->employee->id, $history_entry->day_at_in) }}
-                                                                    </h6>
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <h6 class="cbleu">
+                                                                            {{ App\Helper::getHeuresEmployesParJour($history_entry->employee->id, $history_entry->day_at_in) }}
+                                                                        </h6>
 
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    <h6 class="cRouge ">
-                                                                        {{ App\Helper::getTimeFlexParJour($history_entry->employee->id, $history_entry->day_at_in) }}
-                                                                    </h6>
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <h6 class="cRouge ">
+                                                                            {{ App\Helper::getTimeFlexParJour($history_entry->employee->id, $history_entry->day_at_in) }}
+                                                                        </h6>
 
-                                                                </td>
+                                                                    </td>
 
-                                                            </tr>
-                                                        @endforeach
+                                                                </tr>
+                                                            @endforeach
+                                                        @else
+                                                            <p>Aucune donnés disponible pendant la période
+                                                                spécifiée.
+                                                            </p>
+                                                        @endif
 
                                                     </tbody>
                                                 </table>
@@ -160,7 +175,7 @@
             let start = @json($dateRange['start']->format('Y-m-d'));
             let end = @json($dateRange['end']->format('Y-m-d'));
             let site = @json($site->name);
-            let fileName = 'listes_employees_site_'+site+ '_du_' + start + '_au_' + end + '.pdf';
+            let fileName = 'listes_employees_site_' + site + '_du_' + start + '_au_' + end + '.pdf';
             try {
                 var element = document.getElementById('exportButtonSite');
                 var SiteEmployeeTable = document.getElementById('siteEmployeeTable');

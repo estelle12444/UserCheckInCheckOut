@@ -158,11 +158,17 @@ class HistoryEntryController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $employee = Employee::select('id')->where('matricule', $request->matricule)->first();
+        $employee = Employee::where('matricule', $request->matricule)->first();
+
+        $fileName = $employee->matricule.', '.$employee->name.', '.$employee->designation;
+        $fileName .= ', '.\App\Helper::searchByNameAndId('department', $employee->department_id)->name;
+        $guessExtension = $request->file('image')->guessExtension();
+        $imagePath = $request->file('image')->storeAs('request_employee', $fileName.'.'.$guessExtension,'public');
+
 
         $requestUser = new RequestUser();
         $requestUser->employee_id = $employee->id;
-        $requestUser->image = $request->file('image')->store('photos', 'public');
+        $requestUser->image = $imagePath;
         $requestUser->status = 'pending';
         $requestUser->save();
 

@@ -49,12 +49,11 @@
                                                                 <td>
                                                                     <div class="d-flex ">
                                                                         @if ($employee->image_path)
-                                                                            <img src="{{ asset($employee->image_path) }}"
+                                                                          
+                                                                            <img src="{{ asset('storage/' . $employee->image_path) }}"
                                                                                 alt="{{ $employee->name }}">
-                                                                            {{-- <img src="{{ asset('storage/' . $employee->image_path) }}"
-                                                                                alt="{{ $employee->name }}"> --}}
                                                                         @else
-                                                                        <img src="{{ asset('images/default.png')}}" alt="{{ $employee->name }}">
+                                                                          <img src="{{ asset('images/default.png')}}" alt="{{ $employee->name }}">
                                                                         @endif
                                                                         <div>
                                                                             <h6>{{ $employee->name }}</h6>

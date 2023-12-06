@@ -28,7 +28,6 @@ class EmployeeController extends Controller
         return view('auth.employeeExcelRegister');
     }
 
-
     public function registrationEmployeeForm()
     {
         return view('auth.employeeFormRegister');
@@ -62,8 +61,6 @@ class EmployeeController extends Controller
             return redirect()->back()->withInput();
         }
     }
-
-
 
 
     public function updateEmployee(Request $request, $id)
@@ -120,10 +117,7 @@ class EmployeeController extends Controller
 
     public function deactivateEmployee(Employee $employee)
     {
-
         if ($employee->user) {
-
-
             if ($employee->user->delete()) {
                 // La suppression a réussi
                 $employee->user_id = null;
@@ -140,7 +134,6 @@ class EmployeeController extends Controller
             $employee->user_id = null;
             $employee->activated = false;
             $employee->save();
-
             return redirect()->back()->with('success', 'Employé désactivé avec succès.');
         }
     }
@@ -209,9 +202,6 @@ class EmployeeController extends Controller
 
             $employee->absentDays = $absentDays;
         }
-
-
-
         $nbre = count($employees);
 
         return view('pages.absenceIndex', compact('absence', 'dateRange', 'nbre'));

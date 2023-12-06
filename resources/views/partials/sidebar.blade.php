@@ -154,18 +154,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('incidents.listReject') }}">Refuser</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('incidents.to_delete') }}">A Supprimer</a>
+                    </li>
 
                 </ul>
             </div>
         </li>
 
-        {{-- <li class="nav-item nav-category"> Administrations</li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{route('user-list')}}">
-            <i class="menu-icon mdi mdi-account-circle-outline"></i>
-            <span class="menu-title"> Administrateurs </span>
-          </a>
-        </li> --}}
         <li class="nav-item nav-category"> Administrations</li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#admin" aria-expanded="false" aria-controls="admin">

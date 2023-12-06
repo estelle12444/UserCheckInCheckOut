@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignIdFor(Employee::class);
             $table->string('image');
             $table->string('status');
-            $table->softDeletes();
             $table->timestamps();
         });
     }
