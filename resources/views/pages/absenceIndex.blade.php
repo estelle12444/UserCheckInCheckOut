@@ -8,7 +8,7 @@
                     <div class="d-sm-flex align-items-center justify-content-between border-bottom">
                         <div class="btn-wrapper">
                             <a href="#" class="btn btn-otline-dark"><i class="icon-printer"></i> Print</a>
-                            <a href="#" id="exportButton" class="btn btn-primary text-white me-0"><i
+                            <a href="#" id="exportButtonAbsent" class="btn btn-primary text-white me-0"><i
                                     class="icon-download"></i>Exporter en pdf</a>
                             <a href="#" id="AbsenceButtonExcell" class="btn btn-success text-white me-0"><i
                                     class="icon-download"></i>
@@ -20,10 +20,14 @@
                             <div class="row flex-grow">
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card card-rounded">
-                                        <div class="card-body" id="historyTable">
-                                            @if (!$absence->isEmpty())
-                                                <h3>Employés Absents du {{ $dateRange['start']->format('Y-m-d') }} au
-                                                    {{ $dateRange['end']->format('Y-m-d') }} </h3>
+                                        <div class="card-body" id="historyAbsentEmployeeTable">
+                                            @if (!$employees->isEmpty())
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h3 class="mb-0">Liste des Employés Absents</h3>
+                                                <h4 class="card-subtitle card-subtitle-dash" style="color:rgb(249, 139, 99);font-weight:600">
+                                                    Du {{ $fromDate->format('Y-m-d') }} au {{ $toDate->format('Y-m-d') }}
+                                                </h4>
+                                            </div>
                                                 <p class="card-subtitle card-subtitle-dash">Nous
                                                     avons {{ $nbre }} employés absents </p>
                                                 <div class="table-responsive  mt-1">
@@ -37,7 +41,7 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @foreach ($absence as $employee)
+                                                            @foreach ($employees as $employee)
                                                                 <tr>
                                                                     <td class="pl-2">{{ $employee->matricule }}</td>
                                                                     <td>
@@ -61,14 +65,16 @@
                                                                         </h6>
                                                                     </td>
                                                                     <td>
-                                                                        @if ($employee->absence_dates)
-                                                                            <ul>
-                                                                                @foreach (explode(',', $employee->absence_dates) as $absenceDate)
-                                                                                    <li>{{ $absenceDate }}</li>
+                                                                        @if (count($employee->absentDays) > 0)
+                                                                            <ul class="list-ticked">
+                                                                                @foreach ($employee->absentDays as $absentDay)
+                                                                                    <li>{{ $absentDay }}</li>
                                                                                 @endforeach
                                                                             </ul>
                                                                         @else
-                                                                            <p>Aucun jour d'absence enregistré</p>
+                                                                            <p>Aucun employé absent pendant la période
+                                                                                spécifiée.
+                                                                            </p>
                                                                         @endif
                                                                     </td>
                                                                 </tr>
@@ -106,8 +112,8 @@
             var wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Feuille1');
 
-            let start = @json($dateRange['start']->format('Y-m-d'));
-            let end = @json($dateRange['end']->format('Y-m-d'));
+            let start = @json($fromDate->format('Y-m-d'));
+            let end = @json($toDate->format('Y-m-d'));
             var fileName = 'Absences_employees' + '_' + start + 'au ' + end + '.xlsx';
             console.log("Nom du fichier", fileName);
 
@@ -115,13 +121,16 @@
             console.log("ficher telechargé créé avec succès");
         });
 
-        document.getElementById('exportButton').addEventListener('click', function() {
+        document.getElementById('exportButtonAbsent').addEventListener('click', function() {
+            let start = @json($fromDate->format('Y-m-d'));
+            let end = @json($toDate->format('Y-m-d'));
+            let fileName = 'Absences_employees_' + start + '_to_' + end + '.pdf';
             try {
-                var element = document.getElementById('exportButton');
-                var historyTable = document.getElementById('historyTable');
+                var element = document.getElementById('exportButtonAbsent');
+                var AbsentEmployeeTable = document.getElementById('AbsentEmployeeTable');
                 var opt = {
                     margin: 1,
-                    filename: 'myfile.pdf',
+                    filename: fileName,
                     image: {
                         type: 'jpeg',
                         quality: 0.98
@@ -136,8 +145,8 @@
                     }
                 };
 
-                html2pdf().set(opt).from(historyTable).save();
-                html2pdf(historyTable, opt);
+                html2pdf().set(opt).from(AbsentEmployeeTable).save();
+                html2pdf(AbsentEmployeeTable, opt);
 
             } catch (error) {
                 console.error('An error occurred:', error);

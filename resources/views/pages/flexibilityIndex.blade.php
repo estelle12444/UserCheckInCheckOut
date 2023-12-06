@@ -25,9 +25,9 @@
                                                 <thead class="orange ">
                                                     <tr>
                                                         <th class="text-white  pl-2">Quicklock ID</th>
-                                                        <th class="text-white">Nom et Poste</th>
-                                                        <th class="text-white">Total des Heures travaillées</th>
-                                                        <th class="text-white">Total du Panier de flexibilité </th>
+                                                        <th class="text-white">Employée</th>
+                                                        <th class="text-white">Total des Heures effectuées</th>
+                                                        <th class="text-white">Total flexibilité </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -53,8 +53,8 @@
 
                                                                 </div>
                                                             </td>
-                                                            <td> <h6  class="cbleu text-center" >{{ App\Helper::getTimeDifferenceParPeriode($dateRange['start'],$dateRange['end'], $employee->id)}}</h6></td>
-                                                            <td> <h6 class="cRouge text-center" > {{ App\Helper::getTimeFlexParPeriode($dateRange['start'],$dateRange['end'], $employee->id)}} </h6></td>
+                                                            <td class="text-center"> <h6  class="cbleu" >{{ App\Helper::getTimeDifferenceParPeriode($dateRange['start'],$dateRange['end'], $employee->id)}}</h6></td>
+                                                            <td class="text-center"> <h6 class="cRouge " > {{ App\Helper::getTimeFlexParPeriode($dateRange['start'],$dateRange['end'], $employee->id)}} </h6></td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>

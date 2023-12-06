@@ -163,7 +163,7 @@
                                                                         <th>Entrée</th>
                                                                         <th>Sorties</th>
                                                                         <th>Site</th>
-                                                                        <th>Heure travaillée</th>
+                                                                        <th>Durée de travail</th>
                                                                         <th>Panier de flexibilité</th>
 
                                                                     </tr>
@@ -192,10 +192,10 @@
                                                                                 @if ($loop->index == 0)
                                                                                     <td class="text-center"
                                                                                         rowspan="{{ $entry->count() }}">
-                                                                                        {{ $difference }} h</td>
+                                                                                        <h6  class="cbleu" >   {{ $difference }} h </h6></td>
                                                                                     <td class="text-center"
                                                                                         rowspan="{{ $entry->count() }}">
-                                                                                        {{ $overtime }} h
+                                                                                        <h6 class="cRouge " > {{ $overtime }} h
                                                                                         @if ($result['overtime'] > 0)
                                                                                             <i
                                                                                                 class="mdi mdi-arrow-up-drop-circle text-success"></i>
@@ -205,6 +205,7 @@
                                                                                         @else
                                                                                             <i></i>
                                                                                         @endif
+                                                                                    </h6>
                                                                                     </td>
                                                                                 @endif
                                                                         </tr>

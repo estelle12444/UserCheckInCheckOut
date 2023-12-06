@@ -50,7 +50,7 @@
                                                                         @if ($user->employee && $user->employee->image_path)
                                                                         <img src="{{ asset($user->employee->image_path) }}" alt="{{ $user->name }}">
                                                                     @else
-                                                                        Aucune image
+                                                                    <img src="{{ asset('images/default.png')}}" alt="{{ $user->name }}">
                                                                     @endif
                                                                         <div>
                                                                             <h6>{{ $user->name  }}</h6>

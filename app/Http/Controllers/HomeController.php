@@ -102,7 +102,7 @@ class HomeController extends Controller
             $query->where('localisation_id', $id)->whereBetween('day_at_in', [$dateRange['start'],  $dateRange['end']]);
         })->count();
 
-        return view('pages.siteEmployees', compact('history_entries', 'filtreEmployees', 'site'));
+        return view('pages.siteEmployees', compact('history_entries', 'filtreEmployees', 'site','dateRange'));
     }
 
 

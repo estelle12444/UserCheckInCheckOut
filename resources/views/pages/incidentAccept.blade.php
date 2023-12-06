@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="home-tab">
-                    <h2 class="card-title">Liste des Incidents Acceptés</h2>
+                    <h2 class="card-title">Liste des Incidents Résolus</h2>
                     <div class="tab-content tab-content-basic">
 
                         @foreach ($listAccepts  as $request)

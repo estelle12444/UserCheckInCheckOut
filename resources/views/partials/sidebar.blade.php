@@ -159,10 +159,37 @@
             </div>
         </li>
 
+        {{-- <li class="nav-item nav-category"> Administrations</li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{route('user-list')}}">
+            <i class="menu-icon mdi mdi-account-circle-outline"></i>
+            <span class="menu-title"> Administrateurs </span>
+          </a>
+        </li> --}}
+        <li class="nav-item nav-category"> Administrations</li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#admin" aria-expanded="false" aria-controls="admin">
+              <i class="menu-icon mdi mdi-layers-outline"></i>
+              <span class="menu-title">Administrations</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="admin">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{{route('user-list')}}">Administrateurs</a></li>
+              </ul>
+            </div>
+          </li>
+{{--
+        <li class="nav-item nav-category"> Administrations</li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{route('user-list')}}">
+            <i class="menu-icon mdi mdi-file-document"></i>
+            <span class="menu-title">Administrateurs </span>
+        </a>
+    </li> --}}
 
 
-
-
+        <li class="nav-item nav-category"> Deconnexion</li>
     <li class="nav-item">
         <a class="nav-link" href="{{ route('logout') }}">
             <i class="menu-icon mdi mdi-file-document"></i>

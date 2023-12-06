@@ -36,11 +36,11 @@
                                                 <table id="employeeList" class="table select-table table-hover ">
                                                     <thead class="orange ">
                                                         <tr>
-                                                            <th class="text-white pl-2">Nom</th>
-                                                            <th class="text-white">Designation</th>
+                                                            <th class="text-white pl-2">Employée</th>
+                                                            <th class="text-white">Departement</th>
                                                             <th class="text-white">Matricule</th>
                                                             <th class="text-white">Administration</th>
-                                                            <th class="text-white"> Actions</th>
+                                                            <th class="text-white text-center"> Actions</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -58,11 +58,12 @@
                                                                         @endif
                                                                         <div>
                                                                             <h6>{{ $employee->name }}</h6>
+                                                                            <p>{{ $employee->designation }}</p>
                                                                         </div>
                                                                     </div>
                                                                 </td>
-                                                                <td>{{ $employee->designation }}</td>
-                                                                <td>{{ $employee->matricule }}</td>
+                                                                <td >{{ App\Helper::searchByNameAndId('department', $employee->department_id)->name ?? '' }}</td>
+                                                                <td >{{ $employee->matricule }}</td>
                                                                 <td>
                                                                     @if ($employee->activated)
                                                                         <form

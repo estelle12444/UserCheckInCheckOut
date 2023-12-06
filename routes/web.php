@@ -60,7 +60,7 @@ Route::post('/profile', [ProfileController::class,'update'])->name('profile.upda
 
 
 Route::middleware(['admin'])->group(function () {
-    Route::get('user-list', [UserController::class, 'Userlist'])->name('user-list');
+    Route::get('/user', [UserController::class, 'Userlist'])->name('user-list');
     Route::patch('/users/{user}/deactivate', [UserController::class,'deactivateUser'])->name('deactivate.user');
     Route::patch('/users/{user}/activate', [UserController::class, 'activateUser'])->name('activate.user');
     Route::get('/employee/list', [EmployeeController::class, 'index'])->name('employees.index');

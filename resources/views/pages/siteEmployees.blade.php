@@ -30,9 +30,15 @@
                                         <div class="card-body" id="historyTable">
                                             <div class="d-sm-flex justify-content-between align-items-start">
                                                 <div>
-                                                    <h3 class="card-title card-title-dash">Listes des employés du site :
-                                                        <strong class="orange">{{ $site->name ?? ' ' }}</strong>
-                                                    </h3>
+                                                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
+                                                        <h3 class="card-title card-title-dash mb-2 mb-sm-0">
+                                                            Liste des employés du site : <strong class="orange">{{ $site->name ?? ' ' }}</strong>
+                                                        </h3>
+                                                        <h3 class="ml-4 card-title card-title-dash mb-2 mb-sm-0"
+                                                            style="color:rgb(249, 139, 99);font-weight:700">
+                                                            Du {{ $dateRange['start']->format('Y-m-d') }} au {{ $dateRange['end']->format('Y-m-d') }}
+                                                        </h3>
+                                                    </div>
                                                     <p class="card-subtitle card-subtitle-dash">Nous
                                                         avons {{ $filtreEmployees }} employées</p>
                                                 </div>
@@ -48,8 +54,8 @@
                                                             <th class="text-white">Date </th>
                                                             <th class="text-white"> Entrée</th>
                                                             <th class="text-white"> Sortie</th>
-                                                            <th class="text-white"> Heure travaillée</th>
-                                                            <th class="text-white"> Panier de flexibilité</th>
+                                                            <th class="text-white">Durée de travail</th>
+                                                            <th class="text-white">Flexibilité </th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -95,12 +101,16 @@
                                                                     @endif
 
                                                                 </td>
-                                                                <td class="text-center">
-                                                                    {{ App\Helper::getHeuresEmployesParJour($history_entry->employee->id, $history_entry->day_at_in) }}
+                                                                <td class="">
+                                                                    <h6 class="cbleu">
+                                                                        {{ App\Helper::getHeuresEmployesParJour($history_entry->employee->id, $history_entry->day_at_in) }}
+                                                                    </h6>
 
                                                                 </td>
                                                                 <td class="text-center">
-                                                                    {{ App\Helper::getTimeFlexParJour($history_entry->employee->id, $history_entry->day_at_in) }}
+                                                                    <h6 class="cRouge ">
+                                                                        {{ App\Helper::getTimeFlexParJour($history_entry->employee->id, $history_entry->day_at_in) }}
+                                                                    </h6>
 
                                                                 </td>
 

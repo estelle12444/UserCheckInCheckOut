@@ -12,6 +12,7 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use App\Imports\EmployeesImport;
+use App\Models\HistoryEntry;
 use Maatwebsite\Excel\Facades\Excel;
 
 class EmployeeController extends Controller
@@ -151,7 +152,7 @@ class EmployeeController extends Controller
     {
 
         if ($employee->user) {
-       
+
 
             if ($employee->user->delete()) {
                 // La suppression a réussi
@@ -218,27 +219,31 @@ class EmployeeController extends Controller
     public function absenceIndex(Request $request)
     {
         $dateRange = $this->dateRangeFromRequest($request->selectedDates);
+        $fromDate = $dateRange['start'];
+        $toDate = $dateRange['end'];
 
-        $absence = DB::table('employees')
-            ->leftJoin('history_entries', function ($join) use ($dateRange) {
-                $join->on('employees.id', '=', 'history_entries.employee_id')
-                    ->whereBetween('history_entries.day_at_in', [$dateRange['start'], $dateRange['end']]);
-            })
-            ->select(
-                'employees.id',
-                'employees.matricule',
-                'employees.name',
-                'employees.designation',
-                'employees.department_id',
-                'employees.image_path',
-                DB::raw('GROUP_CONCAT(history_entries.day_at_in) as absence_dates')
-            )
-            ->groupBy('employees.id', 'employees.matricule', 'employees.name', 'employees.designation', 'employees.department_id', 'employees.image_path')
-            ->get();
+        $employees = Employee::whereHas('historyEntries', function ($query) use ($fromDate, $toDate) {
+            $query->whereBetween('day_at_in', [$fromDate, $toDate]);
+        })->get();
 
+        foreach ($employees as $employee) {
+            $absentDays = [];
+            $currentDate = Carbon::parse($fromDate);
 
-        $nbre = $absence->count();
+            while ($currentDate->lte($toDate)) {
+                if ($employee->historyEntries->where('day_at_in', $currentDate->format('Y-m-d'))->count() === 0) {
+                    $absentDays[] = $currentDate->format('Y-m-d');
+                }
+                $currentDate->addDay();
+            }
 
-        return view('pages.absenceIndex', compact('absence', 'dateRange', 'nbre'));
+            $employee->absentDays = $absentDays;
+        }
+
+       
+
+        $nbre = count($employees);
+
+        return view('pages.absenceIndex', compact('employees', 'fromDate', 'nbre', 'toDate'));
     }
 }
