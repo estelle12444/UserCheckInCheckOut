@@ -12,6 +12,9 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use App\Imports\EmployeesImport;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use App\Models\HistoryEntry;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -29,7 +32,6 @@ class EmployeeController extends Controller
     {
         return view('auth.employeeFormRegister');
     }
-
 
     public function importEmployee(Request $request)
     {
@@ -85,7 +87,7 @@ class EmployeeController extends Controller
 
     public function updateEmployee(Request $request, $id)
     {
-        $request->validate([
+        $validator = Validator::make([
             'matricule' => self::STRING_RULE,
             'name' => self::STRING_RULE,
             'designation' => self::STRING_RULE,
@@ -94,8 +96,46 @@ class EmployeeController extends Controller
         ], [
             'image.image' => 'The file must be an image.',
             'image.mimes' => 'The image must be a file of type: jpeg, png, jpg.',
+            'image.mimes' => 'The image must be a file of type: jpeg, png, jpg.',
             'image.max' => 'The image may not be greater than 2048 kilobytes.',
         ]);
+
+        $imagePath = "";
+
+        $validator->after(function($validator) use($request, &$imagePath){
+            if ($request->hasFile('image')) {
+                $fileName = $request->input('matricule').', '.$request->input('name').', '.$request->input('designation');
+                $fileName .= ', '.\App\Helper::searchByNameAndId('department', $request->input('department_id'))->name;
+                $guessExtension = $request->file('image')->guessExtension();
+                $imagePath = $request->file('image')->storeAs('photos', $fileName.'.'.$guessExtension,'public');
+
+                $response = Http::withHeaders(['Accept' => 'multipart/form-data'])
+                    ->attach('file', file_get_contents('storage/'.$imagePath), $fileName.'.'.$guessExtension)
+                    ->post(env('FACERECOGNITION_BASE_URI').'/upload', []);
+
+                if($response->status() == 200){
+                    $restartResponse = Http::get(env('FACERECOGNITION_BASE_URI').'/restart');
+                    foreach ($restartResponse->json()['failed info'] as $value) {
+                        if($value[0] == $request->input('matricule')){
+                            $validator->errors()->add(
+                                'image', 'Provide an image where a face can be detected'
+                            );
+                            $this->removeImage($imagePath);
+                            break;
+                        }
+                    }
+                }else{
+                    $validator->errors()->add(
+                        'image', 'We can\'t process this image'
+                    );
+                    $this->removeImage($imagePath);
+                }
+            }
+        });
+
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
         $employee = Employee::findOrFail($id);
         $employee->matricule = $request->input('matricule');
@@ -103,9 +143,7 @@ class EmployeeController extends Controller
         $employee->designation = $request->input('designation');
         $employee->department_id = $request->input('department_id');
 
-
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('photos', 'public');
             $employee->image_path = $imagePath;
         }
 
@@ -252,6 +290,12 @@ class EmployeeController extends Controller
 
         $nbre = count($employees);
 
-        return view('pages.absenceIndex', compact('employees', 'fromDate', 'nbre', 'toDate'));
+        return view('pages.absenceIndex', compact('absence', 'dateRange', 'nbre'));
+    }
+
+    private function removeImage($path){
+        if(Storage::disk('public')->exists($path)){
+            Storage::disk('public')->delete($path);
+        }
     }
 }
