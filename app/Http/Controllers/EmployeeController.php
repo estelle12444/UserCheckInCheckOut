@@ -204,7 +204,7 @@ class EmployeeController extends Controller
         }
         $nbre = count($employees);
 
-        return view('pages.absenceIndex', compact('absence', 'dateRange', 'nbre'));
+        return view('pages.absenceIndex', compact('employees', 'dateRange', 'fromDate','nbre','toDate'));
     }
 
     private function save($request, $imagePath, $id=null){

@@ -151,7 +151,7 @@
                                                                         <div>
                                                                             <a
                                                                                 href="{{ route('employeeDetail', ['id' => $history_entry->employee->id]) }}">
-                                                                                <h6>{{ $history_entry->employee->name }}
+                                                                                <h6 >{{ $history_entry->employee->name }}
                                                                                 </h6>
                                                                             </a>
                                                                             <p>{{ $history_entry->employee->designation }}

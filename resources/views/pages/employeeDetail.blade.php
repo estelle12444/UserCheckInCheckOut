@@ -69,12 +69,16 @@
                                                             <h6 class="font-weight-bold">Quicklock ID:</h6>
                                                             <p>{{ $employee->matricule }}</p>
                                                         </div>
+                                                        <div class="">
                                                         <h3 class="mt-4 text-info">Historiques des Entrées et de sorties
-                                                            <h5 class="card-subtitle card-subtitle-dash"
-                                                                style="color:rgb(249, 139, 99)">Du
-                                                                {{ $dateRange['start']->format('Y-m-d') }} au
-                                                                {{ $dateRange['end']->format('Y-m-d') }}
-                                                            </h5>
+                                                        </h3>
+                                                            <h3 class=" mt-4 "
+                                                            style="color:rgb(249, 139, 99)">
+                                                            Du {{ $dateRange['start']->format('Y-m-d') }} au
+                                                            {{ $dateRange['end']->format('Y-m-d') }}
+                                                            </h3>
+                                                        </div>
+
 
                                                             <table aria-describedby="mydesc" id="detailEmployeeTable"
                                                                 class="table table-striped dataTable">
@@ -140,11 +144,11 @@
                                                 <tbody>
                                                     <tr>
                                                         <td>Total des heures travaillées:
-                                                            <strong>
+                                                            <strong class="Cbleue">
                                                                 {{ App\Helper::getTimeDifferenceParPeriode($dateRange['start'], $dateRange['end'], $employee->id) }}</strong>
                                                         </td>
                                                         <td>Total du panier :
-                                                            <strong>{{ App\Helper::getTimeFlexParPeriode($dateRange['start'], $dateRange['end'], $employee->id) }}</strong>
+                                                            <strong class="C">{{ App\Helper::getTimeFlexParPeriode($dateRange['start'], $dateRange['end'], $employee->id) }}</strong>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -172,7 +176,7 @@
                                                     Statistique des heures cumulées d'un employée </h4>
 
                                                 <h6 class="card-subtitle card-subtitle-dash"
-                                                    style="color:rgb(249, 139, 99)">Du
+                                                    style="color:rgb(249, 139, 99);font-weight:700">Du
                                                     {{ $dateRange['start']->format('Y-m-d') }} au
                                                     {{ $dateRange['end']->format('Y-m-d') }}
                                                 </h6>
@@ -200,7 +204,7 @@
                                                         <div class="d-flex justify-content-between align-items-center mb-3">
 
                                                             <h6 class="card-subtitle card-subtitle-dash"
-                                                                style="color:rgb(249, 139, 99)">Du
+                                                                style="color:rgb(249, 139, 99);font-weight:700">Du
                                                                 {{ $dateRange['start']->format('Y-m-d') }} au
                                                                 {{ $dateRange['end']->format('Y-m-d') }}
                                                             </h6>

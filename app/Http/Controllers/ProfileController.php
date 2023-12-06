@@ -19,9 +19,8 @@ class ProfileController extends Controller
 
         return view('profiles.show', compact('user', 'editing'));
     }
-    public function update(Request $request)
+    public function update(Request $request, User $user)
     {
-        $user = auth()->user();
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -35,6 +34,7 @@ class ProfileController extends Controller
         if ($request->filled('password')) {
             $user->password = Hash::make($request->input('password'));
         }
+
         $user->save();
 
         return redirect()->route('profile.show')->with('success', 'Profil mis à jour avec succès.');

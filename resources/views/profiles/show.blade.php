@@ -49,11 +49,11 @@
                                         </form>
                                     @else
                                         <div class="card-body">
-                                            <h5 class="pb-2"><strong>Nom d'utilisateur :</strong> {{ $user->name }}</h5>
-                                            <h5 class="pb-4"><strong>Email :</strong> {{ $user->email }}</h5>
+                                            <h6 class="pb-2">Nom d'utilisateur :<strong> {{ $user->name }} </strong></h6>
+                                            <h6 class="pb-4">Email :<strong> {{ $user->email }}</strong></h6>
 
                                             <a href="{{ route('profile.show', ['edit' => true]) }}"
-                                                class="btn btn-primary p-4 me-2 text-white hover:underline">Modifier le
+                                                class="btn btn-primary  me-2 text-white hover:underline">Modifier le
                                                 profil</a>
                                         </div>
                                     @endif
