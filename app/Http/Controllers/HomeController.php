@@ -123,7 +123,6 @@ class HomeController extends Controller
     }
 
 
-
     public function employeeDetail(Request $request, $id)
     {
         $dateRange = $this->dateRangeFromRequest($request->selectedDates);
