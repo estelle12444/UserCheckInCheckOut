@@ -4,59 +4,79 @@
     <div class="content-wrapper">
 
         <div class="home-tab">
-            <h2 class="card-title">Liste des Incidents Résolus</h2>
-            <div class="tab-content tab-content-basic">
+            <h2 class="card-title">Liste des incidents Acceptés</h2>
+            <div class="card card-rounded">
                 <div class="row">
-                    @foreach ($listAccepts as $request)
-                        <div class="col-md-4 grid-margin stretch-card">
-                            <div class="card">
-                                <div class="card-body ">
-                                    <div class="row">
-                                        <div class="col-md-5">
-                                            <img src="{{ asset('storage/' . $request->image) }}" style="height: 150px;width:90px"
-                                                alt="{{ $request->employee->name }}">
-                                        </div>
-                                        <div class="col-md-7">
-                                            <h2 class="card-title"> Incident ID:{{ $request->id }}</h2>
-                                            <p>Quicklock ID : {{ $request->employee->matricule }}</p>
-                                            <p>Nom : {{ $request->employee->name }}</p>
 
-                                            <p>Statut : <strong class="text-danger">{{ $request->status }} </strong></p>
-
-
-                                        </div>
-                                        @if (!$request->accepted)
-                                            <div class="d-flex mt-2">
-                                                {{-- <form method="post"
-                                                    action="{{ route('incidents.accept', $request->id) }}">
-                                                    @csrf
-                                                    <button type="submit"
-                                                        class="text-white btn btn-success mr-2">Accepter
-                                                        </button>
-                                                </form> --}}
-                                                <form action="{{ route('incidents.destroy', $request) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger text-white"
-                                                        onclick="return confirm('Are you sure you want to delete this incident?')">Delete</button>
-                                                </form>
-                                                {{-- <button href="{{ route('incidents.index') }}"
-                                                    class=" btn btn-light"> Retour</button> --}}
-                                            </div>
-                                        @else
-                                            <p>Incident déjà accepté</p>
-                                        @endif
-
-                                    </div>
-
+                    <div class="col-12 grid-margin stretch-card">
+                        <div class="table-responsive  mt-1">
+                            @if (session('success'))
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
                                 </div>
+                            @endif
+                            <table id="RejectTable" class="table select-table  table-hover">
+                                <thead class="orange">
+                                    <tr>
+                                        <th class="text-white pl-2">Incident ID </th>
+                                        <th class="text-white">Image</th>
+                                        <th class="text-white">Quiclock ID</th>
+                                        <th class="text-white">Statut</th>
+                                        <th class="text-white">Création</th>
+                                        {{-- <th class="text-white">Actions</th> --}}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if ($listAccept)
+                                        @foreach ($listAccept as $request)
+                                            <tr>
+                                                <td class="pl-2 text-center">{{ $request->id }}</td>
+                                                <td>
+                                                    <img src="{{ asset('storage/' . $request->image) }}"style="height: 60px;width:70px"
+                                                        alt="{{ $request->employee->name }}">
+                                                </td>
+                                                <td>
+                                                    <h6>{{ $request->employee->matricule }}</h6>
+                                                    <h6>{{ $request->employee->name }}</h6>
+                                                    <p>{{ $request->employee->designation }}</p>
+                                                </td>
+                                                <td>
+                                                    <h6 class="text-danger">{{ $request->status }}</h6>
+                                                </td>
+                                                <td>
+                                                    <h6>{{ $request->created_at }}</h6>
+                                                </td>
+                                                {{-- <td>
+                                                    @if (!$request->accepter)
+                                                        <div class="d-flex mt-2">
 
+                                                            <form action="{{ route('incidents.destroy', $request) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-danger text-white"
+                                                                    onclick="return confirm('Are you sure you want to delete this incident?')">Delete</button>
+                                                            </form>
 
-                            </div>
+                                                        </div>
+                                                    @else
+                                                        <p>Incident déjà accepté</p>
+                                                    @endif
+
+                                                </td> --}}
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <p>Aucune donnée disponible </p>
+                                    @endif
+                                </tbody>
+                            </table>
                         </div>
-                    @endforeach
+                    </div>
+
                 </div>
             </div>
+
         </div>
     </div>
 @endsection

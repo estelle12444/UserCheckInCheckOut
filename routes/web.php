@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -32,9 +33,10 @@ Auth::routes([
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/site/{id}/employees/{query?}', [App\Http\Controllers\HomeController::class, 'siteEmployees'])->name('siteEmployees');
 Route::get('/employees/{id}/detail', [App\Http\Controllers\HomeController::class, 'employeeDetail'])->name('employeeDetail');
-Route::get('//employee/flexibilite', [EmployeeController::class, 'flexibilityIndex'])->name('flexibilityIndex');
+Route::get('/employee/flexibilite', [EmployeeController::class, 'flexibilityIndex'])->name('flexibilityIndex');
 Route::get('/employee/absence', [EmployeeController::class, 'absenceIndex'])->name('absenceIndex');
 
+Route::get('/export-employee/{id}', [HomeController::class, 'exportSite'])->name('export.site');
 
 
 Route::get('/logout', [App\Http\Controllers\HomeController::class, 'logout'])->name('logout');
@@ -45,7 +47,7 @@ Route::post('/employees', [EmployeeController::class, 'store'])->name('employees
 
 Route::get('/employee/register/excel', [EmployeeController::class, 'showRegistrationEmployeeExcel'])->name('employeeRegister');
 Route::post('/import/employee', [EmployeeController::class, 'importEmployee'])->name('importEmployee');
-Route::get('/incidents', [IncidentController::class, 'index'])->name('incidents.index');
+Route::get('/incidents/Attente', [IncidentController::class, 'index'])->name('incidents.index');
 Route::get('/incidents/Accept', [IncidentController::class, 'listAccept'])->name('incidents.listAccept');
 Route::get('/incidents/Reject', [IncidentController::class, 'listReject'])->name('incidents.listReject');
 Route::get('/incidents/delete', [IncidentController::class, 'listToDelete'])->name('incidents.to_delete');
@@ -55,8 +57,8 @@ Route::post('/incidents/{incident}/accept', [IncidentController::class, 'accept'
 Route::post('/incidents/{incident}/reject', [IncidentController::class, 'reject'])->name('incidents.reject');
 Route::delete('/incidents/{incident}', [IncidentController::class, 'reject'])->name('incidents.destroy');
 
-Route::get('/profile', [ProfileController::class,'show'])->name('profile.show')->middleware('auth');
-Route::post('/profile', [ProfileController::class,'update'])->name('profile.update');
+Route::get('/profile/{id}/edit', [ProfileController::class,'show'])->name('profile.show')->middleware('auth');
+Route::put('/profile/{id}', [ProfileController::class,'update'])->name('profile.update');
 
 
 
@@ -68,6 +70,6 @@ Route::middleware(['admin'])->group(function () {
     Route::get('/employee/{id}/edit', [EmployeeController::class, 'show'])->name('employees.show');
     Route::put('/employees/{id}', [EmployeeController::class, 'updateEmployee'])->name('employees.update');
     Route::post('/employees/{employee}/activate', [EmployeeController::class, 'activateEmployee'])->name('activate.employee');
-    Route::delete('/employees/{employee}/deactivate', [EmployeeController::class, 'deactivateEmployee'] )->name('deactivate.employee');
+    Route::delete('/employees/{employee}/deactivate', [EmployeeController::class, 'deleteUser'] )->name('delete.user');
 
 });

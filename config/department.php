@@ -9,9 +9,10 @@ return [
         'id' => 2,
         'name' => 'Sales',
     ],
+
     [
         'id' => 3,
-        'name' => 'Marketing,Communication & Partnership Manager',
+        'name' => 'Marketing & Communication',
     ],
     [
         'id' => 4,
@@ -37,6 +38,14 @@ return [
     [
         'id'=>9,
         'name'=>' Accountig Manager'
+    ],
+    [
+        'id'=>10,
+        'name'=>'Deputy Director'
+    ],
+    [
+        'id' => 11,
+        'name' => 'Research & Development',
     ]
 
 ];

@@ -109,7 +109,8 @@
                                             <li>Assurez-vous que le fichier Excel suit le format requis.</li>
                                             <li>Le fichier doit avoir une ligne d'en-tête avec les colonnes suivantes :
                                                 <code>matricule,
-                                                    name, designation, department_id</code>.</li>
+                                                    name, designation, department_id</code>.
+                                            </li>
                                             <li>Le fichier peut contenir plusieurs lignes, une pour chaque employé.</li>
                                         </ul>
                                     </div>
@@ -120,30 +121,46 @@
                                         <button class="btn btn-primary text-white" id="showSwalButton">
                                             Afficher l'example
                                         </button>
-                                        <button type="button" class="btn btn-primary text-white" data-toggle="modal" data-target="#exampleModal">
+                                        <button type="button" class="btn btn-primary text-white" data-toggle="modal"
+                                            data-target="#exampleModal">
                                             Afficher Listes des départements
                                         </button>
-                                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Listes des départements</h5>
-                                                        <button type="button" class="btn btn-danger text-white" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Listes des
+                                                            départements</h5>
+                                                        <button type="button" class="btn btn-danger text-white"
+                                                            class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <ul class="list-ticked">
-
-                                                            @foreach(config('department') as $jobTitle)
-                                                                <li>{{ $jobTitle['id'] }}.{{ $jobTitle['name'] }}</li>
-
-                                                            @endforeach
-
-                                                        </ul>
+                                                        <div class="d-flex justify-content-center">
+                                                        <table class="table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>ID</th>
+                                                                    <th>Nom du département</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (config('department') as $jobTitle)
+                                                                    <tr>
+                                                                        <td>{{ $jobTitle['id'] }}</td>
+                                                                        <td>{{ $jobTitle['name'] }}</td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
                                                     </div>
+                                                    </div>
+
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-primary text-white" data-dismiss="modal">Fermer</button>
+                                                        <button type="button" class="btn btn-primary text-white"
+                                                            data-dismiss="modal">Fermer</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -158,11 +175,12 @@
                                         @csrf
                                         <div class="row mb-3">
                                             <div class="col-md-4">
-                                            <label for="file " class="form-label ">Sélectionnez le fichier Excel</label>
+                                                <label for="file " class="form-label ">Sélectionnez le fichier
+                                                    Excel</label>
                                             </div>
                                             <div class="col-md-8">
-                                                <input type="file" class="form-control col-md-8" name="file" id="file"
-                                                    accept=".xls, .xlsx" required>
+                                                <input type="file" class="form-control col-md-8" name="file"
+                                                    id="file" accept=".xls, .xlsx" required>
                                             </div>
                                         </div>
 
@@ -204,7 +222,7 @@
                     '<thead>' +
                     '<tr>' +
                     '<th>matricule</th>' +
-                    '<th>name</th>' +
+                    '<th>nom</th>' +
                     '<th>designation</th>' +
                     '<th>department_id</th>' +
                     '</tr>' +

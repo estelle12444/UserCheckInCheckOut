@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Employee;
 use App\Models\User;
 use Carbon\Carbon;
@@ -55,9 +55,9 @@ class EmployeeController extends Controller
     {
         // Validation des données du formulaire
         $imagePath = $this->validateAnRefreshFacerecognition($request);
-        if($this->save($request, $imagePath)){
-            return redirect()->route('employees.index');
-        }else{
+        if ($this->save($request, $imagePath)) {
+            return redirect()->route('employees.index')->with('success', 'Employé crée avec succès.');
+        } else {
             return redirect()->back()->withInput();
         }
     }
@@ -66,9 +66,9 @@ class EmployeeController extends Controller
     public function updateEmployee(Request $request, $id)
     {
         $imagePath = $this->validateAnRefreshFacerecognition($request);
-        if($this->save($request, $imagePath, $id)){
-            return redirect()->route('employees.index');
-        }else{
+        if ($this->save($request, $imagePath, $id)) {
+            return redirect()->route('employees.index')->with('success', 'Employé modifié avec succès.');
+        } else {
             return redirect()->back()->withInput();
         }
     }
@@ -109,34 +109,37 @@ class EmployeeController extends Controller
             $employee->activated = true;
             $employee->save();
             return redirect()->back()->with('success', 'Employé activé avec succès.');
-        } else {
+        } elseif (!$employee->activated) {
 
-            return redirect()->back()->with('error', 'L\'employé est juste inactif.');
+            $employee->activated = true;
+            $employee->save();
+            return redirect()->back()->with('success', 'Employé activé avec succès.');
+        } else {
+            return redirect()->back()->with('error', 'L\'employé est déjà actif.');
         }
     }
 
-    public function deactivateEmployee(Employee $employee)
+    public function deleteUser(Employee $employee)
     {
-        if ($employee->user) {
-            if ($employee->user->delete()) {
-                // La suppression a réussi
+        $existingUser = User::where('employee_id', $employee->id)->first();
+
+        if ($existingUser) {
+            try {
+                $existingUser->delete();
                 $employee->user_id = null;
                 $employee->activated = false;
                 $employee->save();
 
-                return redirect()->back()->with('success', 'Employé désactivé avec succès.');
-            } else {
-                // La suppression a échoué
-                return redirect()->back()->with('error', 'Échec de la désactivation de l\'employé.');
+                return redirect()->back()->with('success', 'Utilisateur associé à l\'employé supprimé avec succès.');
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', 'Échec de la suppression de l\'utilisateur associé à l\'employé : ' . $e->getMessage());
             }
         } else {
-            // Aucun utilisateur associé
-            $employee->user_id = null;
-            $employee->activated = false;
-            $employee->save();
-            return redirect()->back()->with('success', 'Employé désactivé avec succès.');
+            return redirect()->back()->with('error', 'Aucun utilisateur associé à l\'employé n\'a été trouvé.');
         }
     }
+
+
 
     public function dateRangeFromRequest($selectedDates)
     {
@@ -204,10 +207,11 @@ class EmployeeController extends Controller
         }
         $nbre = count($employees);
 
-        return view('pages.absenceIndex', compact('employees', 'dateRange', 'fromDate','nbre','toDate'));
+        return view('pages.absenceIndex', compact('employees', 'dateRange', 'fromDate', 'nbre', 'toDate'));
     }
 
-    private function save($request, $imagePath, $id=null){
+    private function save($request, $imagePath, $id = null)
+    {
         $save = true;
         $employee = is_null($id) ? new Employee() : Employee::findOrFail($id);
         $employee->matricule = $request->input('matricule');
@@ -219,9 +223,9 @@ class EmployeeController extends Controller
             $employee->image_path = $imagePath;
         }
 
-        try{
+        try {
             $employee->save();
-        }catch(\Throwable $e){
+        } catch (\Throwable $e) {
             $save = false;
             $request->session()->flash('error', "Quicklook already used by another employee");
         }
@@ -229,7 +233,8 @@ class EmployeeController extends Controller
         return $save;
     }
 
-    private function validateAnRefreshFacerecognition(Request $request){
+    private function validateAnRefreshFacerecognition(Request $request)
+    {
         $validator = Validator::make([
             'matricule' => self::STRING_RULE,
             'name' => self::STRING_RULE,
@@ -245,46 +250,49 @@ class EmployeeController extends Controller
 
         $imagePath = "";
 
-        $validator->after(function($validator) use($request, &$imagePath){
+        $validator->after(function ($validator) use ($request, &$imagePath) {
             if ($request->hasFile('image')) {
-                $fileName = $request->input('matricule').', '.$request->input('name').', '.$request->input('designation');
-                $fileName .= ', '.\App\Helper::searchByNameAndId('department', $request->input('department_id'))->name;
+                $fileName = $request->input('matricule') . ', ' . $request->input('name') . ', ' . $request->input('designation');
+                $fileName .= ', ' . \App\Helper::searchByNameAndId('department', $request->input('department_id'))->name;
                 $guessExtension = $request->file('image')->guessExtension();
-                $imagePath = $request->file('image')->storeAs('photos', $fileName.'.'.$guessExtension,'public');
+                $imagePath = $request->file('image')->storeAs('photos', $fileName . '.' . $guessExtension, 'public');
 
                 $response = Http::withHeaders(['Accept' => 'multipart/form-data'])
-                    ->attach('file', file_get_contents('storage/'.$imagePath), $fileName.'.'.$guessExtension)
-                    ->post(env('FACERECOGNITION_BASE_URI').'/upload', []);
+                    ->attach('file', file_get_contents('storage/' . $imagePath), $fileName . '.' . $guessExtension)
+                    ->post(env('FACERECOGNITION_BASE_URI') . '/upload', []);
 
-                if($response->status() == 200){
-                    $restartResponse = Http::get(env('FACERECOGNITION_BASE_URI').'/restart');
+                if ($response->status() == 200) {
+                    $restartResponse = Http::get(env('FACERECOGNITION_BASE_URI') . '/restart');
                     foreach ($restartResponse->json()['failed info'] as $value) {
-                        if($value[0] == $request->input('matricule')){
+                        if ($value[0] == $request->input('matricule')) {
                             $validator->errors()->add(
-                                'image', 'Provide an image where a face can be detected'
+                                'image',
+                                'Provide an image where a face can be detected'
                             );
                             $this->removeImage($imagePath);
                             break;
                         }
                     }
-                }else{
+                } else {
                     $validator->errors()->add(
-                        'image', 'Check the face recognition server\'s it may be down'
+                        'image',
+                        'Check the face recognition server\'s it may be down'
                     );
                     $this->removeImage($imagePath);
                 }
             }
         });
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
         return $imagePath;
     }
 
-    private function removeImage($path){
-        if(Storage::disk('public')->exists($path)){
+    private function removeImage($path)
+    {
+        if (Storage::disk('public')->exists($path)) {
             Storage::disk('public')->delete($path);
         }
     }

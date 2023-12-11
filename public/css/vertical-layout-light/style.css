@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  [Master Stylesheet]
 
-  Project:	Star Admin2 
+  Project:	Star Admin2
   Version:	1.2.1
 -------------------------------------------------------------------*/
 /*-------------------------------------------------------------------
@@ -22286,7 +22286,6 @@ code {
 .card .card-title {
   color: #010101;
   margin-bottom: 1.2rem;
-  text-transform: capitalize;
   font-size: 1.125rem;
   font-weight: 600;
 }

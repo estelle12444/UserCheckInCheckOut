@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\EmployeesExport;
+use App\Exports\HistoryEntryExport;
 use App\Models\HistoryEntry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +12,7 @@ use App\Models\Employee;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use InvalidArgumentException;
+use Maatwebsite\Excel\Facades\Excel;
 use RuntimeException;
 
 class HomeController extends Controller
@@ -56,20 +59,13 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $dateRange = $this->dateRangeFromRequest($request->selectedDates);
-
         $periodeDate = HistoryEntry::whereBetween('day_at_in', [$dateRange['start'], $dateRange['end']])->get();
         $countEntries = $periodeDate->count();
-
         $weeklyEntries = $periodeDate->groupBy(fn ($entry) => Carbon::parse($entry->day_at_in)->startOfWeek()->format('W'));
-
         $nombres = Helper::getNombres($periodeDate);
 
         $nombreSites = count(Config::get('localisation'));
-
-
         $averageHoursDuration = Helper::getAverageHoursDuration($dateRange['start'], $dateRange['end']);
-
-
         $lastentriesAndExits = HistoryEntry::with('employee')
             ->whereBetween('day_at_in', [$dateRange['start'], $dateRange['end']])
             ->latest('day_at_in')
@@ -102,14 +98,35 @@ class HomeController extends Controller
             $query->where('localisation_id', $id)->whereBetween('day_at_in', [$dateRange['start'],  $dateRange['end']]);
         })->count();
 
-        return view('pages.siteEmployees', compact('history_entries', 'filtreEmployees', 'site','dateRange'));
+        return view('pages.siteEmployees', compact('history_entries', 'filtreEmployees', 'site','dateRange', 'id'));
     }
+
+
+    public function exportSite($id, Request $request)
+    {
+        $dateRange = parse_url(url()->previous(), PHP_URL_QUERY);
+
+        preg_match('/.*(\d{4}-\d{2}-\d{2}).*(\d{4}-\d{2}-\d{2})/', $dateRange, $matches,PREG_UNMATCHED_AS_NULL);
+
+        if(empty($matches)){
+            $dateRange = $this->dateRangeFromRequest([]);
+        }else{
+            $dateRange =  [
+                'start' => Carbon::parse($matches[1]),
+                'end' => Carbon::parse($matches[2])
+            ];
+        }
+
+        $site = Helper::searchByNameAndId('localisation', $id);
+
+        return Excel::download(new HistoryEntryExport($id,$dateRange), "employee_data_$site->name.xlsx");
+    }
+
 
 
     public function employeeDetail(Request $request, $id)
     {
         $dateRange = $this->dateRangeFromRequest($request->selectedDates);
-
         $employee = Employee::findOrFail($id);
         $groupedHistoryEntries = HistoryEntry::where('employee_id', $id)
             ->whereBetween('day_at_in', [$dateRange['start'], $dateRange['end']])
@@ -120,7 +137,6 @@ class HomeController extends Controller
         if (!$employee) {
             abort(404);
         }
-
         $statData = [];
         $jours = $employee->historyEntries->whereBetween('day_at_in', [$dateRange['start'], $dateRange['end']])
             ->pluck('day_at_in')->unique()->toArray();
@@ -142,41 +158,36 @@ class HomeController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-        return view('auth.login');
+        return redirect('/login');
     }
 
     public function getEmail()
     {
         if (!Auth::check()) {
-
             return view('auth.login');
         } else {
             $user = Auth::user();
             $email = $user->email;
-
             return $email;
         }
     }
     public function geUsername()
     {
         if (!Auth::check()) {
-
             return view('auth.login');
         } else {
             $user = Auth::user();
             $name = $user->name;
-
             return $name;
         }
     }
+
     public function getPhoto()
     {
         $user = Auth::user();
-
         if ($user->employee_id) {
             $employee = $user->employee;
             $photoPath = $employee->image_path;
-
             if ($photoPath) {
                 return asset($photoPath);
             }

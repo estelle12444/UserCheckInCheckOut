@@ -15,8 +15,11 @@ class UserController extends Controller
         return view('pages.user-list', compact('users', 'userCount'));
     }
 
+
     public function deactivateUser(User $user)
     {
+        //$existingEmployee = Employee::where('user_id', $user->id)->first();
+
         $user->activated = false;
         $user->save();
         return redirect()->back()->with('success', 'Utilisateur désactivé avec succès.');

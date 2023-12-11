@@ -9,7 +9,8 @@
                         <div class="btn-wrapper">
 
 
-                            <a href="{{ route('employeeRegisterForm') }}"  class="btn btn-primary text-white me-0"><i class="mdi mdi-account-plus"></i>
+                            <a href="{{ route('employeeRegisterForm') }}" class="btn btn-primary text-white me-0"><i
+                                    class="mdi mdi-account-plus"></i>
                                 Enregistrer un nouvel employé</a>
                             <a href="{{ route('employeeRegister') }}" class="btn btn-success text-white me-0">
                                 <i class="mdi mdi-account-plus"></i> Importer un fichier excel </a>
@@ -25,11 +26,24 @@
                                                 <div>
                                                     <h4 class="card-title card-title-dash">Listes des employées de Sah
                                                         Analytics
+                                                        @if ($errors->any())
+                                                            <div class="alert alert-danger">
+                                                                <ul>
+                                                                    @foreach ($errors->all() as $error)
+                                                                        <li>{{ $error }}</li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            </div>
+                                                        @endif
                                                     </h4>
                                                     <p class="card-subtitle card-subtitle-dash">Nous
                                                         avons {{ $employeeCount }} employées</p>
                                                 </div>
-
+                                                @if (session('success'))
+                                                <div class="alert alert-success">
+                                                    {{ session('success') }}
+                                                </div>
+                                            @endif
 
                                             </div>
                                             <div class="table-responsive  mt-1">
@@ -49,11 +63,11 @@
                                                                 <td>
                                                                     <div class="d-flex ">
                                                                         @if ($employee->image_path)
-                                                                          
                                                                             <img src="{{ asset('storage/' . $employee->image_path) }}"
                                                                                 alt="{{ $employee->name }}">
                                                                         @else
-                                                                          <img src="{{ asset('images/default.png')}}" alt="{{ $employee->name }}">
+                                                                            <img src="{{ asset('images/default.png') }}"
+                                                                                alt="{{ $employee->name }}">
                                                                         @endif
                                                                         <div>
                                                                             <h6>{{ $employee->name }}</h6>
@@ -61,12 +75,13 @@
                                                                         </div>
                                                                     </div>
                                                                 </td>
-                                                                <td >{{ App\Helper::searchByNameAndId('department', $employee->department_id)->name ?? '' }}</td>
-                                                                <td >{{ $employee->matricule }}</td>
+                                                                <td>{{ App\Helper::searchByNameAndId('department', $employee->department_id)->name ?? '' }}
+                                                                </td>
+                                                                <td>{{ $employee->matricule }}</td>
                                                                 <td>
                                                                     @if ($employee->activated)
                                                                         <form
-                                                                            action="{{ route('deactivate.employee', $employee->id) }}"
+                                                                            action="{{ route('delete.user', $employee->id) }}"
                                                                             method="post">
                                                                             @csrf
                                                                             @method('DELETE')

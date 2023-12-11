@@ -113,7 +113,7 @@
                 </li> --}}
             @endif
             <li class="nav-item dropdown">
-                <a class="nav-link count-indicator" id="countDropdown" href="#" data-bs-toggle="dropdown"
+                <a class="nav-link {{ app('App\Http\Controllers\IncidentController')->countPendingIncidents() != 0 ? 'count-indicator' : '' }}" id="countDropdown" href="#" data-bs-toggle="dropdown"
                     aria-expanded="false">
                     <i class="icon-bell"></i>
                     <span class="count"></span>
@@ -121,7 +121,8 @@
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0"
                     aria-labelledby="countDropdown">
                     <a class="dropdown-item py-3" href="{{route('incidents.index')}}">
-                        <p class="mb-0 font-weight-medium float-left">Vous avez {{ app('App\Http\Controllers\IncidentController')->countPendingIncidents() }}  demandes en attente </p>
+                        <p class="mb-0 font-weight-medium float-left">Vous avez <strong class="px-2 text-danger ">
+                            {{ app('App\Http\Controllers\IncidentController')->countPendingIncidents() }} </strong>  demandes en attente </p>
                         <span class="badge badge-pill badge-primary float-right" >Voir Plus</span>
                     </a>
                     <div class="dropdown-divider"></div>
@@ -169,7 +170,7 @@
                             {{ app('App\Http\Controllers\HomeController')->getEmail() }}
                         </p>
                     </div>
-                    <a class="dropdown-item" href="{{ route('profile.show') }}"><i
+                    <a class="dropdown-item" href="{{ route('profile.show', ['id' => Auth::user()->id]) }}"><i
                             class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> Mon Profile </a>
 
                     {{-- <a class="dropdown-item"><i

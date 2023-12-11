@@ -13,21 +13,22 @@ class IncidentController extends Controller
     public function index(RequestUser $incident)
     {
         $incidents = RequestUser::with('employee')
-            ->where('status', 'pending')
+            ->where('status', 'en_attente')
+            ->orderBy('created_at', 'desc')
             ->get();
         return view('pages.incidentIndex', compact('incidents'));
     }
 
     public function countPendingIncidents()
     {
-        $nbre_incidents = RequestUser::where('status', 'pending')->count();
+        $nbre_incidents = RequestUser::where('status', 'en_attente')->count();
         return $nbre_incidents;
     }
 
     public function latestPendingIncidents()
     {
         $latestIncidents = RequestUser::with('employee')
-            ->where('status', 'pending')
+            ->where('status', "en_attente")
             ->orderBy('created_at', 'desc')
             ->take(3)
             ->get();
@@ -55,7 +56,7 @@ class IncidentController extends Controller
             return redirect()->back()->with('error', 'Check the face recognition server\'s it may be down');
         }
 
-        $incident->status = 'accept';
+        $incident->status = 'accepter';
         $incident->save();
 
         $incident->employee->image_path = $incident->image;
@@ -66,7 +67,7 @@ class IncidentController extends Controller
 
     public function reject(Request $request, RequestUser $incident)
     {
-        $incident->update(['status' => 'reject']);
+        $incident->update(['status' => 'refuser']);
         return redirect()->back()->with('success', 'Incident refusé avec succès.');
     }
 
@@ -75,6 +76,7 @@ class IncidentController extends Controller
     {
         $listDelete = RequestUser::with('employee')
             ->where('status', 'to_delete')
+            ->orderBy('created_at', 'desc')
             ->get();
         return view('pages.incidentDelete', compact('listDelete'));
     }
@@ -91,16 +93,18 @@ class IncidentController extends Controller
     public function listReject(Request $request, RequestUser $incident)
     {
         $listRejects = RequestUser::with('employee')
-            ->where('status', 'reject')
+            ->where('status', 'refuser')
+            ->orderBy('created_at', 'desc')
             ->get();
         return view('pages.incidentReject', compact('listRejects'));
     }
 
     public function listAccept(Request $request, RequestUser $incident)
     {
-        $listAccepts =  RequestUser::with('employee')
-            ->where('status', 'accept')
+        $listAccept =  RequestUser::with('employee')
+            ->where('status', 'accepter')
+            ->orderBy('created_at', 'desc')
             ->get();
-        return view('pages.incidentAccept', compact('listAccepts'));
+        return view('pages.incidentAccept', compact('listAccept'));
     }
 }

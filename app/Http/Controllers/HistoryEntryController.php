@@ -23,6 +23,8 @@ class HistoryEntryController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'confidence' => 'required|numeric|min:0|max:100',
+            'lat' => 'required',
+            'lon' => 'required',
             'localisation_id' => 'required',
             'matricule' =>   'required'
         ]);
@@ -103,6 +105,8 @@ class HistoryEntryController extends Controller
             'in_confidence' => $request->confidence,
             'localisation_id' => $request->localisation_id,
             'employee_id' => $employee->id,
+            'lat' => $request->lat,
+            'lon' => $request->lon,
             'day_at_in' => now()->format('Y-m-d'),
             'time_at_in' => now()->format('H:i:s'),
         ]);
@@ -169,7 +173,7 @@ class HistoryEntryController extends Controller
         $requestUser = new RequestUser();
         $requestUser->employee_id = $employee->id;
         $requestUser->image = $imagePath;
-        $requestUser->status = 'pending';
+        $requestUser->status = 'en_attente';
         $requestUser->save();
 
         return response()->json([], Response::HTTP_CREATED);

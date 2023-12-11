@@ -41,18 +41,19 @@
                                         <div class="col-12 col-lg-4 col-lg-12 grid-margin stretch-card">
                                             <div class="card card-rounded">
                                                 <div class="card-body">
-                                                    <div class="d-sm-flex justify-content-between align-items-start mb-3">
+                                                    <div class="d-sm-flex justify-content-between align-items-start ">
 
-                                                        <h4 class="card-title card-title-dash">
-                                                            Représentation graphique du nombre d'employés entrants par site
-                                                        </h4>
+                                                        <h6 class="card-title ">
+                                                            Graphique du nombre d'employés entrants par site
+                                                        </h6>
                                                         <div id="performance-line-legend"></div>
                                                     </div>
 
                                                     <h6 class="card-subtitle card-subtitle-dash"
-                                                    style="color:rgb(249, 139, 99)">Du {{ $dateRange['start']->format('Y-m-d') }} au
-                                                    {{ $dateRange['end']->format('Y-m-d') }}
-                                                </h6>
+                                                        style="color:rgb(249, 139, 99);font-weight:600">Du
+                                                        {{ $dateRange['start']->format('Y-m-d') }} au
+                                                        {{ $dateRange['end']->format('Y-m-d') }}
+                                                    </h6>
 
                                                     <div class="chartjs-wrapper ">
                                                         <canvas id="performaneLinee"></canvas>
@@ -71,7 +72,7 @@
                                                         <div class="card-body">
                                                             <div class="row">
                                                                 <div class="col-lg-12">
-                                                                    <h4 class="card-title card-title-dash">
+                                                                    <h4 class="card-title ">
                                                                         <td>Nombre d'employés entrants par site </td>
                                                                     </h4>
                                                                     <h6 class="card-subtitle card-subtitle-dash"
@@ -115,11 +116,16 @@
                                     <div class="card card-rounded">
                                         <div class="card-body" id="historyTable">
                                             <div class="d-sm-flex justify-content-between align-items-start">
-                                                <div>
-                                                    <h4 class="card-title card-title-dash my-4">Historique des 10 dernières
-                                                        entrées-sorties des employées
-                                                    </h4>
-                                                </div>
+
+                                                <h4 class="card-title  mt-4 ">Historique des 10 dernières
+                                                    entrées-sorties des employées
+                                                </h4>
+                                                <h6 class="card-subtitle card-subtitle-dash mt-4"
+                                                    style="color:rgb(249, 139, 99);font-weight:600">Du
+                                                    {{ $dateRange['start']->format('Y-m-d') }} au
+                                                    {{ $dateRange['end']->format('Y-m-d') }}
+                                                </h6>
+
                                             </div>
                                             <div class="table-responsive  mt-1">
                                                 <table id="lastTable" class="table select-table  table-hover">
@@ -134,50 +140,57 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach ($lastentriesAndExits as $history_entry)
-                                                            <tr>
-                                                                <td class="pl-2">
-                                                                    <h6 style="color:#EF8032">
-                                                                        {{ config('localisation')[$history_entry->localisation_id - 1]['name'] }}
-                                                                    </h6>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="d-flex ">
-                                                                        <a
-                                                                            href="{{ route('employeeDetail', ['id' => $history_entry->employee->id]) }}">
-                                                                            <img src="{{ asset($history_entry->employee->image_path) }}"
-                                                                                alt="{{ $history_entry->employee->name }}">
-                                                                        </a>
-                                                                        <div>
+                                                        @if ($lastentriesAndExits)
+                                                            @foreach ($lastentriesAndExits as $history_entry)
+                                                                <tr>
+                                                                    <td class="pl-2">
+                                                                        <h6 style="color:#EF8032">
+                                                                            {{ config('localisation')[$history_entry->localisation_id - 1]['name'] }}
+                                                                        </h6>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="d-flex ">
                                                                             <a
                                                                                 href="{{ route('employeeDetail', ['id' => $history_entry->employee->id]) }}">
-                                                                                <h6 >{{ $history_entry->employee->name }}
-                                                                                </h6>
+                                                                                <img src="{{ asset($history_entry->employee->image_path) }}"
+                                                                                    alt="{{ $history_entry->employee->name }}">
                                                                             </a>
-                                                                            <p>{{ $history_entry->employee->designation }}
-                                                                            </p>
+                                                                            <div>
+                                                                                <a
+                                                                                    href="{{ route('employeeDetail', ['id' => $history_entry->employee->id]) }}">
+                                                                                    <h6>{{ $history_entry->employee->name }}
+                                                                                    </h6>
+                                                                                </a>
+                                                                                <p>{{ $history_entry->employee->designation }}
+                                                                                </p>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <h6>{{ App\Helper::searchByNameAndId('department', $history_entry->employee->department_id)->name ?? '' }}
-                                                                    </h6>
+                                                                    </td>
+                                                                    <td>
+                                                                        <h6>{{ App\Helper::searchByNameAndId('department', $history_entry->employee->department_id)->name ?? '' }}
+                                                                        </h6>
+                                                                    </td>
+                                                                    <td>
+                                                                        <h6>{{ $history_entry->day_at_in }}</h6>
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <h6 class="cbleu">
+                                                                            {{ $history_entry->time_at_in }}
 
-                                                                </td>
-                                                                <td>
-                                                                    <h6>{{ $history_entry->day_at_in }}</h6>
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    <h6 class="cbleu"><em>{{ $history_entry->time_at_in }}
-                                                                        </em></h6>
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    <h6 class="cRouge">
-                                                                        <em>{{ $history_entry->time_at_out }}</em>
-                                                                    </h6>
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
+                                                                        </h6>
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <h6 class="cRouge">
+                                                                            {{ $history_entry->time_at_out }}
+                                                                        </h6>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        @else
+                                                            <p>Aucune donnée disponible pendant la période
+                                                                spécifiée.
+                                                            </p>
+                                                        @endif
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -230,13 +243,13 @@
 
             if (start == null || end == null || diff <= 7) {
                 labels = ["LUN", "MAR", "MER", "JEU", "VEN", "SAM", "DIM"];
-                if(siteData.length == 0){
+                if (siteData.length == 0) {
                     let jours = Array(7).fill([0]).flat();
 
                     datasetValues.push(datasetOptionGenerator(chartConfig[0], jours));
                     datasetValues.push(datasetOptionGenerator(chartConfig[1], jours));
                     datasetValues.push(datasetOptionGenerator(chartConfig[2], jours));
-                }else{
+                } else {
                     for (let index = 0; index < sites.length; index++) {
                         let jours = Array(7).fill([0]).flat();
                         for (const iterator in siteData[index]) {

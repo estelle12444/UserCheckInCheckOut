@@ -19,7 +19,7 @@
 
                             <div class="row mb-3">
                                 <label for="email"
-                                    class="col-md-4 col-form-label text-md-end">{{ __('Addresse Email ') }}</label>
+                                    class="col-md-4 col-form-label text-md-end">{{ __('Email ') }}</label>
 
                                 <div class="col-md-8">
                                     <input id="email" type="email"

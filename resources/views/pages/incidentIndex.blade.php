@@ -4,7 +4,11 @@
     <div class="content-wrapper">
 
         <h2 class="card-title">Liste des Incidents en attente</h2>
-
+        @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        @endif
         <div class="home-tab">
             <div class="tab-content tab-content-basic">
                 <div class="row grid grid-col-4 gap-2 md:grid-cols-3">
@@ -12,21 +16,21 @@
                         <div class="col-md-4 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body ">
+                                    <h2 class="card-title text-center"> <strong class="text-info">Incident ID:{{ $request->id }} </strong></h2>
                                     <div class="row">
                                         <div class="col-md-5">
                                             <img src="{{ asset('storage/' . $request->image) }}"
                                                 style="height: 150px;width:90px" alt="{{ $request->employee->name }}">
                                         </div>
                                         <div class="col-md-7">
-                                            <h2 class="card-title"> Incident ID:{{ $request->id }}</h2>
-                                            <p>Quicklock ID : {{ $request->employee->matricule }}</p>
-                                            <p>Nom:{{ $request->employee->name }}</p>
-
-                                            <p>Statut: <strong class="text-danger">{{ $request->status }} </strong></p>
+                                            <p><strong>Quicklock ID :</strong>{{ $request->employee->matricule }}</p>
+                                            <p><strong>Nom :</strong> {{ $request->employee->name }}</p>
+                                            <p><strong>Statut :</strong>{{ $request->status }}</p>
+                                            <p><strong>Création:</strong>{{ $request->created_at }}</p>
 
 
                                         </div>
-                                        @if (!$request->accepted)
+                                        @if (!$request->accepter)
                                             <div class="d-flex mt-2">
                                                 <form method="post" action="{{ route('incidents.accept', $request->id) }}">
                                                     @csrf

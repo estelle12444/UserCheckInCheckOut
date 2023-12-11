@@ -20,8 +20,9 @@
 
                                     @if ($editing)
                                         <!-- Formulaire de modification -->
-                                        <form class="forms-sample" action="{{ route('profile.update') }}" method="POST">
+                                        <form class="forms-sample" action="{{ route('profile.update',['id' => Auth::user()->id]) }}" method="POST">
                                             @csrf
+                                            @method('PUT')
                                             <div class="form-group">
                                                 <label for="name">Nom d'utilisateur</label>
                                                 <input type="text" id="name" name="name"
@@ -52,7 +53,7 @@
                                             <h6 class="pb-2">Nom d'utilisateur :<strong> {{ $user->name }} </strong></h6>
                                             <h6 class="pb-4">Email :<strong> {{ $user->email }}</strong></h6>
 
-                                            <a href="{{ route('profile.show', ['edit' => true]) }}"
+                                            <a href="{{ route('profile.show', ['id' => Auth::user()->id,'edit' => true]) }}"
                                                 class="btn btn-primary  me-2 text-white hover:underline">Modifier le
                                                 profil</a>
                                         </div>
