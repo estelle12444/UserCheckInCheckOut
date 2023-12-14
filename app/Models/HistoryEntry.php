@@ -20,7 +20,9 @@ class HistoryEntry extends Model
         'time_at_in',
         'time_at_out',
         'day_at_in',
-        'day_at_out'
+        'day_at_out',
+        'lat',
+        'lon'
     ];
 
     public function employee()
