@@ -23,8 +23,8 @@ class HistoryEntryController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'confidence' => 'required|numeric|min:0|max:100',
-            'lat' => 'required',
-            'lon' => 'required',
+            'lat' => 'required|numeric|between:-90,90',
+            'lon' => 'required|numeric|between:-180,180',
             'localisation_id' => 'required',
             'matricule' =>   'required'
         ]);
@@ -57,7 +57,7 @@ class HistoryEntryController extends Controller
         $employeeHistories = HistoryEntry::where([
             'employee_id' => $employee->id,
             'day_at_out' => null
-        ])->latest()->first();
+        ])->latest('day_at_in')->first();
 
         $entry = Entry::IN;
 
