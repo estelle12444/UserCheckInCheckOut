@@ -29,7 +29,8 @@
 
     <!-- Add Daterangepicker CSS and JS -->
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script> --}}
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/moment.min.js"></script>
@@ -103,6 +104,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
 
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script>
         // Utilisation de jQuery pour détecter le changement de  sélection
@@ -146,40 +148,41 @@
                 }
             }
         });
-        document.getElementById('exportButton').addEventListener('click', function() {
-            try {
-                var element = document.getElementById('exportButton');
-                var historyTable = document.getElementById('historyTable');
-                var opt = {
-                    margin: 1,
-                    filename: 'myfile.pdf',
-                    image: {
-                        type: 'jpeg',
-                        quality: 0.98
-                    },
-                    html2canvas: {
-                        scale: 2
-                    },
-                    jsPDF: {
-                        unit: 'in',
-                        format: 'letter',
-                        orientation: 'portrait'
-                    }
-                };
-                // New Promise-based usage:
-                html2pdf().set(opt).from(historyTable).save();
+        // document.getElementById('exportButton').addEventListener('click', function() {
+        //     try {
+        //         var element = document.getElementById('exportButton');
+        //         var historyTable = document.getElementById('historyTable');
+        //         var opt = {
+        //             margin: 1,
+        //             filename: 'myfile.pdf',
+        //             image: {
+        //                 type: 'jpeg',
+        //                 quality: 0.98
+        //             },
+        //             html2canvas: {
+        //                 scale: 2
+        //             },
+        //             jsPDF: {
+        //                 unit: 'in',
+        //                 format: 'letter',
+        //                 orientation: 'portrait'
+        //             }
+        //         };
+        //         // New Promise-based usage:
+        //         html2pdf().set(opt).from(historyTable).save();
 
-                // Old monolithic-style usage:
-                html2pdf(historyTable, opt);
+        //         // Old monolithic-style usage:
+        //         html2pdf(historyTable, opt);
 
-            } catch (error) {
-                console.error('An error occurred:', error);
-            }
-        });
+        //     } catch (error) {
+        //         console.error('An error occurred:', error);
+        //     }
+        // });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
     @stack('scripts')
     <!-- Initialize the date range picker -->

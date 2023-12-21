@@ -32,7 +32,7 @@
                                             <tr>
                                                 <td class="pl-2 text-center">{{ $request->id }}</td>
                                                 <td>
-                                                    <img src="{{ asset('storage/' . $request->image) }}"style="height: 60px;width:70px"
+                                                    <img src="{{ asset('storage/' . $request->image) }}"style="height: 100px;width:auto"
                                                         alt="{{ $request->employee->name }}">
                                                 </td>
                                                 <td>

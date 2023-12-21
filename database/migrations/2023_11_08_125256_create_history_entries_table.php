@@ -21,8 +21,7 @@ return new class extends Migration
             $table->time('time_at_out')->nullable();
             $table->date('day_at_out')->nullable();
             $table->integer('localisation_id');
-            $table->double('lat');
-            $table->double('lon');
+           
             $table->foreignIdFor(Employee::class);
         });
     }

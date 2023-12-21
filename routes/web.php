@@ -29,6 +29,7 @@ Auth::routes([
 ]);
 
 
+Route::middleware(['auth'])->group(function () {
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/site/{id}/employees/{query?}', [App\Http\Controllers\HomeController::class, 'siteEmployees'])->name('siteEmployees');
@@ -36,8 +37,8 @@ Route::get('/employees/{id}/detail', [App\Http\Controllers\HomeController::class
 Route::get('/employee/flexibilite', [EmployeeController::class, 'flexibilityIndex'])->name('flexibilityIndex');
 Route::get('/employee/absence', [EmployeeController::class, 'absenceIndex'])->name('absenceIndex');
 
-Route::get('/export-employee/{id}', [HomeController::class, 'exportSite'])->name('export.site');
-
+Route::get('/export-employee-Site/{id}', [HomeController::class, 'exportSite'])->name('export.site');
+Route::get('/export-employee-detail/{id}', [HomeController::class, 'exportEmployee'])->name('export.employee');
 
 Route::get('/logout', [App\Http\Controllers\HomeController::class, 'logout'])->name('logout');
 Route::get('/user/register', [RegisterController::class, 'showRegistrationForm'])->name('userRegister');
@@ -71,5 +72,7 @@ Route::middleware(['admin'])->group(function () {
     Route::put('/employees/{id}', [EmployeeController::class, 'updateEmployee'])->name('employees.update');
     Route::post('/employees/{employee}/activate', [EmployeeController::class, 'activateEmployee'])->name('activate.employee');
     Route::delete('/employees/{employee}/deactivate', [EmployeeController::class, 'deleteUser'] )->name('delete.user');
+
+});
 
 });

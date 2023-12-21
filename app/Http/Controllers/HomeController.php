@@ -89,7 +89,7 @@ class HomeController extends Controller
 
         $history_entries = HistoryEntry::where('localisation_id', $id)
             ->whereBetween('day_at_in', [$dateRange['start'],  $dateRange['end']])
-            ->orderBy('time_at_in', 'desc')
+            ->orderBy('day_at_in', 'desc')
             ->get();
 
         $site = Helper::searchByNameAndId('localisation', $id);
@@ -121,6 +121,29 @@ class HomeController extends Controller
 
         return Excel::download(new HistoryEntryExport($id,$dateRange), "employee_data_$site->name.xlsx");
     }
+
+
+
+    public function exportEmployee($id, Request $request)
+    {
+        $dateRange = parse_url(url()->previous(), PHP_URL_QUERY);
+
+        preg_match('/.*(\d{4}-\d{2}-\d{2}).*(\d{4}-\d{2}-\d{2})/', $dateRange, $matches,PREG_UNMATCHED_AS_NULL);
+
+        if(empty($matches)){
+            $dateRange = $this->dateRangeFromRequest([]);
+        }else{
+            $dateRange =  [
+                'start' => Carbon::parse($matches[1]),
+                'end' => Carbon::parse($matches[2])
+            ];
+        }
+        $site = Helper::searchByNameAndId('localisation', $id);
+
+        return Excel::download(new EmployeesExport($id,$dateRange), "employee_data_$site->name.xlsx");
+    }
+
+
 
 
     public function employeeDetail(Request $request, $id)

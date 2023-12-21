@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Exports;
+
 use App\Helper;
 use App\Models\Employee;
 use App\Models\HistoryEntry;
@@ -10,55 +11,38 @@ use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class EmployeesExport implements FromQuery, WithMapping, WithHeadings
+class EmployeesExport implements FromQuery
 {
-    private $localisationId;
+    private $id;
     private $dateRange;
 
-    public function __construct ($localisationId, $dateRange)
+    public function __construct($id, $dateRange)
     {
-        $this->localisationId = (int) $localisationId;
+        $this->id = (int) $id;
         $this->dateRange = $dateRange;
     }
 
     public function query()
     {
-        return HistoryEntry::where('localisation_id', $this->localisationId)
+        return HistoryEntry::where('employee_id', $this->id)
             ->whereBetween('day_at_in', [$this->dateRange['start'], $this->dateRange['end']])
-            ->orderBy('time_at_in', 'desc');
-
+            ->orderByDesc('day_at_in');
     }
-    public function map($historyEntry): array
+    public function map($entry): array
     {
-        $department= Helper::searchByNameAndId('department', $historyEntry->employee->department_id)->name ?? '';
-        $heureSortie=  $historyEntry->day_at_out && $historyEntry->time_at_out ? $historyEntry->time_at_out : 'Pas encore sorti';
-        $dureeTravail= Helper::getHeuresEmployesParJour($historyEntry->employee->id, $historyEntry->day_at_in);
-        $flexibilite= Helper::getTimeFlexParJour($historyEntry->employee->id, $historyEntry->day_at_in);
-
-        return [
-            $historyEntry->employee->name,
-            $department,
-            $historyEntry->day_at_in,
-            $historyEntry->time_at_in,
-            $heureSortie,
-            $dureeTravail,
-            $flexibilite
-        ];
+        dd($entry->groupBy('day_at_in'));
+        return  [];
     }
-    public function Headings():array
-    {
-        return[
-            'Nom',
-            'Departement',
-            'Date',
-            'Entrée',
-            'Sortie',
-            'Heure de travail',
-            'flexibilite'
-        ];
-
-    }
-
-
-
+    // public function Headings(): array
+    // {
+    //     return [
+    //         'Nom',
+    //         'Departement',
+    //         'Date',
+    //         'Entrée',
+    //         'Sortie',
+    //         'Heure de travail',
+    //         'flexibilite'
+    //     ];
+    // }
 }

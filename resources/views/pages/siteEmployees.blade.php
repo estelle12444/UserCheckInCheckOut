@@ -5,16 +5,31 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="home-tab">
+                    <div class="modal fade" id="mapPopup" tabindex="-1" role="dialog" aria-labelledby="mapPopupLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="mapPopupLabel">Carte</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="map-popup" style="height: 400px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="d-sm-flex align-items-center justify-content-between border-bottom">
                         <div class="btn-wrapper">
-
                             <a href="#" id="exportButtonSite" class="btn btn-primary text-white me-0">
                                 <i class="icon-download"></i>Exporter en pdf</a>
                             {{-- <a href="#" id="ButtonExcel" class="btn btn-success text-white me-0">
                                 <i class="icon-download"></i>Exporter en excel</a> --}}
 
-                                <a href="{{route('export.site',['id' => $id])}}"  class="btn btn-success text-white me-0">
-                                    <i class="icon-download"></i>Exporter en excel</a>
+                            <a href="{{ route('export.site', ['id' => $id]) }}" class="btn btn-success text-white me-0">
+                                <i class="icon-download"></i>Exporter en excel</a>
                         </div>
                     </div>
                     <div class="tab-content tab-content-basic">
@@ -27,16 +42,16 @@
                                                 class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
                                                 <h3 class="card-title card-title-dash mb-2 mb-sm-0">
                                                     Liste des employés du site : <strong
-                                                        class="orange">{{ $site->name ?? ' ' }}</strong></h3>
+                                                        class="orange">{{ $site->name ?? ' ' }}</strong>
+                                                </h3>
                                                 <h3 class="ml-4 card-title card-title-dash mb-2 mb-sm-0"
                                                     style="color:rgb(249, 139, 99);font-weight:700">
                                                     Du {{ $dateRange['start']->format('Y-m-d') }}
                                                     au{{ $dateRange['end']->format('Y-m-d') }}
                                                 </h3>
                                             </div>
-                                            <p class="card-subtitle card-subtitle-dash">Nous avons {{ $filtreEmployees }}
-                                                employées</p>
-
+                                            <p class="card-subtitle card-subtitle-dash">Nous avons
+                                                {{ $filtreEmployees }}employées</p>
                                             <div class="table-responsive  mt-1">
                                                 <table id="employeeTable" class="table select-table table-hover">
                                                     <thead class="orange">
@@ -48,6 +63,7 @@
                                                             <th class="text-white"> Sortie</th>
                                                             <th class="text-white">Durée de travail</th>
                                                             <th class="text-white">Flexibilité </th>
+                                                            <th class="text-white">Position</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -62,7 +78,7 @@
                                                                                     <img
                                                                                         src="{{ asset('storage/' . $history_entry->employee->image_path) }}"alt="{{ $history_entry->employee->name }}">
                                                                                 @else
-                                                                                    <img src="{{ asset('/public/images/default.png') }}"
+                                                                                    <img src="{{ asset('/images/default.png') }}"
                                                                                         alt="{{ $employee->name }}">
                                                                                 @endif
                                                                             </a>
@@ -88,7 +104,6 @@
                                                                         <h6 class="marron">{{ $history_entry->time_at_in }}
                                                                         </h6>
                                                                     </td>
-
                                                                     <td>
                                                                         @if ($history_entry->day_at_out && $history_entry->time_at_out)
                                                                             <h6 class="marron">
@@ -96,7 +111,6 @@
                                                                         @else
                                                                             Pas encore sorti
                                                                         @endif
-
                                                                     </td>
                                                                     <td class="text-center">
                                                                         <h6 class="cbleu">
@@ -117,11 +131,22 @@
                                                                             @endif
                                                                         </h6>
                                                                     </td>
-
+                                                                    <td>
+                                                                        @if ($history_entry->lat != 0 && $history_entry->lon != 0)
+                                                                            <button
+                                                                                class="displayModal btn btn-success btn-rounded btn-icon text-white"
+                                                                                data-toggle="modal" data-target="#mapPopup"
+                                                                                data-latlon="{{ $history_entry->lat }}, {{ $history_entry->lon }}">
+                                                                                <i class="ti-location-pin"></i>
+                                                                            </button>
+                                                                        @else
+                                                                            <p class="text-danger">pas de coordonnées</p>
+                                                                        @endif
+                                                                    </td>
                                                                 </tr>
                                                             @endforeach
                                                         @else
-                                                            <p>Aucune donnés disponible pendant la période spécifiée.</p>
+                                                            <p>Aucune donnée disponible pendant la période spécifiée.</p>
                                                         @endif
                                                     </tbody>
                                                 </table>
@@ -140,6 +165,34 @@
 
 @push('scripts')
     <script>
+        var map = L.map('map-popup').setView([5.328056, -4.001333], 10);
+        // var marker = new L.Marker([3, 5]);
+        var marker;
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        document.querySelectorAll('.displayModal').forEach(element => {
+            element.addEventListener('click', function() {
+                var data = this.dataset.latlon;
+                var coords = data.split(',');
+
+                setTimeout(function() {
+                    map.invalidateSize();
+
+                    if (marker) {
+                        marker.removeFrom(map);
+                    }
+
+                    marker = L.marker([coords[0], coords[1]]).addTo(map)
+                        .bindPopup('Latitude: ' + coords[0] + '<br>Longitude: ' + coords[1])
+                        .openPopup();
+
+                    map.setView([coords[0], coords[1]], 15);
+                }, 400);
+            })
+        });
+
         document.getElementById('exportButtonSite').addEventListener('click', function() {
             let start = @json($dateRange['start']->format('Y-m-d'));
             let end = @json($dateRange['end']->format('Y-m-d'));
@@ -175,7 +228,7 @@
 
         new DataTable('#employeeTable', {
             paging: true,
-            pageLength: 5,
+            pageLength: 15,
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/fr-FR.json'
             }

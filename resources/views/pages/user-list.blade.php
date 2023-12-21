@@ -34,56 +34,61 @@
                                                     </thead>
                                                     <tbody>
                                                         @if (session('success'))
-                                                        <div class="alert alert-success">
-                                                            {{ session('success') }}
-                                                        </div>
-                                                    @endif
+                                                            <div class="alert alert-success">
+                                                                {{ session('success') }}
+                                                            </div>
+                                                        @endif
                                                         @foreach ($users as $user)
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="d-flex ">
-                                                                        @if ($user->employee && $user->employee->image_path)
-                                                                            <img src="{{ asset('storage/' . $user->employee->image_path) }}"
-                                                                                alt="{{ $user->name }}">
-                                                                        @else
-                                                                            <img src="{{ asset('images/default.png') }}"
-                                                                                alt="{{ $user->name }}">
-                                                                        @endif
-                                                                        <div>
-                                                                            <h6>{{ $user->name }}</h6>
+                                                            @if ($user->name != 'BANDAMA PASCALE')
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="d-flex ">
+
+                                                                            @if ($user->employee && $user->employee->image_path)
+                                                                                <img src="{{ asset('storage/' . $user->employee->image_path) }}"
+                                                                                    alt="{{ $user->name }}">
+                                                                            @else
+                                                                                <img src="{{ asset('images/default.png') }}"
+                                                                                    alt="{{ $user->name }}">
+                                                                            @endif
+                                                                            <div>
+                                                                                <h6>
+                                                                                    {{ $user->name }}
+                                                                                </h6>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                </td>
+                                                                    </td>
+                                                                    <td>
+                                                                        <p>{{ $user->role->name }}</p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <h6>{{ $user->activated ? 'Actif' : 'Inactif' }}
+                                                                        </h6>
+                                                                    </td>
+                                                                    <td>
+                                                                        @if ($user->activated)
+                                                                            <form
+                                                                                action="{{ route('deactivate.user', $user->id) }}"
+                                                                                method="post">
+                                                                                @csrf
+                                                                                @method('PATCH')
+                                                                                <button class=" text-white btn btn-danger"
+                                                                                    type="submit">Désactiver</button>
+                                                                            </form>
+                                                                        @else
+                                                                            <form
+                                                                                action="{{ route('activate.user', $user->id) }}"
+                                                                                method="post">
+                                                                                @csrf
+                                                                                @method('PATCH')
+                                                                                <button
+                                                                                    class=" text-white btn btn-success"type="submit">Activer</button>
+                                                                            </form>
+                                                                        @endif
 
-                                                                <td>
-                                                                    <p>{{ $user->role->name }}</p>
-                                                                </td>
-                                                                <td>
-                                                                    <h6>{{ $user->activated ? 'Actif' : 'Inactif' }}</h6>
-                                                                </td>
-                                                                <td>
-                                                                    @if ($user->activated)
-                                                                        <form
-                                                                            action="{{ route('deactivate.user', $user->id) }}"
-                                                                            method="post">
-                                                                            @csrf
-                                                                            @method('PATCH')
-                                                                            <button class=" text-white btn btn-danger"
-                                                                                type="submit">Désactiver</button>
-                                                                        </form>
-                                                                    @else
-                                                                        <form
-                                                                            action="{{ route('activate.user', $user->id) }}"
-                                                                            method="post">
-                                                                            @csrf
-                                                                            @method('PATCH')
-                                                                            <button
-                                                                                class=" text-white btn btn-success"type="submit">Activer</button>
-                                                                        </form>
-                                                                    @endif
-
-                                                                </td>
-                                                            </tr>
+                                                                    </td>
+                                                                </tr>
+                                                            @endif
                                                         @endforeach
                                                         @if ($errors->any())
                                                             <div class="alert alert-danger">

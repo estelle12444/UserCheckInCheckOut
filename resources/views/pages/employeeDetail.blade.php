@@ -5,12 +5,29 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="home-tab">
+                    <div class="modal fade" id="mapPopup" tabindex="-1" role="dialog" aria-labelledby="mapPopupLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="mapPopupLabel">Carte</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="popup" style="height: 400px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="d-sm-flex align-items-center justify-content-between border-bottom">
                         <div class="btn-wrapper">
                             <a href="#" id="exportButtonDetailEmployee" class="btn btn-primary text-white me-0">
-                                <i class="icon-download"></i>Exporter en pdf</a>
-                            <a href="#" id="exportButtonExcell" class="btn btn-success text-white me-0"><i class="icon-download"></i>
-                                Exporter en excel</a>
+                                <i class="icon-download"></i>Exporter en pdf
+                            </a>
+                            <a href="#" id="exportButtonExcell" class="btn btn-success text-white me-0">
+                                <i class="icon-download"></i>Exporter en excel
+                            </a>
                         </div>
                     </div>
                     <div class="tab-content tab-content-basic">
@@ -25,10 +42,9 @@
                                                     <div class="row">
                                                         <div class="col-md-4">
                                                             @if ($employee->image_path)
-                                                                <img class="img-fluid rounded" style="border: 2px solid #EF8032;"src="{{ asset('storage/' . $employee->image_path) }}"
-                                                                    alt="{{ $employee->name }}">
+                                                                <img class="img-fluid rounded" style="border: 2px solid #EF8032;"  src="{{ asset('storage/' . $employee->image_path) }}" alt="{{ $employee->name }}">
                                                             @else
-                                                                <img src="{{ asset('images/default.png') }}" alt="{{ $employee->name }}">
+                                                                <img class="img-fluid rounded" style="border: 2px solid #EF8032;"  src="{{ asset('images/default.png') }}" alt="{{ $employee->name }}">
                                                             @endif
                                                         </div>
                                                         <div class="col-md-8">
@@ -42,6 +58,7 @@
                                                                     <h5 class="text-info">{{ App\Helper::getTimeDifferenceTotal($employee->id) }}</h5>
                                                                 </div>
                                                             </div>
+
                                                             <h6 class="font-weight-bold">Poste:</h6>
                                                             <p>{{ $employee->designation }}</p>
                                                             <hr class="my-2">
@@ -60,10 +77,8 @@
                                                         </div>
                                                         <div class="">
                                                             <h3 class="mt-4 text-info">Historiques des Entrées et de sorties</h3>
-                                                            <h5 class=" mt-4 " style="color:rgb(249, 139, 99)">Du {{ $dateRange['start']->format('Y-m-d') }} au
-                                                                {{ $dateRange['end']->format('Y-m-d') }}</h5>
+                                                            <h5 class=" mt-4 " style="color:rgb(249, 139, 99)">Du {{ $dateRange['start']->format('Y-m-d') }} au {{ $dateRange['end']->format('Y-m-d') }}</h5>
                                                         </div>
-
                                                         <table aria-describedby="mydesc" id="detailEmployeeTable" class="table table-striped dataTable">
                                                             <thead class="bg-info">
                                                                 <tr>
@@ -73,6 +88,7 @@
                                                                     <th>Site</th>
                                                                     <th>Durée de travail</th>
                                                                     <th>Panier de flexibilité</th>
+                                                                    <th>Position</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -91,8 +107,7 @@
                                                                             <td>{{ $value->day_at_in }}</td>
                                                                             <td>{{ $value->time_at_in }}</td>
                                                                             <td>{{ $value->time_at_out }}</td>
-                                                                            <td>{{ App\Helper::searchByNameAndId('localisation', $value->localisation_id)->name ?? '' }}
-                                                                            </td>
+                                                                            <td>{{ App\Helper::searchByNameAndId('localisation', $value->localisation_id)->name ?? '' }}</td>
                                                                             @if ($loop->index == 0)
                                                                                 <td class="text-center" rowspan="{{ $entry->count() }}">
                                                                                     <h6 class="cbleu">{{ $difference }} h </h6>
@@ -109,29 +124,42 @@
                                                                                     </h6>
                                                                                 </td>
                                                                             @endif
+                                                                            <td>
+                                                                                @if ($value->lat != 0 && $value->lon != 0)
+                                                                                <button  class="displayModal1 btn btn-success btn-rounded btn-icon text-white" data-toggle="modal" data-target="#mapPopup" data-latlon="{{$value->lat}}, {{$value->lon}}">
+                                                                                    <i class="ti-location-pin"></i>
+                                                                                </button>
+                                                                                @else
+                                                                                    <p class="text-danger">pas de coordonnées</p>
+                                                                                @endif
+                                                                            </td>
+
+                                                                        @endforeach
                                                                     </tr>
                                                                 @endforeach
-                                            @endforeach
-                                            </tbody>
-                                            </table>
-                                            <div class="justify-content">{{ $groupedHistoryEntries->links() }}</div>
-                                            <table class="mx-2  table ">
-                                                <tbody>
-                                                    <tr>
-                                                        <td>Total des heures travaillées:
-                                                            <strong class="Cbleue">
-                                                                {{ App\Helper::getTimeDifferenceParPeriode($dateRange['start'], $dateRange['end'], $employee->id) }}</strong>
-                                                        </td>
-                                                        <td>Total du panier :
-                                                            <strong
-                                                                class="C">{{ App\Helper::getTimeFlexParPeriode($dateRange['start'], $dateRange['end'], $employee->id) }}</strong>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-
-                                            </table>
-                                        @else
-                                            <p>Employee not found.</p>
+                                                            </tbody>
+                                                        </table>
+                                                        <div class="justify-content">{{ $groupedHistoryEntries->links() }}</div>
+                                                        <table class="mx-2  table ">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>Total des heures travaillées:
+                                                                        <strong class="Cbleue">
+                                                                            {{ App\Helper::getTimeDifferenceParPeriode($dateRange['start'], $dateRange['end'], $employee->id) }}
+                                                                        </strong>
+                                                                    </td>
+                                                                    <td>Total du panier :
+                                                                        <strong class="CRouge">
+                                                                            {{ App\Helper::getTimeFlexParPeriode($dateRange['start'], $dateRange['end'], $employee->id) }}
+                                                                        </strong>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <p>Employee not found.</p>
                                             @endif
                                         </div>
                                     </div>
@@ -148,9 +176,8 @@
                                     <div class="card-body">
                                         <div class="d-sm-flex justify-content-between align-items-start mb-3">
                                             <div>
-                                                <h4 class="card-title card-title-dash">
+                                                <h4 class="card-title ">
                                                     Statistique des heures cumulées d'un employée </h4>
-
                                                 <h6 class="card-subtitle card-subtitle-dash"
                                                     style="color:rgb(249, 139, 99);font-weight:700">Du
                                                     {{ $dateRange['start']->format('Y-m-d') }} au
@@ -176,13 +203,10 @@
                                             <div class="card-body">
                                                 <div class="row">
                                                     <div class="col-lg-12">
-                                                        <h4 class="card-title card-title-dash"> Heures Cumulées </h4>
+                                                        <h4 class="card-title "> Heures Cumulées </h4>
                                                         <div class="d-flex justify-content-between align-items-center mb-3">
-
-                                                            <h6 class="card-subtitle card-subtitle-dash"
-                                                                style="color:rgb(249, 139, 99);font-weight:700">Du
-                                                                {{ $dateRange['start']->format('Y-m-d') }} au
-                                                                {{ $dateRange['end']->format('Y-m-d') }}
+                                                            <h6 class="card-subtitle card-subtitle-dash" style="color:rgb(249, 139, 99);font-weight:700">
+                                                                Du {{ $dateRange['start']->format('Y-m-d') }} au {{ $dateRange['end']->format('Y-m-d') }}
                                                             </h6>
                                                         </div>
                                                         <table class="table table-striped">
@@ -206,7 +230,6 @@
                                                                         $i++;
                                                                     @endphp
                                                                 @endforeach
-
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -222,10 +245,36 @@
             </div>
         </div>
     </div>
-    </div>
 @endsection
 @push('scripts')
     <script>
+
+        var map = L.map('popup').setView([5.328056, -4.001333], 10);
+        var marker;
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        document.querySelectorAll('.displayModal1').forEach(element => {
+            element.addEventListener('click', function(){
+                var data = this.dataset.latlon;
+                var coords = data.split(',');
+                setTimeout(function() {
+                map.invalidateSize();
+
+                if (marker) {
+                        marker.removeFrom(map);
+                    }
+
+                marker= L.marker([coords[0], coords[1]]).addTo(map)
+                .bindPopup('Latitude: ' + coords[0] + '<br>Longitude: ' + coords[1])
+                .openPopup();
+
+                map.setView([coords[0], coords[1]], 15);
+            }, 400);
+            })
+        });
+
         document.getElementById('exportButtonExcell').addEventListener('click', function() {
             var table = document.getElementById('detailEmployeeTable');
             console.log(" table selectionné OK");
@@ -248,6 +297,8 @@
             XLSX.writeFile(wb, fileName);
             console.log("ficher telechargé créé avec succès");
         });
+
+
         document.getElementById('exportButtonDetailEmployee').addEventListener('click', function() {
             var employeeName = @json($employee->name);
             var employeeMartricule = @json($employee->matricule);
@@ -260,8 +311,7 @@
                     margin: 1,
                     filename: fileName,
                     image: {
-                        type: 'jpeg',
-                        quality: 0.98
+                        type: 'jpeg',quality: 0.98
                     },
                     html2canvas: {
                         scale: 2
