@@ -251,14 +251,21 @@ class EmployeeController extends Controller
         $imagePath = "";
 
         $validator->after(function ($validator) use ($request, &$imagePath) {
+            $fileName = $request->input('matricule') . ', ' . $request->input('name') . ', ' . $request->input('designation');
+            $fileName .= ', ' . \App\Helper::searchByNameAndId('department', $request->input('department_id'))->name;
+
             if ($request->hasFile('image')) {
-                $fileName = $request->input('matricule') . ', ' . $request->input('name') . ', ' . $request->input('designation');
-                $fileName .= ', ' . \App\Helper::searchByNameAndId('department', $request->input('department_id'))->name;
                 $guessExtension = $request->file('image')->guessExtension();
                 $imagePath = $request->file('image')->storeAs('photos', $fileName . '.' . $guessExtension, 'public');
+            }else{
+                $imagePath = Employee::select('image_path')->where('matricule', $request->matricule)->first()->image_path;
+            }
 
+            if(isset($imagePath) && $imagePath != ""){
+                $path  = explode('/', $imagePath);
+                $extension = explode('.', $path[1]);
                 $response = Http::withHeaders(['Accept' => 'multipart/form-data'])
-                    ->attach('file', file_get_contents('storage/' . $imagePath), $fileName . '.' . $guessExtension)
+                    ->attach('file', file_get_contents('storage/' . $imagePath), $request->hasFile('image') ? $path[1] : $fileName.".".$extension[1] )
                     ->post(env('FACERECOGNITION_BASE_URI') . '/upload', []);
 
                 if ($response->status() == 200) {
