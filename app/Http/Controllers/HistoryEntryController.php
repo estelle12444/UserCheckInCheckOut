@@ -62,9 +62,11 @@ class HistoryEntryController extends Controller
         $entry = Entry::IN;
 
         if(!is_null($employeeHistories)){
-            $now = Carbon::now();
-            $date = Carbon::parse($employeeHistories->date_at_in .' '.$employeeHistories->time_at_in);
-            if($now->diffInHours($date) > 20){
+            if(now()->format('Y-m-d') !==  $employeeHistories->day_at_in){
+                $employeeHistories->out_confidence = 0.6;
+                $employeeHistories->day_at_out = $employeeHistories->day_at_in;
+                $employeeHistories->time_at_out = "17:30:00";
+                $employeeHistories->save();
                 $this->createHistory($request, $employee);
             }elseif($employeeHistories->localisation_id == $request->localisation_id){
                 $this->updateHistory($employeeHistories, $request);
