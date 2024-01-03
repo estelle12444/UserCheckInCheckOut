@@ -57,9 +57,7 @@
                                                                     <h6>Total d'heure de travail</h6>
                                                                     <h5 class="text-info">{{ App\Helper::getTimeDifferenceTotal($employee->id) }}</h5>
                                                                 </div>
-                                                            </div>
-
-                                                            <h6 class="font-weight-bold">Poste:</h6>
+                                                            </div>                                                            <h6 class="font-weight-bold">Poste:</h6>
                                                             <p>{{ $employee->designation }}</p>
                                                             <hr class="my-2">
                                                             <div class="row">
@@ -102,45 +100,44 @@
                                                                             $overtime += $result['overtime'] ?? 0;
                                                                         }
                                                                     @endphp
+                                                                    @foreach ($entry as $value)
                                                                     <tr>
-                                                                        @foreach ($entry as $value)
-                                                                            <td>{{ $value->day_at_in }}</td>
-                                                                            <td>{{ $value->time_at_in }}</td>
-                                                                            <td>{{ $value->time_at_out }}</td>
-                                                                            <td>{{ App\Helper::searchByNameAndId('localisation', $value->localisation_id)->name ?? '' }}</td>
-                                                                            @if ($loop->index == 0)
-                                                                                <td class="text-center" rowspan="{{ $entry->count() }}">
-                                                                                    <h6 class="cbleu">{{ $difference }} h </h6>
-                                                                                </td>
-                                                                                <td class="text-center" rowspan="{{ $entry->count() }}">
-                                                                                    <h6 class="cRouge ">{{ $overtime }} h
-                                                                                        @if ($result['overtime'] > 0)
-                                                                                            <i class="mdi mdi-arrow-up-drop-circle text-success"></i>
-                                                                                        @elseif($result['overtime'] < 0)
-                                                                                            <i class="mdi mdi-arrow-down-drop-circle text-danger"></i>
-                                                                                        @else
-                                                                                            <i></i>
-                                                                                        @endif
-                                                                                    </h6>
-                                                                                </td>
-                                                                            @endif
+                                                                        <td>{{ $value->day_at_in }}</td>
+                                                                        <td>{{ $value->time_at_in }}</td>
+                                                                        <td>{{ $value->time_at_out }}</td>
+                                                                        <td>{{ App\Helper::searchByNameAndId('localisation', $value->localisation_id)->name ?? '' }}</td>
+                                                                        @if ($loop->index == 0)
+                                                                            <td class="text-center" rowspan="{{ $entry->count() }}">
+                                                                                <h6 class="cbleu">{{ $difference }} h </h6>
+                                                                            </td>
+                                                                            <td class="text-center" rowspan="{{ $entry->count() }}">
+                                                                                <h6 class="cRouge ">{{ $overtime }} h
+                                                                                    @if ($result['overtime'] > 0)
+                                                                                        <i class="mdi mdi-arrow-up-drop-circle text-success"></i>
+                                                                                    @elseif($result['overtime'] < 0)
+                                                                                        <i class="mdi mdi-arrow-down-drop-circle text-danger"></i>
+                                                                                    @else
+                                                                                        <i></i>
+                                                                                    @endif
+                                                                                </h6>
+                                                                            </td>
+                                                                        @endif
                                                                             <td>
-                                                                                @if ($value->lat != 0 && $value->lon != 0)
+                                                                             @if ($value->lat != 0 && $value->lon != 0)
                                                                                 <button  class="displayModal1 btn btn-success btn-rounded btn-icon text-white" data-toggle="modal" data-target="#mapPopup" data-latlon="{{$value->lat}}, {{$value->lon}}">
                                                                                     <i class="ti-location-pin"></i>
-                                                                                </button>
+                                                                            </button>
                                                                                 @else
                                                                                     <p class="text-danger">pas de coordonnées</p>
-                                                                                @endif
-                                                                            </td>
-
-                                                                        @endforeach
+                                                                            @endif
+                                                                        </td>
                                                                     </tr>
+                                                                    @endforeach
                                                                 @endforeach
                                                             </tbody>
                                                         </table>
                                                         <div class="justify-content">{{ $groupedHistoryEntries->links() }}</div>
-                                                        <table class="mx-2  table ">
+                                                        <table class="mx-2 table ">
                                                             <tbody>
                                                                 <tr>
                                                                     <td>Total des heures travaillées:
@@ -247,8 +244,8 @@
     </div>
 @endsection
 @push('scripts')
-    <script>
 
+    <script>
         var map = L.map('popup').setView([5.328056, -4.001333], 10);
         var marker;
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -265,7 +262,6 @@
                 if (marker) {
                         marker.removeFrom(map);
                     }
-
                 marker= L.marker([coords[0], coords[1]]).addTo(map)
                 .bindPopup('Latitude: ' + coords[0] + '<br>Longitude: ' + coords[1])
                 .openPopup();
@@ -274,7 +270,8 @@
             }, 400);
             })
         });
-
+    </script>
+    <script>
         document.getElementById('exportButtonExcell').addEventListener('click', function() {
             var table = document.getElementById('detailEmployeeTable');
             console.log(" table selectionné OK");
@@ -330,7 +327,8 @@
                 console.error('An error occurred:', error);
             }
         });
-
+    </script>
+    <script>
         function getPeriodFilter() {
             let [start, end] = [null, null];
             let params = new URL(document.location).searchParams.get('selectedDates');

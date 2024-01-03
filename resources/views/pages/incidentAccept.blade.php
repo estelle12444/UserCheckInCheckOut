@@ -41,7 +41,7 @@
                                                     <p>{{ $request->employee->designation }}</p>
                                                 </td>
                                                 <td>
-                                                    <h6 class="text-danger">{{ $request->status }}</h6>
+                                                    <h6 class="text-success">{{ $request->status }}</h6>
                                                 </td>
                                                 <td>
                                                     <h6>{{ $request->created_at }}</h6>
