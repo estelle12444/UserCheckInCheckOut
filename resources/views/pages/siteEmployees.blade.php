@@ -52,8 +52,8 @@
                                             </div>
                                             <p class="card-subtitle card-subtitle-dash">Nous avons
                                                 {{ $filtreEmployees }}employées</p>
-                                            <div class="table-responsive  mt-1">
-                                                <table id="employeeTable" class="table select-table table-hover">
+                                            <div class="table-responsive  mt-1" >
+                                                <table id="employeeTable" class="table select-table table-hover" style="overflow-x: hidden;">
                                                     <thead class="orange">
                                                         <tr>
                                                             <th class="text-white pl-2">Employée</th>
