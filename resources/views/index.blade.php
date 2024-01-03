@@ -152,7 +152,7 @@
                                                                         <div class="d-flex ">
                                                                             <a
                                                                                 href="{{ route('employeeDetail', ['id' => $history_entry->employee->id]) }}">
-                                                                                <img src="{{ asset('storage/' . $employee->image_path) }}"
+                                                                                <img src="{{ asset('storage/' . $history_entry->employee->image_path) }}"
                                                                                     alt="{{ $history_entry->employee->name }}">
                                                                             </a>
                                                                             <div>
