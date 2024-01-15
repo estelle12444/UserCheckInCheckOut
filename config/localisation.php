@@ -6,10 +6,6 @@ return [
         'name' => 'Danga',
     ],
     [
-        'id' => 2,
-        'name' => 'Laurier',
-    ],
-    [
         'id' => 3,
         'name' => 'Campus',
     ],

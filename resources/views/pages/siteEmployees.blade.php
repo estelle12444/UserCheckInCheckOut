@@ -47,13 +47,13 @@
                                                 <h3 class="ml-4 card-title card-title-dash mb-2 mb-sm-0"
                                                     style="color:rgb(249, 139, 99);font-weight:700">
                                                     Du {{ $dateRange['start']->format('Y-m-d') }}
-                                                    au{{ $dateRange['end']->format('Y-m-d') }}
+                                                    au {{ $dateRange['end']->format('Y-m-d') }}
                                                 </h3>
                                             </div>
                                             <p class="card-subtitle card-subtitle-dash">Nous avons
                                                 {{ $filtreEmployees }}employées</p>
                                             <div class="table-responsive  mt-1" >
-                                                <table id="employeeTable" class="table select-table table-hover" style="overflow-x: hidden;">
+                                                <table id="employeeTable" class="table select-table table-hover" style="overflow-x:hidden;">
                                                     <thead class="orange">
                                                         <tr>
                                                             <th class="text-white pl-2">Employée</th>
@@ -75,8 +75,7 @@
                                                                             <a
                                                                                 href="{{ route('employeeDetail', ['id' => $history_entry->employee->id]) }}">
                                                                                 @if ($history_entry->employee->image_path)
-                                                                                    <img
-                                                                                        src="{{ asset('storage/' . $history_entry->employee->image_path) }}"alt="{{ $history_entry->employee->name }}">
+                                                                                    <img src="{{ asset('storage/' . $history_entry->employee->image_path) }}"alt="{{ $history_entry->employee->name }}">
                                                                                 @else
                                                                                     <img src="{{ asset('/images/default.png') }}"
                                                                                         alt="{{ $employee->name }}">
