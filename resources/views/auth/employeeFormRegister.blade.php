@@ -49,7 +49,7 @@
 
                                         <div class="row mb-3">
                                             <label for="designation"
-                                                class="col-md-3 col-form-label text-md-end">{{ __('Designation') }}</label>
+                                                class="col-md-3 col-form-label text-md-end">{{ __('Poste') }}</label>
 
                                             <div class="col-md-8">
                                                 <input id="designation" type="text"

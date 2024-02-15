@@ -1,95 +1,7 @@
 @extends('layouts')
 
 @section('content')
-    {{-- <div class="container-fluid">
-        <div class="row ">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">{{ __('Enregistrement de l\'employé') }}</div>
 
-                    <div class="card-body">
-                        <p class="mb-4">
-                            Bienvenue sur la page d'enregistrement des employés. Vous pouvez utiliser un fichier Excel pour
-                            importer plusieurs employés en une seule fois.
-                        </p>
-
-                        <div class="alert alert-info">
-                            <strong>Instructions :</strong>
-                            <ul>
-                                <li>Assurez-vous que le fichier Excel suit le format requis.</li>
-                                <li>Le fichier doit avoir une ligne d'en-tête avec les colonnes suivantes : <code>matricule,
-                                        name, designation, department_id</code>.</li>
-                                <li>Le fichier peut contenir plusieurs lignes, une pour chaque employé.</li>
-                            </ul>
-                        </div>
-
-                        <form action="{{ route('importEmployee') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="file" class="form-label">Sélectionnez le fichier Excel</label>
-                                <input type="file" class="form-control" name="file" id="file"
-                                    accept=".xls, .xlsx" required>
-                            </div>
-
-                            <div class="row mb-0 justify-content-center">
-                                <div class="col-md-6 text-center">
-                                    <button class="btn btn-success" type="submit">
-                                        <i class="ti-file btn-icon-prepend"></i> Importer
-                                    </button>
-                                </div>
-                                <div class="col-md-6 text-center">
-                                    <a href="{{ route('employees.index') }}" class="btn btn-secondary">
-                                        Retour
-                                    </a>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
-    {{-- <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">{{ __('Enregistrement de l\'employé') }}</div>
-
-                    <div class="card-body">
-                        <p class="mb-4">
-                            Vous pouvez utiliser un fichier Excel pour importer plusieurs employés en une seule fois.
-                        </p>
-
-                        <div class="alert alert-info">
-                            <strong>Instructions :</strong>
-                            <ul>
-                                <li>Assurez-vous que le fichier Excel suit le format requis.</li>
-                                <li>Le fichier doit avoir une ligne d'en-tête avec les colonnes suivantes : <code>matricule,
-                                        name, designation, department_id</code>.</li>
-                                <li>Le fichier peut contenir plusieurs lignes, une pour chaque employé.</li>
-                            </ul>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="file" class="form-label">Sélectionnez le fichier Excel</label>
-                            <input type="file" class="form-control" name="file" id="file" accept=".xls, .xlsx" required>
-                        </div>
-
-                        <div class="row mb-4">
-                            <div class="col-md-12 text-center">
-                                <button class="btn btn-success" id="importButton">
-                                    <i class="ti-file btn-icon-prepend"></i> Importer
-                                </button>
-                                <a href="{{ route('employees.index') }}" class="btn btn-secondary">
-                                    Retour
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
     <div class="content-wrapper">
         <div class="row">
             <div class="col-sm-12">
@@ -223,7 +135,7 @@
                     '<tr>' +
                     '<th>matricule</th>' +
                     '<th>nom</th>' +
-                    '<th>designation</th>' +
+                    '<th>Poste</th>' +
                     '<th>department_id</th>' +
                     '</tr>' +
                     '</thead>' +

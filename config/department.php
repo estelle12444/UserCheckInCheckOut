@@ -3,49 +3,41 @@
 return [
     [
         'id' => 1,
-        'name' => 'Human Ressources Manager',
+        'name' => 'RECHERCHE & DEVELOPPEMENT',
     ],
     [
         'id' => 2,
-        'name' => 'Sales',
+        'name' => 'OPERATIONS',
     ],
 
     [
         'id' => 3,
-        'name' => 'Marketing & Communication',
+        'name' => 'SECURITE',
     ],
     [
         'id' => 4,
-        'name' => 'Cybersecurity Manager'
+        'name' => 'ADMINISTRATION FINANCIERE'
     ],
     [
         'id' => 5,
-        'name' => 'Project Manager '
+        'name' => 'COMMERCE'
 
     ],
     [
         'id' => 6,
-        'name' => ' General Services'
+        'name' => 'ANALYSES STATISTIQUES'
     ],
     [
         'id' => 7,
-        'name' => 'Analyst  statician'
+        'name' => 'DATA'
     ],
     [
         'id' => 8,
-        'name' => 'Technical Expert'
+        'name' => 'CONSEILLER SPECIAL '
     ],
     [
-        'id'=>9,
-        'name'=>' Accountig Manager'
-    ],
-    [
-        'id'=>10,
-        'name'=>'Deputy Director'
-    ],
-    [
-        'id' => 11,
-        'name' => 'Research & Development',
+        'id' => 9,
+        'name' => 'DG FRANCE',
     ]
 
 ];
