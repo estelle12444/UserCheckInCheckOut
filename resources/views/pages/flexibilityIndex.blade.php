@@ -39,7 +39,7 @@
                                                                 <td>
                                                                     <div class="d-flex ">
                                                                         @if ($employee->image_path)
-                                                                            <img src="{{ asset('storage/' . $employee->image_path) }}"
+                                                                            <img style="height: 50px !important; width:auto" src="{{ asset('storage/' . $employee->image_path) }}"
                                                                                 alt="{{ $employee->name }}">
                                                                         @else
                                                                             <img src="{{ asset('images/default.png') }}"
