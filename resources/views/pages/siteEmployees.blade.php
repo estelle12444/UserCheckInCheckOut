@@ -75,9 +75,9 @@
                                                                             <a
                                                                                 href="{{ route('employeeDetail', ['id' => $history_entry->employee->id]) }}">
                                                                                 @if ($history_entry->employee->image_path)
-                                                                                    <img src="{{ asset('storage/' . $history_entry->employee->image_path) }}"alt="{{ $history_entry->employee->name }}">
+                                                                                    <img style="height: 50px !important; width:auto"  src="{{ asset('storage/' . $history_entry->employee->image_path) }}"alt="{{ $history_entry->employee->name }}">
                                                                                 @else
-                                                                                    <img src="{{ asset('/images/default.png') }}"
+                                                                                    <img style="height: 50px !important; width:auto"  src="{{ asset('/images/default.png') }}"
                                                                                         alt="{{ $employee->name }}">
                                                                                 @endif
                                                                             </a>

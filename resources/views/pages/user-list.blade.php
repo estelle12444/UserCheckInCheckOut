@@ -45,7 +45,7 @@
                                                                         <div class="d-flex ">
 
                                                                             @if ($user->employee && $user->employee->image_path)
-                                                                                <img src="{{ asset('storage/' . $user->employee->image_path) }}"
+                                                                                <img style="height: 50px !important; width:auto"  src="{{ asset('storage/' . $user->employee->image_path) }}"
                                                                                     alt="{{ $user->name }}">
                                                                             @else
                                                                                 <img src="{{ asset('images/default.png') }}"

@@ -22,7 +22,7 @@
                                     <div class="row">
                                         <div class="col-md-12 text-center">
                                             <img src="{{ asset('storage/' . $request->image) }}"
-                                                style="height: auto; width: 160px;" alt="{{ $request->employee->name }}">
+                                            style="height: 250px !important; width:auto" alt="{{ $request->employee->name }}">
                                         </div>
                                     </div>
 
