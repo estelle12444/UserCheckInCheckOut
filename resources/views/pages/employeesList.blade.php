@@ -8,9 +8,7 @@
                     <div class="d-sm-flex align-items-center justify-content-between border-bottom">
                         <div class="btn-wrapper">
 
-
-                            <a href="{{ route('employeeRegisterForm') }}" class="btn btn-primary text-white me-0"><i
-                                    class="mdi mdi-account-plus"></i>
+                            <a href="{{ route('employeeRegisterForm') }}" class="btn btn-primary text-white me-0"><i class="mdi mdi-account-plus"></i>
                                 Enregistrer un nouvel employé</a>
                             <a href="{{ route('employeeRegister') }}" class="btn btn-success text-white me-0">
                                 <i class="mdi mdi-account-plus"></i> Importer un fichier excel </a>

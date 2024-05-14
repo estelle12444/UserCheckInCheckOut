@@ -71,8 +71,10 @@ Route::middleware(['admin'])->group(function () {
     Route::get('/employee/{id}/edit', [EmployeeController::class, 'show'])->name('employees.show');
     Route::put('/employees/{id}', [EmployeeController::class, 'updateEmployee'])->name('employees.update');
     Route::post('/employees/{employee}/activate', [EmployeeController::class, 'activateEmployee'])->name('activate.employee');
-    Route::delete('/employees/{employee}/deactivate', [EmployeeController::class, 'deleteUser'] )->name('delete.user');
 
 });
+
+Route::post('/employees/{employee}/resfresh', [EmployeeController::class, 'restartModelRecognition'] )->name('refresh_model');
+
 
 });

@@ -21,8 +21,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-8">
-                                            <form action="{{ route('employees.update', $employee->id) }}" method="post"
-                                                enctype="multipart/form-data">
+                                            <form data-action="{{ route('employees.update', $employee->id) }}" data-method="put" enctype="multipart/form-data">
                                                 @csrf
                                                 @method('PUT')
                                                 <div class="row mb-3">
@@ -58,7 +57,7 @@
                                                     <label for="department"
                                                         class="col-md-4 col-form-label text-md-end">{{ __('Département') }}</label>
                                                     <div class="col-md-8">
-                                                        <select name="department_id"
+                                                        <select id="department_id" name="department_id"
                                                             class="form-select nav-link dropdown-bordered"
                                                             aria-label="Sélectionnez le département"
                                                             style="color: #000000 !important">
@@ -91,7 +90,7 @@
                                                         </ul>
                                                     </div>
                                                 @endif
-                                                <button class="btn btn-primary btn-icon-text text-white "
+                                                <button id="submitBtn" class="btn btn-primary btn-icon-text text-white "
                                                     style="margin-left:15em" type="submit"><i
                                                         class="ti-file btn-icon-prepend"></i>Mettre à jour</button>
                                             </form>
@@ -108,6 +107,7 @@
 
 @endsection
 @push('scripts')
+    <script src="{{asset('js/upload.js')}}"></script>
     <script>
         function previewImage(input) {
             var preview = document.getElementById('imagePreview');
@@ -130,3 +130,4 @@
         }
     </script>
 @endpush
+

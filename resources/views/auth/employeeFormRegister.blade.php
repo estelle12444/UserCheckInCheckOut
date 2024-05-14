@@ -10,8 +10,7 @@
                             <div class="card">
                                 <div class="card-header">{{ __('Enregistrement de l\'employée') }}</div>
                                 <div class="card-body">
-                                    <form action="{{ route('employees.store') }}" method="post"
-                                        enctype="multipart/form-data">
+                                    <form data-action="{{ route('employees.store') }}" data-method="post" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row mb-3">
                                             <label for="matricule"
@@ -68,7 +67,7 @@
                                             <label for="department"
                                                 class="col-md-3 col-form-label text-md-end">{{ __('Département') }}</label>
                                             <div class="col-md-8">
-                                                <select name="department_id" style="color: #000000 !important"
+                                                <select id="department_id" name="department_id" style="color: #000000 !important"
                                                     class="form-select nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split"
                                                     aria-label="Large select example">
                                                     <option selected>Selectionner le département</option>
@@ -114,7 +113,7 @@
                                     @endif
                                     <div class="row mb-0">
                                         <div class="col-md-12 text-center">
-                                            <button type="submit" class="btn btn-primary text-white">
+                                            <button type="submit" class="btn btn-primary text-white" id="submitBtn">
                                                 <i class="ti-file btn-icon-prepend"></i> {{ __('Enregistrer') }}
                                             </button>
                                         </div>
@@ -133,6 +132,7 @@
 
 @endsection
 @push('scripts')
+    <script src="{{asset('js/upload.js')}}"></script>
     <script>
         function previewImage(input) {
             var preview = document.getElementById('imagePreview');

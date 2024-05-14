@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\HistoryEntry;
 use Illuminate\Support\MessageBag;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\URL;
 
 class EmployeeController extends Controller
 {
@@ -54,23 +55,25 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         // Validation des données du formulaire
-        $imagePath = $this->validateAnRefreshFacerecognition($request);
-        if ($this->save($request, $imagePath)) {
-            return redirect()->route('employees.index')->with('success', 'Employé crée avec succès.');
-        } else {
-            return redirect()->back()->withInput();
+        $response = $this->validateAnRefreshFacerecognition($request);
+        if ($response->status() === 200) {
+            [$bool, $message, $employee_id] = $this->save($request, $response->getContent());
+            $url = URL::temporarySignedRoute('refresh_model', now()->addMinute(), ['employee' => $employee_id]);
+            return $bool ? response()->json(array_merge($message, ['url' => $url])) : response()->json($message, 400);
         }
+        return $response;
     }
 
 
     public function updateEmployee(Request $request, $id)
     {
-        $imagePath = $this->validateAnRefreshFacerecognition($request);
-        if ($this->save($request, $imagePath, $id)) {
-            return redirect()->route('employees.index')->with('success', 'Employé modifié avec succès.');
-        } else {
-            return redirect()->back()->withInput();
+        $response = $this->validateAnRefreshFacerecognition($request);
+        if ($response->status() === 200) {
+            [$bool, $message, ] = $this->save($request, $response->getContent(), $id);
+            $url = URL::temporarySignedRoute('refresh_model', now()->addMinute(), ['employee' => $id]);
+            return $bool ? response()->json(array_merge($message, ['url' => $url])) : response()->json($message, 400);
         }
+        return $response;
     }
 
 
@@ -210,9 +213,36 @@ class EmployeeController extends Controller
         return view('pages.absenceIndex', compact('employees', 'dateRange', 'fromDate', 'nbre', 'toDate'));
     }
 
-    private function save($request, $imagePath, $id = null)
+    public function restartModelRecognition(Request $request, Employee $employee) {
+        abort_if(! $request->hasValidSignature(), 401, "Not authorized");
+
+        try {
+            $restartResponse = Http::get('http://192.168.20.138:8000/restart');
+
+            foreach ($restartResponse->json()['failed info'] as $value) {
+                if ($value[0] == $employee->matricule) {
+                    $this->removeImage($employee->image_path);
+                    return response()->json(['image' => 'Provide an image where a face can be detected']);
+                }
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['image' => 'Check the face recognition server\'s it may be down']);
+        }
+
+        session()->flash('success', 'face recognition server\'s successfully updated');
+
+        return response()->json([
+            'url' => route('employees.index')
+        ]);
+    }
+
+    private function save($request, $imagePath, ?int $id = null)
     {
         $save = true;
+        $message = [
+            'success' => !!$id ? "Employé a bien été modifié" : "Employé a bien été enregistré",
+        ];
+
         $employee = is_null($id) ? new Employee() : Employee::findOrFail($id);
         $employee->matricule = $request->input('matricule');
         $employee->name = $request->input('name');
@@ -227,15 +257,17 @@ class EmployeeController extends Controller
             $employee->save();
         } catch (\Throwable $e) {
             $save = false;
-            $request->session()->flash('error', "Quicklook already used by another employee");
+            $message = [
+                'matricule' => "Quicklook already used by another employee"
+            ];
         }
 
-        return $save;
+        return [$save, $message, $employee->id];
     }
 
     private function validateAnRefreshFacerecognition(Request $request)
     {
-        $validator = Validator::make([
+        $validator = Validator::make($request->all(), [
             'matricule' => self::STRING_RULE,
             'name' => self::STRING_RULE,
             'designation' => self::STRING_RULE,
@@ -264,37 +296,35 @@ class EmployeeController extends Controller
             if(isset($imagePath) && $imagePath != ""){
                 $path  = explode('/', $imagePath);
                 $extension = explode('.', $path[1]);
-                $response = Http::withHeaders(['Accept' => 'multipart/form-data'])
-                    ->attach('file', file_get_contents('storage/' . $imagePath), $request->hasFile('image') ? $path[1] : $fileName.".".$extension[1] )
-                    ->post(env('FACERECOGNITION_BASE_URI') . '/upload', []);
+                try {
+                    $response = Http::withHeaders(['Accept' => 'multipart/form-data'])
+                        ->attach('file', file_get_contents('storage/' . $imagePath), $request->hasFile('image') ? $path[1] : $fileName.".".$extension[1] )
+                        ->post( 'http://192.168.20.138:8000/upload', []);
 
-                if ($response->status() == 200) {
-                    $restartResponse = Http::get(env('FACERECOGNITION_BASE_URI') . '/restart');
-                    foreach ($restartResponse->json()['failed info'] as $value) {
-                        if ($value[0] == $request->input('matricule')) {
-                            $validator->errors()->add(
-                                'image',
-                                'Provide an image where a face can be detected'
-                            );
-                            $this->removeImage($imagePath);
-                            break;
-                        }
+                    if ($response->status() != 200) {
+                        $validator->errors()->add(
+                            'image',
+                            'Check the face recognition server\'s it may be down'
+                        );
+                        $this->removeImage($imagePath);
                     }
-                } else {
+                } catch (\Throwable $th) {
                     $validator->errors()->add(
                         'image',
                         'Check the face recognition server\'s it may be down'
                     );
-                    $this->removeImage($imagePath);
                 }
             }
         });
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return response()->json(
+                $validator->messages(),
+                400
+            );
         }
 
-        return $imagePath;
+        return response()->json($imagePath);
     }
 
     private function removeImage($path)
