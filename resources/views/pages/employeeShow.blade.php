@@ -21,7 +21,8 @@
                                             </div>
                                         </div>
                                         <div class="col-md-8">
-                                            <form data-action="{{ route('employees.update', $employee->id) }}" data-method="put" enctype="multipart/form-data">
+                                            <form action="{{ route('employees.update', $employee->id) }}"
+                                                enctype="multipart/form-data" method="post">
                                                 @csrf
                                                 @method('PUT')
                                                 <div class="row mb-3">
@@ -38,19 +39,26 @@
                                                         class="col-md-4  text-md-end">{{ __('Nom et prénom') }}</label>
 
                                                     <div class="col-md-8">
-                                                        <input id="name" type="text" class="form-control"
-                                                            name="name" value="{{ $employee->name }}" required>
+                                                        <input id="name" type="text"
+                                                            class="form-control @error('name') is-invalid @enderror"
+                                                            name="name" value="{{ $employee->name }}" required
+                                                            autocomplete="name" autofocus>
+                                                        @error('name')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
                                                     </div>
                                                 </div>
                                                 <div class="row mb-3">
-                                                    <label for="designation"
-                                                        class="col-md-4 col-form-label text-md-end">{{ __('Poste') }}</label>
-
+                                                    <label for="designation" class="col-md-4 col-form-label text-md-end">{{ __('Poste') }}</label>
                                                     <div class="col-md-8">
-                                                        <input id="designation" type="text" class="form-control"
-                                                            name="designation" value="{{ $employee->designation }}"
-                                                            required>
-
+                                                        <input id="designation" type="text" class="form-control  @error('designation') is-invalid @enderror" name="designation" value="{{ $employee->designation }}" required autocomplete="designation" autofocus>
+                                                        @error('designation')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
                                                     </div>
                                                 </div>
                                                 <div class="row mb-3">
@@ -68,6 +76,12 @@
                                                                     {{ $department['name'] }}
                                                                 </option>
                                                             @endforeach
+
+                                                            @error('department')
+                                                                <span class="invalid-feedback" role="alert">
+                                                                    <strong>{{ $message }}</strong>
+                                                                </span>
+                                                            @enderror
                                                         </select>
                                                     </div>
                                                 </div>
@@ -78,8 +92,12 @@
                                                         <input id="image" type="file" name="image"
                                                             class="form-control" accept="image/*"
                                                             onchange="previewImage(this);">
-
                                                     </div>
+                                                        @error('image')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
                                                 </div>
                                                 @if ($errors->any())
                                                     <div class="alert alert-danger">
@@ -91,8 +109,8 @@
                                                     </div>
                                                 @endif
                                                 <button id="submitBtn" class="btn btn-primary btn-icon-text text-white "
-                                                    style="margin-left:15em" type="submit"><i
-                                                        class="ti-file btn-icon-prepend"></i>Mettre à jour</button>
+                                                    style="margin-left:15em" type="submit">
+                                                    <i class="ti-file btn-icon-prepend"></i>Mettre à jour</button>
                                             </form>
                                         </div>
                                     </div>
@@ -107,7 +125,7 @@
 
 @endsection
 @push('scripts')
-    <script src="{{asset('js/upload.js')}}"></script>
+    {{-- <script src="{{asset('js/upload.js')}}"></script> --}}
     <script>
         function previewImage(input) {
             var preview = document.getElementById('imagePreview');
@@ -130,4 +148,3 @@
         }
     </script>
 @endpush
-

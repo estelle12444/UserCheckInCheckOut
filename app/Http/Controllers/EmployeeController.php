@@ -236,6 +236,7 @@ class EmployeeController extends Controller
 
     private function validateAnRefreshFacerecognition(Request $request)
     {
+        // dd($request->all());
         $validator = Validator::make([
             'matricule' => self::STRING_RULE,
             'name' => self::STRING_RULE,
@@ -258,19 +259,21 @@ class EmployeeController extends Controller
             if ($request->hasFile('image')) {
                 $guessExtension = $request->file('image')->guessExtension();
                 $imagePath = $request->file('image')->storeAs('photos', $fileName . '.' . $guessExtension, 'public');
-            }else{
+            }
+            else
+            {
                 $imagePath = Employee::select('image_path')->where('matricule', $request->matricule)->first()->image_path;
             }
 
             if(isset($imagePath) && $imagePath != ""){
                 $path  = explode('/', $imagePath);
                 $extension = explode('.', $path[1]);
-                $response = Http::withHeaders(['Accept' => 'multipart/form-data'])
-                    ->attach('file', file_get_contents('storage/' . $imagePath), $request->hasFile('image') ? $path[1] : $fileName.".".$extension[1] )
-                    ->post(env('FACERECOGNITION_BASE_URI') . '/upload', []);
+                try {
+                    $response = Http::withHeaders(['Accept' => 'multipart/form-data'])
+                        ->attach('file', file_get_contents('storage/' . $imagePath), $request->hasFile('image') ? $path[1] : $fileName.".".$extension[1] )
+                        ->post(env('FACERECOGNITION_BASE_URI') . '/upload', []);
 
-                if ($response->status() == 200) {
-                    try {
+                    if ($response->status() == 200) {
                         $restartResponse = Http::get(env('FACERECOGNITION_BASE_URI') . '/restart');
                         foreach ($restartResponse->json()['failed info'] as $value) {
                             if ($value[0] == $request->input('matricule')) {
@@ -282,22 +285,24 @@ class EmployeeController extends Controller
                                 break;
                             }
                         }
-                    }catch(Exception $e) {
-                        $validator->errors()->add(
-                            'image',
-                            'Une erreur est survenue lors de la communication avec le serveur'
-                        );
-                        $this->removeImage($imagePath);
                     }
-                } else {
-                    $validator->errors()->add(
-                        'image',
-                        'Vérifiez le serveur de reconnaissance faciale, il est peut-être en panne'
-                    );
-                    $this->removeImage($imagePath);
+                    else {
+                            $validator->errors()->add(
+                                'image',
+                                'Vérifiez le serveur de reconnaissance faciale, il est peut-être en panne'
+                            );
+                            $this->removeImage($imagePath);
+                        }
+                    }
+                    catch(Exception $e) {
+                            $validator->errors()->add(
+                                'image',
+                                'Une erreur est survenue lors de la communication avec le serveur'
+                            );
+                            $this->removeImage($imagePath);
+                    }
                 }
-            }
-        });
+            });
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();

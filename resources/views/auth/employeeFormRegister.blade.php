@@ -10,19 +10,16 @@
                             <div class="card">
                                 <div class="card-header">{{ __('Enregistrement de l\'employée') }}</div>
                                 <div class="card-body">
-                                    <form data-action="{{ route('employees.store') }}" data-method="post" enctype="multipart/form-data">
+                                    <form action="{{ route('employees.store') }}" method="post" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row mb-3">
-                                            <label for="matricule"
-                                                class="col-md-3 col-form-label text-md-end">{{ __('Quicklook') }}</label>
+                                            <label for="matricule" class="col-md-3 col-form-label text-md-end">{{ __('Quicklook') }}</label>
 
                                             <div class="col-md-8">
-                                                <input id="matricule" type="text"
-                                                    class="form-control @error('matricule') is-invalid @enderror"
-                                                    name="matricule" value="{{ old('matricule') }}" required
-                                                    autocomplete="matricule" autofocus>
+                                                <input id="matricule" type="text" class="form-control @error('matricule') is-invalid @enderror"
+                                                    name="matricule" value="{{ old('matricule') }}" required  autocomplete="matricule" autofocus>
                                                 <span class="invalid-feedback" role="alert">
-                                                   
+
                                                 </span>
                                             </div>
                                         </div>
@@ -31,8 +28,7 @@
                                                 class="col-md-3  text-md-end">{{ __('Nom et prénom') }}</label>
 
                                             <div class="col-md-8">
-                                                <input id="name" type="text"
-                                                    class="form-control @error('name') is-invalid @enderror" name="name"
+                                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name"
                                                     value="{{ old('name') }}" required autocomplete="name" autofocus>
 
                                                 @error('name')
@@ -48,10 +44,8 @@
                                                 class="col-md-3 col-form-label text-md-end">{{ __('Poste') }}</label>
 
                                             <div class="col-md-8">
-                                                <input id="designation" type="text"
-                                                    class="form-control @error('designation') is-invalid @enderror"
-                                                    name="designation" value="{{ old('designation') }}" required
-                                                    autocomplete="designation" autofocus>
+                                                <input id="designation" type="text" class="form-control @error('designation') is-invalid @enderror"
+                                                    name="designation" value="{{ old('designation') }}" required autocomplete="designation" autofocus>
 
                                                 @error('designation')
                                                     <span class="invalid-feedback" role="alert">
@@ -115,9 +109,7 @@
                                             </button>
                                         </div>
                                 </div>
-                            </div>
-                                </form>
-
+                            </form>
                             </div>
                         </div>
                     </div>
@@ -129,7 +121,7 @@
 
 @endsection
 @push('scripts')
-    <script src="{{asset('js/upload.js')}}"></script>
+    {{-- <script src="{{asset('js/upload.js')}}"></script> --}}
     <script>
         function previewImage(input) {
             var preview = document.getElementById('imagePreview');
