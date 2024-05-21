@@ -21,12 +21,9 @@
                                                     class="form-control @error('matricule') is-invalid @enderror"
                                                     name="matricule" value="{{ old('matricule') }}" required
                                                     autocomplete="matricule" autofocus>
-
-                                                @error('matricule')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
+                                                <span class="invalid-feedback" role="alert">
+                                                   
+                                                </span>
                                             </div>
                                         </div>
                                         <div class="row mb-3">

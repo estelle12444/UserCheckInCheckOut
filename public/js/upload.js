@@ -17,16 +17,6 @@
 
 async function errorHandler(error){
     console.error("Une erreur est survenue :", error);
-    // const div = document.getElementById('#error-output');
-
-    // if(!div){
-    //     const divEl = document.createElement('#error-output.alert.alert-danger');
-    // }
-
-    // console.log(divEl);
-    // docu
-    // document.insertBefore(,document.getElementById('submitBtn'))
-
     const errorDiv = document.getElementById('error-output');
     if (!errorDiv) {
         const errorDivEl = document.createElement('div');
@@ -56,17 +46,21 @@ document.getElementById("submitBtn").addEventListener("click", function(e){
         headers
     }).then( async (response) => {
         //Etape 2
-        const json = await response.json();
         try {
-            const resp =  await fetch(json['url'] /* recuperer depuis response */,{
-                method: "post",
-                headers
-            });
+            const json = await response.json();
+            console.log("status" , response.status);
+            if(response.status === 200){
+                const resp =  await fetch(json['url'] /* recuperer depuis response */,{
+                    method: "post",
+                    headers
+                });
 
-            const refreshJson =  await resp.json();
-            window.location.href = refreshJson['url'];
+                const refreshJson =  await resp.json();
+                window.location.href = refreshJson['url'];
+            }else{
+                errorHandler(json);
+            }
         } catch (error) {
-            //affichage des erreurs
             errorHandler(error);
         }
     }).catch(errorHandler);
