@@ -217,7 +217,7 @@ class EmployeeController extends Controller
         abort_if(! $request->hasValidSignature(), 401, "Not authorized");
 
         try {
-            $restartResponse = Http::get('http://192.168.20.138:8000/restart');
+            $restartResponse = Http::get(env('FACERECOGNITION_BASE_URI') . '/restart');
 
             foreach ($restartResponse->json()['failed info'] as $value) {
                 if ($value[0] == $employee->matricule) {
@@ -299,7 +299,7 @@ class EmployeeController extends Controller
                 try {
                     $response = Http::withHeaders(['Accept' => 'multipart/form-data'])
                         ->attach('file', file_get_contents('storage/' . $imagePath), $request->hasFile('image') ? $path[1] : $fileName.".".$extension[1] )
-                        ->post( 'http://192.168.20.138:8000/upload', []);
+                        ->post(env('FACERECOGNITION_BASE_URI') . '/upload', []);
 
                     if ($response->status() != 200) {
                         $validator->errors()->add(
