@@ -108,8 +108,8 @@
                                                 <i class="ti-file btn-icon-prepend"></i> {{ __('Enregistrer') }}
                                             </button>
                                         </div>
-                                </div>
-                            </form>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -117,7 +117,7 @@
             </div>
         </div>
     </div>
-    </div>
+
 
 @endsection
 @push('scripts')
