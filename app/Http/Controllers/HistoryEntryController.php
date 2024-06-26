@@ -159,7 +159,7 @@ class HistoryEntryController extends Controller
     public function requestUpdateImage(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'image' => 'required|image|mimes:png,jpg,jpeg|max:2048',
+            'image' => 'required|image|mimes:png,jpg,jpeg',
             'matricule' => 'required|exists:employees,matricule'
         ]);
 
