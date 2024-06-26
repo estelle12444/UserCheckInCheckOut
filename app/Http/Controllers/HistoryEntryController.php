@@ -185,6 +185,9 @@ class HistoryEntryController extends Controller
         $requestUser->status = 'en_attente';
         $requestUser->save();
 
-        return response()->json([], Response::HTTP_CREATED);
+        return response()->json([
+            'message' => "successful image update",
+            'success' => true
+        ], Response::HTTP_CREATED);
     }
 }
