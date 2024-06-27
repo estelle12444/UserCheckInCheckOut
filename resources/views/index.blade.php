@@ -90,7 +90,7 @@
                                                                         <tbody>
                                                                             @foreach ($employeeCountBySite as $day)
                                                                                 <tr>
-                                                                                    <td>{{ config('localisation')[$day[0]->localisation_id - 1]['name'] }}
+                                                                                    <td>{{ config('localisation')[$day[0]->localisation_id - ($day[0]->localisation_id == 1 ? 1 : 2)]['name'] }}
                                                                                     </td>
                                                                                     <td>{{ date('Y-m-d') }}</td>
                                                                                     <td>{{ count($day) }}</td>
@@ -145,15 +145,13 @@
                                                                 <tr>
                                                                     <td class="pl-2">
                                                                         <h6 style="color:#EF8032">
-                                                                            {{ config('localisation')[$history_entry->localisation_id - 1]['name'] }}
+                                                                            {{ config('localisation')[$history_entry->localisation_id - ($history_entry->localisation_id == 1 ? 1 : 2)]['name'] }}
                                                                         </h6>
                                                                     </td>
                                                                     <td>
                                                                         <div class="d-flex ">
-                                                                            <a
-                                                                                href="{{ route('employeeDetail', ['id' => $history_entry->employee->id]) }}">
-                                                                                <img src="{{ asset('storage/' . $history_entry->employee->image_path) }}"
-                                                                                    alt="{{ $history_entry->employee->name }}">
+                                                                            <a  href="{{ route('employeeDetail', ['id' => $history_entry->employee->id]) }}">
+                                                                                <img src="{{ asset('storage/' . $history_entry->employee->image_path) }}" alt="{{ $history_entry->employee->name }}">
                                                                             </a>
                                                                             <div>
                                                                                 <a
@@ -214,12 +212,12 @@
                 gradientLine: [5, 0, 5, 100],
                 borderColor: "#1F3BB3",
             },
-            {
-                name: "Laurier",
-                gradientBackground: [130, 224, 170],
-                gradientLine: [5, 0, 5, 100],
-                borderColor: "#229954",
-            },
+            // {
+            //     name: "Laurier",
+            //     gradientBackground: [130, 224, 170],
+            //     gradientLine: [5, 0, 5, 100],
+            //     borderColor: "#229954",
+            // },
             {
                 name: "Campus",
                 gradientBackground: [245, 176, 65],
@@ -248,7 +246,7 @@
 
                     datasetValues.push(datasetOptionGenerator(chartConfig[0], jours));
                     datasetValues.push(datasetOptionGenerator(chartConfig[1], jours));
-                    datasetValues.push(datasetOptionGenerator(chartConfig[2], jours));
+                    //datasetValues.push(datasetOptionGenerator(chartConfig[2], jours));
                 } else {
                     for (let index = 0; index < sites.length; index++) {
                         let jours = Array(7).fill([0]).flat();
