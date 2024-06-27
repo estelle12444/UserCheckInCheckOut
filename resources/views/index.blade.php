@@ -256,7 +256,7 @@
                                 jours[weekday - 1] = siteData[index][iterator];
                             }
                         }
-                        datasetValues.push(datasetOptionGenerator(chartConfig[sites[index] - 1], jours));
+                        datasetValues.push(datasetOptionGenerator(chartConfig[sites[index] == 1 ? 0 : 1], jours));
                     }
                 }
 
@@ -275,7 +275,7 @@
                             jours[goodIndex] = siteData[index][iterator];
                         }
                     }
-                    datasetValues.push(datasetOptionGenerator(chartConfig[sites[index] - 1], jours));
+                    datasetValues.push(datasetOptionGenerator(chartConfig[sites[index] == 1 ? 0 : 1], jours));
                 }
             }
             var graphGradient = document.getElementById("performaneLinee").getContext('2d');
