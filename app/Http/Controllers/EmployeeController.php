@@ -23,6 +23,7 @@ use Maatwebsite\Excel\Facades\Excel;
 class EmployeeController extends Controller
 {
     const STRING_RULE = 'required|string|max:255';
+    const BASE_URL = 'http://172.20.200.139:7123';
 
     public function showRegistrationEmployeeExcel()
     {
@@ -236,18 +237,16 @@ class EmployeeController extends Controller
 
     private function validateAnRefreshFacerecognition(Request $request)
     {
-        // dd($request->all());
         $validator = Validator::make([
             'matricule' => self::STRING_RULE,
             'name' => self::STRING_RULE,
             'designation' => self::STRING_RULE,
             'department_id' => 'required|int',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg',
         ], [
             'image.image' => 'The file must be an image.',
             'image.mimes' => 'The image must be a file of type: jpeg, png, jpg.',
             'image.mimes' => 'The image must be a file of type: jpeg, png, jpg.',
-            'image.max' => 'The image may not be greater than 2048 kilobytes.',
         ]);
 
         $imagePath = "";
@@ -265,16 +264,19 @@ class EmployeeController extends Controller
                 $imagePath = Employee::select('image_path')->where('matricule', $request->matricule)->first()->image_path;
             }
 
+
             if(isset($imagePath) && $imagePath != ""){
                 $path  = explode('/', $imagePath);
                 $extension = explode('.', $path[1]);
                 try {
+                    $base_url = self::BASE_URL;
+                    $uploadUrl = $base_url.'/upload';
                     $response = Http::withHeaders(['Accept' => 'multipart/form-data'])
                         ->attach('file', file_get_contents('storage/' . $imagePath), $request->hasFile('image') ? $path[1] : $fileName.".".$extension[1] )
-                        ->post(env('FACERECOGNITION_BASE_URI') . '/upload', []);
+                        ->post($uploadUrl, []);
 
                     if ($response->status() == 200) {
-                        $restartResponse = Http::get(env('FACERECOGNITION_BASE_URI') . '/restart');
+                        $restartResponse = Http::timeout(160)->get( $base_url.'/restart');
                         foreach ($restartResponse->json()['failed info'] as $value) {
                             if ($value[0] == $request->input('matricule')) {
                                 $validator->errors()->add(
@@ -294,10 +296,10 @@ class EmployeeController extends Controller
                             $this->removeImage($imagePath);
                         }
                     }
-                    catch(Exception $e) {
+                    catch(\Exception $e) {
                             $validator->errors()->add(
                                 'image',
-                                'Une erreur est survenue lors de la communication avec le serveur'
+                                $e->getMessage()
                             );
                             $this->removeImage($imagePath);
                     }
