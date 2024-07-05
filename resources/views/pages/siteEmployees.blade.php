@@ -77,8 +77,7 @@
                                                                                 @if ($history_entry->employee->image_path)
                                                                                     <img style="height: 50px !important; width:auto"  src="{{ asset('storage/' . $history_entry->employee->image_path) }}"alt="{{ $history_entry->employee->name }}">
                                                                                 @else
-                                                                                    <img style="height: 50px !important; width:auto"  src="{{ asset('/images/default.png') }}"
-                                                                                        alt="{{ $employee->name }}">
+                                                                                    <img style="height: 50px !important; width:auto"  src="{{ asset('/images/default.png') }}" alt="{{ $employee->name }}">
                                                                                 @endif
                                                                             </a>
                                                                             <div>
@@ -87,8 +86,7 @@
                                                                                     <h6>{{ $history_entry->employee->name }}
                                                                                     </h6>
                                                                                 </a>
-                                                                                <p>{{ $history_entry->employee->designation }}
-                                                                                </p>
+                                                                                <p>{{  substr($history_entry->employee->designation, 0, 10) }}</p>
                                                                             </div>
                                                                         </div>
                                                                     </td>

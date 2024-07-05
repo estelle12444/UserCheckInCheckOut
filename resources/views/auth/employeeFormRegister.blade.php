@@ -109,9 +109,7 @@
                                                 <span id="buttonText"> <i class="ti-file btn-icon-prepend"></i>{{ __('Enregistrer') }}</span>
                                                 <span id="spinner" class="spinner-border spinner-border-sm d-none" aria-hidden="true"></span>
                                             </button>
-                                            <button id="submitBtn" class="btn btn-primary btn-icon-text text-white " style="margin-left:15em" type="submit">
 
-                                            </button>
                                         </div>
                                     </div>
                                 </form>
