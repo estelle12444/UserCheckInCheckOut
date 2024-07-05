@@ -108,9 +108,10 @@
                                                         </ul>
                                                     </div>
                                                 @endif
-                                                <button id="submitBtn" class="btn btn-primary btn-icon-text text-white "
-                                                    style="margin-left:15em" type="submit">
-                                                    <i class="ti-file btn-icon-prepend"></i>Mettre à jour</button>
+                                                <button id="submitBtn" class="btn btn-primary btn-icon-text text-white " style="margin-left:15em" type="submit">
+                                                    <span id="buttonText"> <i class="ti-file btn-icon-prepend"></i>Mettre à jour</span>
+                                                    <span id="spinner" class="spinner-border spinner-border-sm d-none" aria-hidden="true"></span>
+                                                </button>
                                             </form>
                                         </div>
                                     </div>
@@ -146,5 +147,16 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
+
+        document.getElementById('submitBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            document.getElementById('buttonText').classList.add('d-none');
+            document.getElementById('spinner').classList.remove('d-none');
+            this.disabled = true;
+
+            // Soumet le formulaire
+            this.form.submit();
+        });
     </script>
 @endpush

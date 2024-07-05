@@ -105,7 +105,12 @@
                                     <div class="row mb-0">
                                         <div class="col-md-12 text-center">
                                             <button type="submit" class="btn btn-primary text-white" id="submitBtn">
-                                                <i class="ti-file btn-icon-prepend"></i> {{ __('Enregistrer') }}
+
+                                                <span id="buttonText"> <i class="ti-file btn-icon-prepend"></i>{{ __('Enregistrer') }}</span>
+                                                <span id="spinner" class="spinner-border spinner-border-sm d-none" aria-hidden="true"></span>
+                                            </button>
+                                            <button id="submitBtn" class="btn btn-primary btn-icon-text text-white " style="margin-left:15em" type="submit">
+
                                             </button>
                                         </div>
                                     </div>
@@ -142,5 +147,16 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
+
+        document.getElementById('submitBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            document.getElementById('buttonText').classList.add('d-none');
+            document.getElementById('spinner').classList.remove('d-none');
+            this.disabled = true;
+
+            // Soumet le formulaire
+            this.form.submit();
+        });
     </script>
 @endpush
