@@ -86,7 +86,10 @@
                                                                                     <h6>{{ $history_entry->employee->name }}
                                                                                     </h6>
                                                                                 </a>
-                                                                                <p>{{  substr($history_entry->employee->designation, 0, 10) }}</p>
+                                                                                <p>{{ <p>
+                                                                                    {{ substr($history_entry->employee->designation, 0, 10) .
+                                                                                       (strlen($history_entry->employee->designation) > 10 ? '...' : '') }}
+                                                                                 }}</p>
                                                                             </div>
                                                                         </div>
                                                                     </td>
